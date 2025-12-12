@@ -1,8 +1,14 @@
-# Mozaic Design System MCP Server Specification
+# Mozaic Design System MCP Server
+
+> ⚠️ **Work In Progress**: This project is currently in draft stage and under active development. Feel free to collaborate and contribute!
+
+## Project Status
+
+🚧 **This is a WIP (Work In Progress) draft project** - The implementation is functional but still being refined. Contributions, suggestions, and collaborations are welcome!
 
 ## Project Overview
 
-Build an MCP (Model Context Protocol) server to expose the **Mozaic Design System** (by ADEO) to Claude and other AI assistants. The MCP server should provide intelligent access to design tokens, component documentation, code examples, and code generation capabilities.
+An MCP (Model Context Protocol) server that exposes the **Mozaic Design System** (by ADEO) to Claude and other AI assistants. The MCP server provides intelligent access to design tokens, component documentation, code examples, and code generation capabilities.
 
 ## Source Repositories
 
