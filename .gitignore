@@ -5,7 +5,6 @@ node_modules/
 dist/
 
 # Generated data
-data/
 repos/
 
 # IDE
