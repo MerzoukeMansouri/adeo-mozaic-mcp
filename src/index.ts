@@ -181,7 +181,10 @@ server.registerTool(
     log("Tool called: search_documentation", args);
     if (!db) db = initializeDatabase();
     const result = handleSearchDocumentation(db, args as SearchDocumentationInput);
-    log("Tool result: search_documentation", { contentLength: result.content.length });
+    log("Tool result: search_documentation", {
+      contentLength: result.content.length,
+      resultText: result.content[0]?.text?.substring(0, 500)
+    });
     return result;
   }
 );
