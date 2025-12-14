@@ -8,13 +8,13 @@
 |--------|-------|
 | **Tokens** | 586 |
 | Token Properties (composite) | 15 |
-| **Components** | 97 |
+| **Components** | 91 |
 | Vue Components | 52 |
 | React Components | 39 |
-| HTML/CSS Components | 6 |
 | Vue Examples | 238 |
 | React Examples | 60 |
-| HTML Examples | 14 |
+| **CSS Utilities** | 6 |
+| CSS Utility Classes | 505 |
 | **Documentation** | 247 |
 
 ### Token Categories

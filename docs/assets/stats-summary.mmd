@@ -15,22 +15,25 @@ flowchart LR
         T_Props["composite properties: 15"]
     end
 
-    subgraph Components["Components: 97"]
+    subgraph Components["Components: 91"]
         direction TB
         Vue["Vue: 52"]
         React["React: 39"]
-        Html["HTML/CSS: 6"]
     end
 
-    subgraph Examples["Examples: 312"]
+    subgraph CssUtils["CSS Utilities: 6"]
+        direction TB
+        CssClasses["505 classes"]
+    end
+
+    subgraph Examples["Examples: 298"]
         direction TB
         VueEx["Vue: 238"]
         ReactEx["React: 60"]
-        HtmlEx["HTML: 14"]
     end
 
     subgraph Docs["Documentation"]
         DocPages["247 pages"]
     end
 
-    Tokens --> Components --> Examples --> Docs
+    Tokens --> Components --> CssUtils --> Examples --> Docs
