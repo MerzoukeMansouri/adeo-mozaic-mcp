@@ -109,8 +109,11 @@ server.registerTool(
     },
   },
   async (args) => {
+    log("Tool called: get_component_info", args);
     if (!db) db = initializeDatabase();
-    return handleGetComponentInfo(db, args as GetComponentInfoInput);
+    const result = handleGetComponentInfo(db, args as GetComponentInfoInput);
+    log("Tool result: get_component_info", { contentLength: result.content.length });
+    return result;
   }
 );
 
@@ -125,8 +128,11 @@ server.registerTool(
     },
   },
   async (args) => {
+    log("Tool called: list_components", args);
     if (!db) db = initializeDatabase();
-    return handleListComponents(db, args as ListComponentsInput);
+    const result = handleListComponents(db, args as ListComponentsInput);
+    log("Tool result: list_components", { contentLength: result.content.length });
+    return result;
   }
 );
 
