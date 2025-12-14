@@ -3,13 +3,13 @@
 ## Quick Start
 
 ```bash
-pnpm test           # Run unit tests
-pnpm sanity-check   # Run database sanity checks
+pnpm test            # Run unit tests
+pnpm sanity-check    # Run database sanity checks
 ```
 
 ## Unit Tests
 
-Unit tests validate the parser logic for extracting component data from Vue and React source files.
+Unit tests validate the parser logic for extracting data from Vue, React, documentation, tokens, and SCSS source files.
 
 ### Run Tests
 
@@ -24,6 +24,9 @@ pnpm test:watch     # Watch mode
 |------|-------------|
 | `src/parsers/__tests__/vue-parser.test.ts` | Vue component parsing |
 | `src/parsers/__tests__/react-parser.test.ts` | React component parsing |
+| `src/parsers/__tests__/docs-parser.test.ts` | Documentation/MDX parsing |
+| `src/parsers/__tests__/scss-parser.test.ts` | CSS utility class generation |
+| `src/parsers/__tests__/tokens-parser.test.ts` | Design token parsing |
 | `src/__tests__/sanity-check.test.ts` | Database integrity checks |
 | `src/__tests__/tools.integration.test.ts` | MCP tool integration tests |
 
@@ -42,6 +45,28 @@ pnpm test:watch     # Watch mode
 - External `.types.ts` file reading
 - Callback prop detection
 - Component category inference
+
+**Docs Parser:**
+- Frontmatter extraction (title, category)
+- Title extraction from H1/HTML
+- Keyword extraction (components, CSS classes)
+- Content cleaning (imports, JSX)
+- Category inference from paths
+- URL path generation
+
+**SCSS Parser:**
+- Flexy grid class generation (columns, modifiers, responsive)
+- Container utility classes
+- Margin/Padding utility classes (all sides, sizes)
+- Ratio utility classes (aspect ratios)
+- Scroll utility classes
+
+**Tokens Parser:**
+- Category mapping (colors, spacing, typography)
+- Color value detection and subcategory extraction
+- Spacing token generation (magic units)
+- CSS/SCSS variable naming conventions
+- Value parsing (rem, px, hex)
 
 **Integration Tests (MCP Tools):**
 - `get_component_info` - Component lookup, props, examples
