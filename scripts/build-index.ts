@@ -206,8 +206,20 @@ async function indexScssComponents(db: ReturnType<typeof initDatabase>): Promise
   return components.length;
 }
 
+function printHeader(): void {
+  console.log("");
+  console.log("╔══════════════════════════════════════════════════════════╗");
+  console.log("║                                                          ║");
+  console.log("║   🎨  MOZAIC MCP SERVER - BUILD                          ║");
+  console.log("║                                                          ║");
+  console.log("║   Compiling TypeScript & Generating Database             ║");
+  console.log("║                                                          ║");
+  console.log("╚══════════════════════════════════════════════════════════╝");
+  console.log("");
+}
+
 async function main(): Promise<void> {
-  console.log("🔧 Building Mozaic MCP index...\n");
+  printHeader();
 
   // Create data directory
   if (!existsSync(DATA_DIR)) {
@@ -252,9 +264,16 @@ async function main(): Promise<void> {
 
   db.close();
 
-  console.log("\n✅ Index build complete!");
-  console.log(`\nDatabase saved to: ${DB_PATH}`);
-  console.log("\nYou can now start the MCP server with: npm start");
+  console.log("");
+  console.log("╔══════════════════════════════════════════════════════════╗");
+  console.log("║                                                          ║");
+  console.log("║   ✅  BUILD COMPLETE                                     ║");
+  console.log("║                                                          ║");
+  console.log("╚══════════════════════════════════════════════════════════╝");
+  console.log("");
+  console.log(`   Database: ${DB_PATH}`);
+  console.log("   Run: pnpm start");
+  console.log("");
 }
 
 main().catch((error) => {

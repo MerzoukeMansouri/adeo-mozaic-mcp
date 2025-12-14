@@ -15,17 +15,19 @@ An MCP (Model Context Protocol) server that exposes the **Mozaic Design System**
   - Multiple value formats (raw, computed, CSS/SCSS variables)
   - Composite token properties (shadow x, y, blur, spread, opacity)
   - Grid system tokens (gutters, magic-unit, rem values)
-- **Components** (90+): Vue 3 and React component info with props, slots, events, examples
-- **Documentation** (240+): Full-text search across Mozaic docs
-- **Code Generation**: Generate Vue/React component code snippets
+- **Components** (97+): Vue 3, React, and HTML/CSS-only components
+  - Vue & React: props, slots, events, examples
+  - CSS-only: Flexy (flexbox grid), Container, Margin, Padding, Ratio, Scroll utilities
+  - 500+ CSS classes with responsive variants
+- **Documentation** (247+): Full-text search across Mozaic docs
+- **Code Generation**: Generate Vue/React/HTML component code snippets
 
 ## Quick Start
 
 ```bash
 pnpm install
-pnpm build:index  # Clone repos & build database
-pnpm build        # Compile TypeScript
-pnpm start        # Start MCP server
+pnpm build   # Compile TypeScript & build database (clones repos automatically)
+pnpm start   # Start MCP server
 ```
 
 ## Architecture
@@ -48,9 +50,9 @@ pnpm start        # Start MCP server
 
 | Tool                       | Description                                            |
 | -------------------------- | ------------------------------------------------------ |
-| `get_design_tokens`        | Get design tokens (colors, typography, spacing, shadows, borders, screens) |
-| `get_component_info`       | Get component details (props, slots, events, examples) |
-| `list_components`          | List available components by category                  |
+| `get_design_tokens`        | Get design tokens (colors, typography, spacing, shadows, borders, screens, grid) |
+| `get_component_info`       | Get component details (props, slots, events, CSS classes, examples) - supports Vue, React, and HTML/CSS-only |
+| `list_components`          | List available components by category (includes layout utilities) |
 | `generate_vue_component`   | Generate Vue component code                            |
 | `generate_react_component` | Generate React component code                          |
 | `search_documentation`     | Full-text search Mozaic docs                           |
@@ -67,6 +69,14 @@ pnpm start        # Start MCP server
 | radius | 3 | Border radius values |
 | shadow | 3 | Box shadows with composite properties |
 | grid | 4 | Grid gutters, magic-unit, and rem values |
+
+## Component Types
+
+| Type | Count | Description |
+|------|-------|-------------|
+| Vue | 52 | Vue 3 components with props, slots, events |
+| React | 39 | React components with props, callbacks |
+| HTML/CSS | 6 | CSS-only utilities: Flexy, Container, Margin, Padding, Ratio, Scroll |
 
 ## License
 

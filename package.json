@@ -8,14 +8,14 @@
     "mozaic-mcp-server": "dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
-    "build:index": "tsx scripts/build-index.ts",
+    "compile": "tsc",
+    "build": "tsc && tsx scripts/build-index.ts",
     "build:docs": "tsx scripts/generate-docs.ts",
     "rebuild": "pnpm rebuild better-sqlite3",
     "start": "node dist/index.js",
     "start:debug": "node dist/index.js --debug",
     "dev": "tsx watch src/index.ts",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist data/mozaic.db",
     "prebuild": "rm -rf dist",
     "install-mcp": "./scripts/install.sh",
     "uninstall-mcp": "./scripts/uninstall.sh"
