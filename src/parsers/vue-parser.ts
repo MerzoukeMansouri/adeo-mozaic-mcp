@@ -13,74 +13,107 @@ interface ParsedVueComponent {
 function extractProps(content: string): ComponentProp[] {
   const props: ComponentProp[] = [];
 
-  // Match defineProps or props option
-  const propsPatterns = [
-    // defineProps<{...}>() or defineProps({...})
-    /defineProps[<\(][\s\S]*?[>\)]\s*\(/g,
-    // props: { ... }
-    /props\s*:\s*{([\s\S]*?)}\s*[,}]/g,
-    // @Prop decorator
-    /@Prop\s*\(([^)]*)\)\s*(\w+)/g,
-  ];
+  // Vue 3 Composition API: defineProps<{...}>() with TypeScript generics
+  // Handles both withDefaults(defineProps<{...}>(), {...}) and defineProps<{...}>()
+  const definePropsMatch = content.match(/defineProps<\{([\s\S]*?)\}>\s*\(\)/);
+  if (definePropsMatch) {
+    const propsContent = definePropsMatch[1];
 
-  // Simple prop extraction from props object
-  const propsMatch = content.match(/props\s*:\s*{([\s\S]*?)}\s*(?:,|\n\s*\w)/);
-  if (propsMatch) {
-    const propsContent = propsMatch[1];
+    // Extract defaults from withDefaults if present
+    const defaultsMatch = content.match(/withDefaults\s*\(\s*defineProps<[\s\S]*?>\s*\(\)\s*,\s*\{([\s\S]*?)\}\s*\)/);
+    const defaultsContent = defaultsMatch ? defaultsMatch[1] : "";
 
-    // Match individual prop definitions
-    const propRegex = /(\w+)\s*:\s*{([^}]*)}/g;
+    // Parse each prop with its JSDoc comment
+    // Pattern: /** comment */ propName?: type;
+    const propRegex = /(?:\/\*\*[\s\S]*?\*\/\s*)?(\w+)(\?)?:\s*([^;]+);/g;
     let match;
     while ((match = propRegex.exec(propsContent)) !== null) {
       const propName = match[1];
-      const propDef = match[2];
+      const isOptional = !!match[2];
+      const propType = match[3].trim();
 
-      const prop: ComponentProp = {
+      // Extract description from JSDoc comment before this prop
+      const beforeProp = propsContent.substring(0, match.index);
+      const jsdocMatch = beforeProp.match(/\/\*\*\s*([\s\S]*?)\s*\*\/\s*$/);
+      let description: string | undefined;
+      if (jsdocMatch) {
+        description = jsdocMatch[1]
+          .replace(/^\s*\*\s*/gm, "")
+          .replace(/\n/g, " ")
+          .trim();
+      }
+
+      // Extract default value
+      const defaultMatch = defaultsContent.match(new RegExp(`${propName}\\s*:\\s*['"\`]?([^'"\`,}]+)['"\`]?`));
+      const defaultValue = defaultMatch ? defaultMatch[1].trim() : undefined;
+
+      // Extract options from union types like 'a' | 'b' | 'c'
+      let options: string[] | undefined;
+      const unionMatch = propType.match(/^['"]([^'"]+)['"](?:\s*\|\s*['"]([^'"]+)['"])+$/);
+      if (unionMatch || propType.includes("'") && propType.includes("|")) {
+        options = propType
+          .split("|")
+          .map((s) => s.trim().replace(/['"]/g, ""))
+          .filter((s) => s.length > 0);
+      }
+
+      props.push({
         name: propName,
-      };
-
-      // Extract type
-      const typeMatch = propDef.match(/type\s*:\s*(\w+)/);
-      if (typeMatch) {
-        prop.type = typeMatch[1].toLowerCase();
-      }
-
-      // Extract default
-      const defaultMatch = propDef.match(/default\s*:\s*(?:['"`]([^'"`]*)['"`]|(\w+))/);
-      if (defaultMatch) {
-        prop.defaultValue = defaultMatch[1] || defaultMatch[2];
-      }
-
-      // Extract required
-      const requiredMatch = propDef.match(/required\s*:\s*(true|false)/);
-      if (requiredMatch) {
-        prop.required = requiredMatch[1] === "true";
-      }
-
-      // Extract validator options (for enum-like props)
-      const validatorMatch = propDef.match(/validator\s*:\s*\(?\w+\)?\s*=>\s*\[([^\]]+)\]/);
-      if (validatorMatch) {
-        prop.options = validatorMatch[1]
-          .split(",")
-          .map((s) => s.trim().replace(/['"`]/g, ""));
-      }
-
-      props.push(prop);
+        type: propType,
+        required: !isOptional,
+        defaultValue,
+        options,
+        description,
+      });
     }
   }
 
-  // TypeScript interface-based props
-  const interfaceMatch = content.match(/interface\s+\w*Props\w*\s*{([\s\S]*?)}/);
-  if (interfaceMatch && props.length === 0) {
-    const interfaceContent = interfaceMatch[1];
-    const propRegex = /(\w+)(\?)?:\s*([^;\n]+)/g;
-    let match;
-    while ((match = propRegex.exec(interfaceContent)) !== null) {
-      props.push({
-        name: match[1],
-        type: match[3].trim(),
-        required: !match[2],
-      });
+  // Fallback: Options API props: { ... }
+  if (props.length === 0) {
+    const propsMatch = content.match(/props\s*:\s*{([\s\S]*?)}\s*(?:,|\n\s*\w)/);
+    if (propsMatch) {
+      const propsContent = propsMatch[1];
+      const propRegex = /(\w+)\s*:\s*{([^}]*)}/g;
+      let match;
+      while ((match = propRegex.exec(propsContent)) !== null) {
+        const propName = match[1];
+        const propDef = match[2];
+
+        const prop: ComponentProp = { name: propName };
+
+        const typeMatch = propDef.match(/type\s*:\s*(\w+)/);
+        if (typeMatch) prop.type = typeMatch[1].toLowerCase();
+
+        const defaultMatch = propDef.match(/default\s*:\s*(?:['"`]([^'"`]*)['"`]|(\w+))/);
+        if (defaultMatch) prop.defaultValue = defaultMatch[1] || defaultMatch[2];
+
+        const requiredMatch = propDef.match(/required\s*:\s*(true|false)/);
+        if (requiredMatch) prop.required = requiredMatch[1] === "true";
+
+        const validatorMatch = propDef.match(/validator\s*:\s*\(?\w+\)?\s*=>\s*\[([^\]]+)\]/);
+        if (validatorMatch) {
+          prop.options = validatorMatch[1].split(",").map((s) => s.trim().replace(/['"`]/g, ""));
+        }
+
+        props.push(prop);
+      }
+    }
+  }
+
+  // Fallback: TypeScript interface-based props
+  if (props.length === 0) {
+    const interfaceMatch = content.match(/interface\s+\w*Props\w*\s*{([\s\S]*?)}/);
+    if (interfaceMatch) {
+      const interfaceContent = interfaceMatch[1];
+      const propRegex = /(\w+)(\?)?:\s*([^;\n]+)/g;
+      let match;
+      while ((match = propRegex.exec(interfaceContent)) !== null) {
+        props.push({
+          name: match[1],
+          type: match[3].trim(),
+          required: !match[2],
+        });
+      }
     }
   }
 

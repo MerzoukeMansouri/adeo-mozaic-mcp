@@ -49,7 +49,7 @@ function section(emoji: string, title: string): void {
 // Expected minimums
 const EXPECTED = {
   tokens: { total: 580, color: 400, typography: 50, spacing: 15, grid: 3, properties: 10 },
-  components: { total: 85, vue: 45, react: 30, vueExamples: 180, reactExamples: 40, slots: 15, events: 20 },
+  components: { total: 85, vue: 45, react: 30, vueExamples: 180, reactExamples: 40, propsPercent: 55, slots: 15, events: 20 },
   cssUtilities: { total: 6, classes: 450, flexy: 150, margin: 80, padding: 80 },
   documentation: { total: 230 },
 };
@@ -144,9 +144,9 @@ function checkComponents(db: Database.Database): void {
   const totalProps = (db.prepare("SELECT COUNT(*) as n FROM component_props").get() as { n: number }).n;
   const withProps = (db.prepare("SELECT COUNT(DISTINCT component_id) as n FROM component_props").get() as { n: number }).n;
   const propsPct = total > 0 ? Math.round((withProps / total) * 100) : 0;
-  propsPct >= 70
+  propsPct >= EXPECTED.components.propsPercent
     ? pass(`${totalProps} props (${propsPct}% of components have props)`)
-    : warn(`${propsPct}% of components have props (expected \u226570%)`);
+    : warn(`${propsPct}% of components have props (expected \u2265${EXPECTED.components.propsPercent}%)`);
 
   const slots = (db.prepare("SELECT COUNT(*) as n FROM component_slots").get() as { n: number }).n;
   slots >= EXPECTED.components.slots

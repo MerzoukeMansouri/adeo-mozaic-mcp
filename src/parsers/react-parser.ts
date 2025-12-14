@@ -9,68 +9,186 @@ interface ParsedReactComponent {
   hasChildren: boolean;
 }
 
-// Extract props from React component TypeScript interface
-function extractProps(content: string): ComponentProp[] {
+// Extract const arrays like: const sizes = ['s', 'm', 'l'] as const
+function extractConstArrays(content: string): Map<string, string[]> {
+  const constArrays = new Map<string, string[]>();
+
+  // Match: const sizes = ['s', 'm', 'l'] as const
+  const constRegex = /const\s+(\w+)\s*=\s*\[([^\]]+)\]\s*as\s+const/g;
+  let match;
+  while ((match = constRegex.exec(content)) !== null) {
+    const name = match[1];
+    const values = match[2]
+      .split(",")
+      .map((s) => s.trim().replace(/['"]/g, ""))
+      .filter((s) => s.length > 0);
+    constArrays.set(name, values);
+  }
+
+  return constArrays;
+}
+
+// Extract props from a types file content
+function extractPropsFromInterface(
+  content: string,
+  interfaceName: string,
+  constArrays: Map<string, string[]>,
+  allInterfaces: Map<string, string>
+): ComponentProp[] {
   const props: ComponentProp[] = [];
+  const seenProps = new Set<string>();
 
-  // Match Props interface: interface ButtonProps { ... } or type ButtonProps = { ... }
-  const interfacePatterns = [
-    /interface\s+\w*Props\w*\s*(?:extends[^{]+)?{([\s\S]*?)}/g,
-    /type\s+\w*Props\w*\s*=\s*{([\s\S]*?)}/g,
-  ];
+  // Find the target interface
+  const interfaceRegex = new RegExp(
+    `interface\\s+${interfaceName}\\s*(?:extends\\s+([^{]+))?\\s*\\{([\\s\\S]*?)\\}`,
+    "g"
+  );
 
-  for (const pattern of interfacePatterns) {
-    let interfaceMatch;
-    while ((interfaceMatch = pattern.exec(content)) !== null) {
-      const interfaceContent = interfaceMatch[1];
+  const match = interfaceRegex.exec(content);
+  if (!match) return props;
 
-      // Match individual prop definitions: propName?: type;
-      const propRegex = /(\w+)(\?)?:\s*([^;\n]+)/g;
-      let match;
-      while ((match = propRegex.exec(interfaceContent)) !== null) {
-        const propName = match[1];
-        const isOptional = !!match[2];
-        let propType = match[3].trim();
+  const extendsClause = match[1];
+  const interfaceBody = match[2];
 
-        // Skip callback props (they'll be extracted as events)
-        if (propType.includes("=>") || propName.startsWith("on")) {
-          continue;
-        }
+  // First, recursively get props from extended interfaces
+  if (extendsClause) {
+    const extendedInterfaces = extendsClause
+      .split(",")
+      .map((s) => s.trim().replace(/<[^>]+>/, "")) // Remove generics like Omit<...>
+      .filter((s) => s.length > 0 && !s.startsWith("Omit") && !s.includes("HTMLAttributes"));
 
-        // Skip children prop (handled separately)
-        if (propName === "children") {
-          continue;
-        }
-
-        // Clean up complex types
-        if (propType.includes("|")) {
-          // Union type - extract as options
-          const options = propType
-            .split("|")
-            .map((s) => s.trim().replace(/['"]/g, ""))
-            .filter((s) => s && s !== "undefined");
-
-          props.push({
-            name: propName,
-            type: "string",
-            required: !isOptional,
-            options: options.length > 1 ? options : undefined,
-          });
-        } else {
-          props.push({
-            name: propName,
-            type: propType.toLowerCase(),
-            required: !isOptional,
-          });
+    for (const extInterface of extendedInterfaces) {
+      const extProps = extractPropsFromInterface(content, extInterface, constArrays, allInterfaces);
+      for (const prop of extProps) {
+        if (!seenProps.has(prop.name)) {
+          seenProps.add(prop.name);
+          props.push(prop);
         }
       }
     }
   }
 
-  // Also check for destructured props in function component
-  const destructuredMatch = content.match(
-    /(?:export\s+)?(?:const|function)\s+\w+\s*[=:]\s*(?:\w+\s*=>|\([^)]*\)\s*(?::\s*\w+)?\s*=>|function\s*\([^)]*\))/
-  );
+  // Parse props from this interface
+  const propRegex = /(\w+)(\?)?:\s*([^;\n]+)/g;
+  let propMatch;
+  while ((propMatch = propRegex.exec(interfaceBody)) !== null) {
+    const propName = propMatch[1];
+    const isOptional = !!propMatch[2];
+    let propType = propMatch[3].trim();
+
+    // Skip already seen, callbacks, children
+    if (seenProps.has(propName)) continue;
+    if (propType.includes("=>") || propName.startsWith("on")) continue;
+    if (propName === "children" || propName === "className") continue;
+
+    seenProps.add(propName);
+
+    // Check if type references a const array type (e.g., TButtonSize)
+    let options: string[] | undefined;
+    const typeRefMatch = propType.match(/^T(\w+)$/);
+    if (typeRefMatch) {
+      // Look for corresponding const array (e.g., TButtonSize -> sizes)
+      const typeName = typeRefMatch[1].toLowerCase();
+      for (const [constName, values] of constArrays) {
+        if (typeName.includes(constName.toLowerCase())) {
+          options = values;
+          break;
+        }
+      }
+    }
+
+    // Handle inline union types
+    if (propType.includes("|") && propType.includes("'")) {
+      options = propType
+        .split("|")
+        .map((s) => s.trim().replace(/['"]/g, ""))
+        .filter((s) => s && s !== "undefined");
+    }
+
+    props.push({
+      name: propName,
+      type: propType,
+      required: !isOptional,
+      options: options && options.length > 1 ? options : undefined,
+    });
+  }
+
+  return props;
+}
+
+// Extract props from React component - checks both inline and external .types.ts files
+function extractProps(content: string, componentDir?: string): ComponentProp[] {
+  let props: ComponentProp[] = [];
+
+  // First try to find imported Props type and load external types file
+  if (componentDir) {
+    // Match: import { IButtonProps } from './Button.types'
+    const importMatch = content.match(/import\s*\{[^}]*?(I\w*Props)\s*[^}]*\}\s*from\s*['"]\.\/(\w+)\.types['"]/);
+
+    if (importMatch) {
+      const propsInterface = importMatch[1];
+      const typesFileName = importMatch[2];
+      const typesFilePath = join(componentDir, `${typesFileName}.types.ts`);
+
+      if (existsSync(typesFilePath)) {
+        try {
+          const typesContent = readFileSync(typesFilePath, "utf-8");
+          const constArrays = extractConstArrays(typesContent);
+          const allInterfaces = new Map<string, string>();
+
+          props = extractPropsFromInterface(typesContent, propsInterface, constArrays, allInterfaces);
+        } catch (e) {
+          // Fall through to inline extraction
+        }
+      }
+    }
+  }
+
+  // Fallback: extract from inline interfaces in the component file
+  if (props.length === 0) {
+    const interfacePatterns = [
+      /interface\s+\w*Props\w*\s*(?:extends[^{]+)?{([\s\S]*?)}/g,
+      /type\s+\w*Props\w*\s*=\s*{([\s\S]*?)}/g,
+    ];
+
+    for (const pattern of interfacePatterns) {
+      let interfaceMatch;
+      while ((interfaceMatch = pattern.exec(content)) !== null) {
+        const interfaceContent = interfaceMatch[1];
+
+        const propRegex = /(\w+)(\?)?:\s*([^;\n]+)/g;
+        let match;
+        while ((match = propRegex.exec(interfaceContent)) !== null) {
+          const propName = match[1];
+          const isOptional = !!match[2];
+          let propType = match[3].trim();
+
+          if (propType.includes("=>") || propName.startsWith("on")) continue;
+          if (propName === "children") continue;
+
+          if (propType.includes("|")) {
+            const options = propType
+              .split("|")
+              .map((s) => s.trim().replace(/['"]/g, ""))
+              .filter((s) => s && s !== "undefined");
+
+            props.push({
+              name: propName,
+              type: "string",
+              required: !isOptional,
+              options: options.length > 1 ? options : undefined,
+            });
+          } else {
+            props.push({
+              name: propName,
+              type: propType.toLowerCase(),
+              required: !isOptional,
+            });
+          }
+        }
+      }
+    }
+  }
 
   return props;
 }
@@ -130,15 +248,23 @@ function extractCssClasses(content: string): string[] {
   return classes;
 }
 
-function parseReactFile(filePath: string): ParsedReactComponent | null {
+function parseReactFile(filePath: string, componentDir: string): ParsedReactComponent | null {
   try {
     const content = readFileSync(filePath, "utf-8");
     const fileName = basename(filePath, ".tsx");
 
+    // Also try to extract callbacks from types file
+    let callbacks = extractCallbacks(content);
+    const typesFilePath = join(componentDir, `${fileName}.types.ts`);
+    if (existsSync(typesFilePath)) {
+      const typesContent = readFileSync(typesFilePath, "utf-8");
+      callbacks = [...callbacks, ...extractCallbacks(typesContent)];
+    }
+
     return {
       name: fileName,
-      props: extractProps(content),
-      callbacks: extractCallbacks(content),
+      props: extractProps(content, componentDir),
+      callbacks,
       hasChildren: hasChildrenProp(content),
     };
   } catch (error) {
@@ -330,7 +456,7 @@ export async function parseReactComponents(
     }
 
     if (tsxFile) {
-      const parsed = parseReactFile(tsxFile);
+      const parsed = parseReactFile(tsxFile, dir);
 
       if (parsed) {
         const component: Component = {
