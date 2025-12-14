@@ -89,12 +89,12 @@ log("Registering MCP tools");
 server.registerTool(
   "get_design_tokens",
   {
-    description: "Get design tokens (colors, typography, spacing) from Mozaic Design System",
+    description: "Get Mozaic design tokens with CSS/SCSS variables. Categories: colors (brand, semantic, component), typography (font sizes, weights, line heights), spacing (magic unit scale), shadows, borders, screens (breakpoints), grid (gutters).",
     inputSchema: {
-      category: z.enum(["colors", "typography", "spacing", "shadows", "borders", "all"])
-        .describe("Token category to retrieve"),
+      category: z.enum(["colors", "typography", "spacing", "shadows", "borders", "screens", "grid", "all"])
+        .describe("Token category: colors, typography, spacing, shadows, borders, screens, grid, or all"),
       format: z.enum(["json", "scss", "css", "js"]).default("json")
-        .describe("Output format for the tokens"),
+        .describe("Output format: json (structured), scss ($variables), css (--custom-properties), js (constants)"),
     },
   },
   async (args) => {
@@ -109,11 +109,11 @@ server.registerTool(
 server.registerTool(
   "get_component_info",
   {
-    description: "Get detailed information about a Mozaic component",
+    description: "Get Vue/React component details: props (types, defaults, required), slots, events, and code examples. For CSS-only utilities (Flexy, Margin, Padding), use get_css_utility instead.",
     inputSchema: {
-      component: z.string().describe("Component name (e.g., 'button', 'modal', 'accordion')"),
-      framework: z.enum(["vue", "react", "html"]).default("vue")
-        .describe("Framework for examples"),
+      component: z.string().describe("Component name (e.g., 'button', 'modal', 'accordion', 'text-input')"),
+      framework: z.enum(["vue", "react"]).default("vue")
+        .describe("Framework for code examples: vue (@mozaic-ds/vue-3) or react (@mozaic-ds/react)"),
     },
   },
   async (args) => {
@@ -128,11 +128,11 @@ server.registerTool(
 server.registerTool(
   "list_components",
   {
-    description: "List all available Mozaic components",
+    description: "List Mozaic Vue/React components by category. Returns component names you can use with get_component_info. For CSS utilities (Flexy, Margin), use list_css_utilities instead.",
     inputSchema: {
       category: z.enum(["form", "navigation", "feedback", "layout", "data-display", "action", "all"])
         .default("all")
-        .describe("Optional category filter"),
+        .describe("Filter: form (inputs, selects), navigation (tabs, breadcrumb), feedback (modal, toast), layout, data-display, action (buttons), or all"),
     },
   },
   async (args) => {
@@ -147,11 +147,11 @@ server.registerTool(
 server.registerTool(
   "generate_vue_component",
   {
-    description: "Generate Vue component code using Mozaic Design System (@mozaic-ds/vue-3)",
+    description: "Generate ready-to-use Vue 3 code with Mozaic components (@mozaic-ds/vue-3). Returns <template> with proper imports. Use get_component_info first to see available props.",
     inputSchema: {
-      component: z.string().describe("Component type to generate (e.g., button, input, modal)"),
-      props: z.record(z.unknown()).optional().describe("Component properties"),
-      children: z.string().optional().describe("Content to place inside the component"),
+      component: z.string().describe("Component to generate (e.g., 'button', 'text-input', 'modal', 'select')"),
+      props: z.record(z.unknown()).optional().describe("Props to apply (e.g., {theme: 'primary', size: 'm'})"),
+      children: z.string().optional().describe("Slot content (text or HTML)"),
     },
   },
   async (args) => {
@@ -166,11 +166,11 @@ server.registerTool(
 server.registerTool(
   "generate_react_component",
   {
-    description: "Generate React component code using Mozaic Design System (@mozaic-ds/react)",
+    description: "Generate ready-to-use React/TSX code with Mozaic components (@mozaic-ds/react). Returns JSX with proper imports. Use get_component_info first to see available props.",
     inputSchema: {
-      component: z.string().describe("Component type to generate (e.g., Button, TextInput, Modal)"),
-      props: z.record(z.unknown()).optional().describe("Component properties"),
-      children: z.string().optional().describe("Content to place inside the component"),
+      component: z.string().describe("Component to generate (e.g., 'Button', 'TextInput', 'Modal', 'Select')"),
+      props: z.record(z.unknown()).optional().describe("Props to apply (e.g., {theme: 'primary', size: 'm'})"),
+      children: z.string().optional().describe("Children content (text or JSX)"),
     },
   },
   async (args) => {
@@ -224,10 +224,10 @@ server.registerTool(
 server.registerTool(
   "list_css_utilities",
   {
-    description: "List available Mozaic CSS utility classes. These are CSS-only utilities for layout (Flexy, Container) and spacing (Margin, Padding, Ratio, Scroll).",
+    description: "List Mozaic CSS-only utilities (no framework needed). Returns utility names to use with get_css_utility. Layout: Flexy (grid), Container. Utility: Margin, Padding, Ratio, Scroll.",
     inputSchema: {
       category: z.enum(["layout", "utility", "all"]).default("all")
-        .describe("Filter by category: 'layout', 'utility', or 'all'"),
+        .describe("Filter: 'layout' (Flexy, Container) or 'utility' (Margin, Padding, Ratio, Scroll)"),
     },
   },
   async (args) => {
