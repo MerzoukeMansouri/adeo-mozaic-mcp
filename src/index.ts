@@ -35,9 +35,13 @@ import {
   type ListComponentsInput,
 } from "./tools/list-components.js";
 import {
-  handleGenerateComponent,
-  type GenerateComponentInput,
-} from "./tools/generate-component.js";
+  handleGenerateVueComponent,
+  type GenerateVueComponentInput,
+} from "./tools/generate-vue-component.js";
+import {
+  handleGenerateReactComponent,
+  type GenerateReactComponentInput,
+} from "./tools/generate-react-component.js";
 import {
   handleSearchDocumentation,
   type SearchDocumentationInput,
@@ -127,19 +131,40 @@ server.registerTool(
 );
 
 server.registerTool(
-  "generate_component",
+  "generate_vue_component",
   {
-    description: "Generate component code using Mozaic design system",
+    description: "Generate Vue component code using Mozaic Design System (@mozaic-ds/vue-3)",
     inputSchema: {
-      component: z.string().describe("Component type to generate"),
-      framework: z.enum(["vue", "react", "html"]).describe("Target framework"),
+      component: z.string().describe("Component type to generate (e.g., button, input, modal)"),
       props: z.record(z.unknown()).optional().describe("Component properties"),
       children: z.string().optional().describe("Content to place inside the component"),
     },
   },
   async (args) => {
+    log("Tool called: generate_vue_component", args);
     if (!db) db = initializeDatabase();
-    return handleGenerateComponent(db, args as GenerateComponentInput);
+    const result = handleGenerateVueComponent(db, args as GenerateVueComponentInput);
+    log("Tool result: generate_vue_component", { contentLength: result.content.length });
+    return result;
+  }
+);
+
+server.registerTool(
+  "generate_react_component",
+  {
+    description: "Generate React component code using Mozaic Design System (@mozaic-ds/react)",
+    inputSchema: {
+      component: z.string().describe("Component type to generate (e.g., Button, TextInput, Modal)"),
+      props: z.record(z.unknown()).optional().describe("Component properties"),
+      children: z.string().optional().describe("Content to place inside the component"),
+    },
+  },
+  async (args) => {
+    log("Tool called: generate_react_component", args);
+    if (!db) db = initializeDatabase();
+    const result = handleGenerateReactComponent(db, args as GenerateReactComponentInput);
+    log("Tool result: generate_react_component", { contentLength: result.content.length });
+    return result;
   }
 );
 
