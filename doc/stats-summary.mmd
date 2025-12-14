@@ -1,0 +1,29 @@
+---
+title: Database Statistics Summary
+---
+flowchart LR
+    subgraph Tokens["Tokens: 510"]
+        direction TB
+        T_color["color: 482"]
+        T_shadow["shadow: 15"]
+        T_size["size: 12"]
+        T_presetjson["preset.json: 1"]
+    end
+
+    subgraph Components["Components: 91"]
+        direction TB
+        Vue["Vue: 52"]
+        React["React: 39"]
+    end
+
+    subgraph Examples["Examples: 298"]
+        direction TB
+        VueEx["Vue: 238"]
+        ReactEx["React: 60"]
+    end
+
+    subgraph Docs["Documentation"]
+        DocPages["247 pages"]
+    end
+
+    Tokens --> Components --> Examples --> Docs

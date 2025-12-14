@@ -1,0 +1,42 @@
+---
+title: Data Flow - Index Building
+---
+flowchart LR
+    subgraph Repos["Git Repositories"]
+        R1[mozaic-design-system]
+        R2[mozaic-vue]
+        R3[mozaic-react]
+    end
+
+    subgraph Parsers["Parsers"]
+        P1[tokens-parser.ts]
+        P2[vue-parser.ts]
+        P3[react-parser.ts]
+        P4[docs-parser.ts]
+    end
+
+    subgraph Data["Extracted Data"]
+        D1[Design Tokens<br/>colors, spacing, typography]
+        D2[Vue Components<br/>props, slots, events, examples]
+        D3[React Components<br/>props, callbacks, examples]
+        D4[Documentation<br/>MDX content, frontmatter]
+    end
+
+    subgraph DB["SQLite Database"]
+        T1[(tokens)]
+        T2[(components)]
+        T3[(component_props)]
+        T4[(component_slots)]
+        T5[(component_events)]
+        T6[(component_examples)]
+        T7[(documentation)]
+        T8[(documentation_fts)]
+    end
+
+    R1 --> P1 --> D1 --> T1
+    R1 --> P4 --> D4 --> T7 --> T8
+    R2 --> P2 --> D2 --> T2
+    R3 --> P3 --> D3 --> T2
+
+    D2 --> T3 & T4 & T5 & T6
+    D3 --> T3 & T5 & T6

@@ -1,0 +1,75 @@
+---
+title: Database Schema
+---
+erDiagram
+    tokens {
+        int id PK
+        string category
+        string path
+        string value
+        string description
+        string platform
+    }
+
+    components {
+        int id PK
+        string name UK
+        string slug
+        string category
+        string description
+        string frameworks
+    }
+
+    component_props {
+        int id PK
+        int component_id FK
+        string name
+        string type
+        string default_value
+        bool required
+        string options
+        string description
+    }
+
+    component_slots {
+        int id PK
+        int component_id FK
+        string name
+        string description
+    }
+
+    component_events {
+        int id PK
+        int component_id FK
+        string name
+        string payload
+        string description
+    }
+
+    component_examples {
+        int id PK
+        int component_id FK
+        string framework
+        string title
+        string code
+    }
+
+    documentation {
+        int id PK
+        string title
+        string path UK
+        string content
+        string category
+        string keywords
+    }
+
+    documentation_fts {
+        string title
+        string content
+        string keywords
+    }
+
+    components ||--o{ component_props : has
+    components ||--o{ component_slots : has
+    components ||--o{ component_events : has
+    components ||--o{ component_examples : has

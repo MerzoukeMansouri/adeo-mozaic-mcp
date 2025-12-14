@@ -1,0 +1,66 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#5C57E0'}}}%%
+---
+title: Mozaic MCP Server - Complete Architecture (2025-12-14)
+---
+flowchart TB
+    %% Main Architecture
+    subgraph Client["Claude Desktop / MCP Client"]
+        CD[Claude Desktop]
+    end
+
+    subgraph MCP["Mozaic MCP Server"]
+        direction TB
+        Server[MCP Server<br/>src/index.ts]
+
+        subgraph Tools["MCP Tools"]
+            direction LR
+            T1[get_design_tokens]
+            T2[get_component_info]
+            T3[list_components]
+            T4[generate_vue_component]
+            T5[generate_react_component]
+            T6[search_documentation]
+        end
+
+        Server --> Tools
+    end
+
+    subgraph DataLayer["Data Layer"]
+        direction TB
+        Queries[db/queries.ts]
+        DB[(SQLite Database<br/>data/mozaic.db)]
+        Queries --> DB
+    end
+
+    subgraph Parsers["Parsers"]
+        direction LR
+        P1[tokens-parser]
+        P2[vue-parser]
+        P3[react-parser]
+        P4[docs-parser]
+    end
+
+    subgraph Sources["Source Repositories (ADEO)"]
+        direction LR
+        DS[mozaic-design-system]
+        VUE[mozaic-vue]
+        REACT[mozaic-react]
+    end
+
+    subgraph Stats["Current Statistics"]
+        direction TB
+        S1["Tokens: 510"]
+        S2["Components: 91"]
+        S3["Vue: 52 + 238 examples"]
+        S4["React: 39 + 60 examples"]
+        S5["Documentation: 247 pages"]
+    end
+
+    %% Connections
+    CD <-->|"stdio"| Server
+    Tools --> Queries
+
+    DS --> P1 & P4
+    VUE --> P2
+    REACT --> P3
+    P1 & P2 & P3 & P4 -.->|"build:index"| DB

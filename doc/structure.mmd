@@ -1,0 +1,58 @@
+---
+title: Project Structure
+---
+flowchart TB
+    subgraph Root["mozaic-mcp-server/"]
+        direction TB
+
+        subgraph Scripts["scripts/"]
+            BI[build-index.ts]
+            GD[generate-docs.ts]
+        end
+
+        subgraph Src["src/"]
+            direction TB
+            Index[index.ts<br/>MCP Server Entry]
+
+            subgraph DbDir["db/"]
+                Queries[queries.ts]
+            end
+
+            subgraph ParsersDir["parsers/"]
+                TP[tokens-parser.ts]
+                VP[vue-parser.ts]
+                RP[react-parser.ts]
+                DP[docs-parser.ts]
+            end
+
+            subgraph ToolsDir["tools/"]
+                T1[get-design-tokens.ts]
+                T2[get-component-info.ts]
+                T3[list-components.ts]
+                T4[generate-vue-component.ts]
+                T5[generate-react-component.ts]
+                T6[search-documentation.ts]
+            end
+        end
+
+        subgraph DataDir["data/"]
+            DB[(mozaic.db)]
+        end
+
+        subgraph ReposDir["repos/"]
+            R1[mozaic-design-system/]
+            R2[mozaic-vue/]
+            R3[mozaic-react/]
+        end
+
+        subgraph DocDir["doc/"]
+            MD[*.mmd diagrams]
+        end
+    end
+
+    Index --> ToolsDir
+    ToolsDir --> DbDir
+    DbDir --> DataDir
+    BI --> ParsersDir
+    ParsersDir --> DataDir
+    BI --> ReposDir
