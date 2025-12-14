@@ -117,10 +117,13 @@ CSS-only layout and utility classes (no Vue/React wrapper). Use `get_css_utility
 | `pnpm start`      | Start the MCP server                  |
 | `pnpm dev`        | Development mode with watch           |
 | `pnpm clean`      | Remove dist and database              |
+| `pnpm test`       | Run unit tests                        |
+| `pnpm sanity-check` | Validate database integrity         |
 
 ## Documentation
 
-See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for detailed architecture diagrams and statistics.
+- [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) - Architecture diagrams and statistics
+- [docs/TEST.md](./docs/TEST.md) - Testing guide
 
 ## License
 
