@@ -24,6 +24,9 @@ interface DbStats {
   reactComponents: number;
   vueExamples: number;
   reactExamples: number;
+  vueDocs: number;
+  reactDocs: number;
+  designSystemDocs: number;
   categories: Array<{ category: string; count: number }>;
   tokenCategories: Array<{ category: string; count: number }>;
   tokenSubcategories: Array<{ category: string; subcategory: string; count: number }>;
@@ -88,6 +91,20 @@ function getDbStats(): DbStats | null {
     count: number;
   };
 
+  const vueDocs = db
+    .prepare("SELECT COUNT(*) as count FROM documentation WHERE category = 'vue-docs'")
+    .get() as { count: number };
+
+  const reactDocs = db
+    .prepare("SELECT COUNT(*) as count FROM documentation WHERE category = 'react-docs'")
+    .get() as { count: number };
+
+  const designSystemDocs = db
+    .prepare(
+      "SELECT COUNT(*) as count FROM documentation WHERE category NOT IN ('vue-docs', 'react-docs')"
+    )
+    .get() as { count: number };
+
   db.close();
 
   return {
@@ -100,6 +117,9 @@ function getDbStats(): DbStats | null {
     reactComponents: reactComponents.count,
     vueExamples: vueExamples.count,
     reactExamples: reactExamples.count,
+    vueDocs: vueDocs.count,
+    reactDocs: reactDocs.count,
+    designSystemDocs: designSystemDocs.count,
     categories,
     tokenCategories,
     tokenSubcategories,

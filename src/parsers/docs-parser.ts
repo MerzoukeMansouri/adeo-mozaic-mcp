@@ -43,6 +43,14 @@ function extractFrontmatter(content: string): {
 
 // Extract title from content if not in frontmatter
 function extractTitle(content: string): string {
+  // Try to find Storybook Meta title (e.g., <Meta title="Getting Started/Introduction" />)
+  const metaMatch = content.match(/<Meta\s+title=["']([^"']+)["']/);
+  if (metaMatch) {
+    // Take the last part of the path as title (e.g., "Getting Started/Introduction" -> "Introduction")
+    const parts = metaMatch[1].split("/");
+    return parts[parts.length - 1];
+  }
+
   // Try to find first h1
   const h1Match = content.match(/^#\s+(.+)$/m);
   if (h1Match) {
@@ -56,6 +64,15 @@ function extractTitle(content: string): string {
   }
 
   return "Untitled";
+}
+
+// Extract Storybook Meta title path for URL generation
+function extractMetaTitlePath(content: string): string | null {
+  const metaMatch = content.match(/<Meta\s+title=["']([^"']+)["']/);
+  if (metaMatch) {
+    return metaMatch[1].toLowerCase().replace(/\s+/g, "-");
+  }
+  return null;
 }
 
 // Extract keywords from content
@@ -99,8 +116,18 @@ function cleanContent(content: string): string {
   // Remove import statements
   let cleaned = content.replace(/^import\s+.*$/gm, "");
 
+  // Remove Storybook Meta tags
+  cleaned = cleaned.replace(/<Meta\s+[^>]*\/>/g, "");
+
+  // Extract code from Storybook Source components
+  cleaned = cleaned.replace(/<Source[^>]*code=\{?["'`]([^"'`]+)["'`]\}?[^>]*\/>/g, "```\n$1\n```");
+  cleaned = cleaned.replace(/<Source[^>]*code=\{`([\s\S]*?)`\}[^>]*\/>/g, "```\n$1\n```");
+
   // Remove JSX components but keep their text content
   cleaned = cleaned.replace(/<[A-Z][a-zA-Z]*[^>]*>([\s\S]*?)<\/[A-Z][a-zA-Z]*>/g, "$1");
+
+  // Remove self-closing JSX components
+  cleaned = cleaned.replace(/<[A-Z][a-zA-Z]*[^>]*\/>/g, "");
 
   // Remove empty code blocks
   cleaned = cleaned.replace(/```\s*```/g, "");
@@ -207,6 +234,63 @@ export async function parseDocumentation(docsPath: string): Promise<Documentatio
         category: parsed.category,
         keywords: parsed.keywords,
       });
+    }
+  }
+
+  return docs;
+}
+
+// Parse Storybook MDX files from Vue/React repos
+export async function parseStorybookDocs(
+  docsPath: string,
+  framework: "vue" | "react",
+  baseUrlPath: string
+): Promise<Documentation[]> {
+  const docs: Documentation[] = [];
+
+  const mdxFiles = findMdxFiles(docsPath);
+
+  for (const file of mdxFiles) {
+    // Skip non-documentation files
+    const fileName = file.split("/").pop() || "";
+    if (fileName.startsWith("Autodocs") || fileName.startsWith(".")) {
+      continue;
+    }
+
+    try {
+      const content = readFileSync(file, "utf-8");
+      const { frontmatter, body } = extractFrontmatter(content);
+
+      // Get title from Meta tag or frontmatter or content
+      const title = frontmatter.title || extractTitle(body);
+
+      // Skip if no meaningful title
+      if (title === "Untitled") {
+        continue;
+      }
+
+      const cleanedContent = cleanContent(body);
+
+      // Generate URL path from Meta title or filename
+      const metaPath = extractMetaTitlePath(content);
+      const urlPath = metaPath
+        ? `${baseUrlPath}/${metaPath.replace(/\//g, "/")}`
+        : `${baseUrlPath}/${fileName.replace(/\.mdx?$/, "").toLowerCase()}`;
+
+      // Add framework-specific keywords
+      const keywords = extractKeywords(cleanedContent, title);
+      keywords.push(framework);
+      keywords.push(`@mozaic-ds/${framework === "vue" ? "vue-3" : "react"}`);
+
+      docs.push({
+        title: `${title} (${framework === "vue" ? "Vue" : "React"})`,
+        path: urlPath,
+        content: cleanedContent,
+        category: `${framework}-docs`,
+        keywords,
+      });
+    } catch (error) {
+      console.warn(`Warning: Could not parse ${file}:`, error);
     }
   }
 

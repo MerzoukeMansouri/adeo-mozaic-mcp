@@ -13,7 +13,7 @@ import {
   insertDocs,
   insertTokens,
 } from "../src/db/queries.js";
-import { parseDocumentation } from "../src/parsers/docs-parser.js";
+import { parseDocumentation, parseStorybookDocs } from "../src/parsers/docs-parser.js";
 import { parseReactComponents } from "../src/parsers/react-parser.js";
 import { parseCssUtilities } from "../src/parsers/scss-parser.js";
 import { parseTokens } from "../src/parsers/tokens-parser.js";
@@ -215,6 +215,40 @@ async function indexCssUtilities(db: ReturnType<typeof initDatabase>): Promise<n
   return utilities.length;
 }
 
+async function indexStorybookDocs(db: ReturnType<typeof initDatabase>): Promise<number> {
+  console.log("📖 Indexing Storybook documentation (Vue/React)...");
+
+  let totalDocs = 0;
+
+  // Index Vue Storybook docs
+  const vueDocsPath = join(REPOS.vue.path, "src", "components");
+  if (existsSync(vueDocsPath)) {
+    const vueDocs = await parseStorybookDocs(vueDocsPath, "vue", "/vue");
+    if (vueDocs.length > 0) {
+      insertDocs(db, vueDocs);
+      console.log(`   ✓ Indexed ${vueDocs.length} Vue Storybook docs`);
+      totalDocs += vueDocs.length;
+    }
+  }
+
+  // Index React Storybook docs
+  const reactDocsPath = join(REPOS.react.path, "src", "stories");
+  if (existsSync(reactDocsPath)) {
+    const reactDocs = await parseStorybookDocs(reactDocsPath, "react", "/react");
+    if (reactDocs.length > 0) {
+      insertDocs(db, reactDocs);
+      console.log(`   ✓ Indexed ${reactDocs.length} React Storybook docs`);
+      totalDocs += reactDocs.length;
+    }
+  }
+
+  if (totalDocs === 0) {
+    console.log("   ⚠ No Storybook docs found");
+  }
+
+  return totalDocs;
+}
+
 function printHeader(): void {
   console.log("");
   console.log("╔══════════════════════════════════════════════════════════╗");
@@ -263,6 +297,7 @@ async function main(): Promise<void> {
   await indexReactComponents(db);
   await indexCssUtilities(db);
   await indexDocumentation(db);
+  await indexStorybookDocs(db);
 
   // Print stats
   console.log("\n📊 Database Statistics:");
