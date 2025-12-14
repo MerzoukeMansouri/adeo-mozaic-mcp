@@ -775,81 +775,91 @@ const server = new McpServer({
   version: "1.0.0",
 });
 
-// Register tools using McpServer.registerTool()
-server.registerTool(
+// Register tools using server.tool() with Zod schemas
+server.tool(
   "get_design_tokens",
+  "Get Mozaic design tokens with CSS/SCSS variables",
   {
-    description: "Get design tokens (colors, typography, spacing) from Mozaic",
-    inputSchema: {
-      category: z
-        .enum(["colors", "typography", "spacing", "shadows", "borders", "all"])
-        .describe("Token category to retrieve"),
-      format: z
-        .enum(["json", "scss", "css", "js"])
-        .default("json")
-        .describe("Output format"),
-    },
+    category: z.enum(["colors", "typography", "spacing", "shadows", "borders", "screens", "grid", "all"])
+      .describe("Token category to retrieve"),
+    format: z.enum(["json", "scss", "css", "js"]).default("json")
+      .describe("Output format"),
   },
   async (args) => handleGetDesignTokens(db, args)
 );
 
-server.registerTool(
+server.tool(
   "get_component_info",
+  "Get Vue/React component details: props, slots, events, and examples",
   {
-    description: "Get detailed information about a Mozaic component",
-    inputSchema: {
-      component: z.string().describe("Component name (e.g., button, modal)"),
-      framework: z.enum(["vue", "react", "html"]).default("vue"),
-    },
+    component: z.string().describe("Component name (e.g., 'button', 'modal')"),
+    framework: z.enum(["vue", "react"]).default("vue")
+      .describe("Framework for code examples"),
   },
   async (args) => handleGetComponentInfo(db, args)
 );
 
-server.registerTool(
+server.tool(
   "list_components",
+  "List Mozaic Vue/React components by category",
   {
-    description: "List all available Mozaic components",
-    inputSchema: {
-      category: z
-        .enum([
-          "form",
-          "navigation",
-          "feedback",
-          "layout",
-          "data-display",
-          "action",
-          "all",
-        ])
-        .default("all"),
-    },
+    category: z.enum(["form", "navigation", "feedback", "layout", "data-display", "action", "all"])
+      .default("all")
+      .describe("Component category filter"),
   },
   async (args) => handleListComponents(db, args)
 );
 
-server.registerTool(
-  "generate_component",
+server.tool(
+  "generate_vue_component",
+  "Generate ready-to-use Vue 3 code with Mozaic components",
   {
-    description: "Generate component code using Mozaic design system",
-    inputSchema: {
-      component: z.string().describe("Component type to generate"),
-      framework: z.enum(["vue", "react", "html"]),
-      props: z.record(z.unknown()).optional(),
-      children: z.string().optional(),
-    },
+    component: z.string().describe("Component to generate"),
+    props: z.record(z.unknown()).optional().describe("Props to apply"),
+    children: z.string().optional().describe("Slot content"),
   },
-  async (args) => handleGenerateComponent(db, args)
+  async (args) => handleGenerateVueComponent(db, args)
 );
 
-server.registerTool(
-  "search_documentation",
+server.tool(
+  "generate_react_component",
+  "Generate ready-to-use React/TSX code with Mozaic components",
   {
-    description: "Search Mozaic documentation",
-    inputSchema: {
-      query: z.string().describe("Search query"),
-      limit: z.number().default(5),
-    },
+    component: z.string().describe("Component to generate"),
+    props: z.record(z.unknown()).optional().describe("Props to apply"),
+    children: z.string().optional().describe("Children content"),
+  },
+  async (args) => handleGenerateReactComponent(db, args)
+);
+
+server.tool(
+  "search_documentation",
+  "Search Mozaic Design System documentation",
+  {
+    query: z.string().describe("Search query"),
+    limit: z.number().default(5).describe("Maximum results"),
   },
   async (args) => handleSearchDocumentation(db, args)
+);
+
+server.tool(
+  "get_css_utility",
+  "Get CSS utility classes for Mozaic layout/spacing utilities",
+  {
+    name: z.string().describe("Utility name (e.g., 'flexy', 'margin')"),
+    includeClasses: z.boolean().default(true).describe("Include CSS class names"),
+  },
+  async (args) => handleGetCssUtility(db, args)
+);
+
+server.tool(
+  "list_css_utilities",
+  "List Mozaic CSS-only utilities",
+  {
+    category: z.enum(["layout", "utility", "all"]).default("all")
+      .describe("Filter by category"),
+  },
+  async (args) => handleListCssUtilities(db, args)
 );
 
 // Start server
