@@ -40,7 +40,7 @@ An MCP (Model Context Protocol) server that exposes the **Mozaic Design System**
 
 ### Recommended Stack
 
-- **Runtime**: Node.js 18+
+- **Runtime**: Node.js 25+ (required for Claude Desktop compatibility)
 - **Language**: TypeScript
 - **Database**: SQLite (simple, portable, zero-config)
 - **MCP SDK**: `@modelcontextprotocol/sdk`
@@ -249,6 +249,7 @@ Semantic search across Mozaic documentation.
 # Clone repositories
 git clone https://github.com/adeo/mozaic-design-system.git
 git clone https://github.com/adeo/mozaic-vue.git
+git clone https://github.com/adeo/mozaic-react.git
 
 # Install dependencies to access built tokens
 cd mozaic-design-system && yarn install && yarn tokens:build
@@ -287,7 +288,9 @@ mozaic-design-system/packages/tokens/
 }
 ```
 
-### Phase 3: Extract Vue Components
+### Phase 3: Extract Components
+
+#### Vue Components
 
 **Vue Component Locations:**
 
@@ -309,13 +312,35 @@ mozaic-vue/.storybook/
 mozaic-vue/src/components/*/stories/*.stories.ts
 ```
 
+#### React Components
+
+**React Component Locations:**
+
+```
+mozaic-react/src/components/
+├── Button/
+│   ├── Button.tsx
+│   ├── Button.spec.tsx
+│   └── index.ts
+├── Modal/
+│   └── ...
+└── ...
+```
+
+**React Storybook:**
+
+```
+mozaic-react/.storybook/
+mozaic-react/src/components/*/stories/*.stories.tsx
+```
+
 **Parser Strategy:**
 
-1. Parse `.vue` files to extract:
+1. Parse component files to extract:
    - Props definitions (with types, defaults, validators)
-   - Emitted events
-   - Slots
-2. Parse `.stories.ts` files to extract:
+   - Emitted events (Vue) / Callbacks (React)
+   - Slots (Vue) / Children props (React)
+2. Parse `.stories.ts/.stories.tsx` files to extract:
    - Usage examples
    - Args/controls definitions
 3. Parse TypeScript interfaces for prop types
@@ -406,12 +431,67 @@ CREATE VIRTUAL TABLE docs_fts USING fts5(
 
 ---
 
+## Building and Refreshing the Database
+
+### How the Database is Created
+
+The Mozaic MCP Server uses a SQLite database (`data/mozaic.db`) that contains all the design tokens, component information, and documentation. This database is built from the official Mozaic repositories.
+
+### Available Scripts
+
+To build or refresh the database, run:
+
+```bash
+npm run build:index
+```
+
+This script will:
+1. **Clone repositories** from GitHub (or update them if they already exist):
+   - `https://github.com/adeo/mozaic-design-system`
+   - `https://github.com/adeo/mozaic-vue`
+   - `https://github.com/adeo/mozaic-react`
+2. **Extract and parse data**:
+   - Design tokens from JSON files
+   - Component props, slots/children, events, and examples (Vue and React)
+   - Documentation from Markdown/MDX files
+3. **Create a fresh SQLite database** at `data/mozaic.db`
+   - The existing database is deleted and rebuilt from scratch
+   - This ensures data consistency and removes any stale entries
+
+### Database Contents
+
+The database includes:
+- **Design Tokens**: Colors, typography, spacing, shadows, borders
+- **Components**: 40+ Mozaic components with their props, slots/children, events, and code examples for Vue and React
+- **Documentation**: Searchable documentation content with full-text search support
+
+### Fallback Behavior
+
+If the GitHub repositories are unavailable or cannot be cloned, the build script will use fallback data to ensure a minimal working dataset:
+- 23 sample design tokens
+- 42 pre-defined Mozaic components (Vue and React compatible)
+- 7 default documentation entries
+
+### Database Location
+
+The SQLite database file is stored at:
+```
+data/mozaic.db
+```
+
+Additional SQLite files may be present:
+- `data/mozaic.db-wal` - Write-Ahead Log (for performance)
+- `data/mozaic.db-shm` - Shared memory file (for concurrency)
+
+---
+
 ## Build-Time Indexing Script
 
 ```typescript
 // scripts/build-index.ts
 import { parseTokens } from "../src/parsers/tokens-parser";
 import { parseVueComponents } from "../src/parsers/vue-parser";
+import { parseReactComponents } from "../src/parsers/react-parser";
 import { parseDocumentation } from "../src/parsers/docs-parser";
 import {
   initDatabase,
@@ -436,11 +516,19 @@ async function buildIndex() {
 
   // Parse and index Vue components
   console.log("🧩 Parsing Vue components...");
-  const components = await parseVueComponents(
+  const vueComponents = await parseVueComponents(
     "./repos/mozaic-vue/src/components"
   );
-  await insertComponents(db, components);
-  console.log(`   ✓ Indexed ${components.length} components`);
+  await insertComponents(db, vueComponents);
+  console.log(`   ✓ Indexed ${vueComponents.length} Vue components`);
+
+  // Parse and index React components
+  console.log("⚛️ Parsing React components...");
+  const reactComponents = await parseReactComponents(
+    "./repos/mozaic-react/src/components"
+  );
+  await insertComponents(db, reactComponents);
+  console.log(`   ✓ Indexed ${reactComponents.length} React components`);
 
   // Parse and index documentation
   console.log("📚 Parsing documentation...");
@@ -462,123 +550,90 @@ buildIndex().catch(console.error);
 
 ```typescript
 // src/index.ts
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
+import { z } from "zod";
 import Database from "better-sqlite3";
 
-const db = new Database("./data/mozaic.db");
+const db = new Database("./data/mozaic.db", { readonly: true });
 
-const server = new Server(
-  { name: "mozaic-design-system", version: "1.0.0" },
-  { capabilities: { tools: {} } }
-);
-
-// List available tools
-server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: [
-    {
-      name: "get_design_tokens",
-      description:
-        "Get design tokens (colors, typography, spacing) from Mozaic",
-      inputSchema: {
-        type: "object",
-        properties: {
-          category: {
-            type: "string",
-            enum: ["colors", "typography", "spacing", "all"],
-            description: "Token category to retrieve",
-          },
-        },
-        required: ["category"],
-      },
-    },
-    {
-      name: "get_component_info",
-      description: "Get detailed information about a Mozaic component",
-      inputSchema: {
-        type: "object",
-        properties: {
-          component: {
-            type: "string",
-            description: "Component name (e.g., button, input, card)",
-          },
-        },
-        required: ["component"],
-      },
-    },
-    {
-      name: "list_components",
-      description: "List all available Mozaic components",
-      inputSchema: {
-        type: "object",
-        properties: {
-          category: {
-            type: "string",
-            description: "Optional category filter",
-          },
-        },
-      },
-    },
-    {
-      name: "generate_component",
-      description: "Generate component code using Mozaic design system",
-      inputSchema: {
-        type: "object",
-        properties: {
-          component: {
-            type: "string",
-            description: "Component type to generate",
-          },
-          framework: {
-            type: "string",
-            enum: ["react", "vue", "angular", "html"],
-          },
-          props: { type: "object", description: "Component properties" },
-        },
-        required: ["component", "framework"],
-      },
-    },
-    {
-      name: "search_documentation",
-      description: "Search Mozaic documentation",
-      inputSchema: {
-        type: "object",
-        properties: {
-          query: { type: "string", description: "Search query" },
-        },
-        required: ["query"],
-      },
-    },
-  ],
-}));
-
-// Handle tool calls
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
-
-  switch (name) {
-    case "get_design_tokens":
-      return handleGetDesignTokens(args);
-    case "get_component_info":
-      return handleGetComponentInfo(args);
-    case "list_components":
-      return handleListComponents(args);
-    case "generate_component":
-      return handleGenerateComponent(args);
-    case "search_documentation":
-      return handleSearchDocumentation(args);
-    default:
-      throw new Error(`Unknown tool: ${name}`);
-  }
+const server = new McpServer({
+  name: "mozaic-design-system",
+  version: "1.0.0",
 });
 
+// Register tools using McpServer.registerTool()
+server.registerTool(
+  "get_design_tokens",
+  {
+    description: "Get design tokens (colors, typography, spacing) from Mozaic",
+    inputSchema: {
+      category: z.enum(["colors", "typography", "spacing", "shadows", "borders", "all"])
+        .describe("Token category to retrieve"),
+      format: z.enum(["json", "scss", "css", "js"]).default("json")
+        .describe("Output format"),
+    },
+  },
+  async (args) => handleGetDesignTokens(db, args)
+);
+
+server.registerTool(
+  "get_component_info",
+  {
+    description: "Get detailed information about a Mozaic component",
+    inputSchema: {
+      component: z.string().describe("Component name (e.g., button, modal)"),
+      framework: z.enum(["vue", "react", "html"]).default("vue"),
+    },
+  },
+  async (args) => handleGetComponentInfo(db, args)
+);
+
+server.registerTool(
+  "list_components",
+  {
+    description: "List all available Mozaic components",
+    inputSchema: {
+      category: z.enum(["form", "navigation", "feedback", "layout", "data-display", "action", "all"])
+        .default("all"),
+    },
+  },
+  async (args) => handleListComponents(db, args)
+);
+
+server.registerTool(
+  "generate_component",
+  {
+    description: "Generate component code using Mozaic design system",
+    inputSchema: {
+      component: z.string().describe("Component type to generate"),
+      framework: z.enum(["vue", "react", "html"]),
+      props: z.record(z.unknown()).optional(),
+      children: z.string().optional(),
+    },
+  },
+  async (args) => handleGenerateComponent(db, args)
+);
+
+server.registerTool(
+  "search_documentation",
+  {
+    description: "Search Mozaic documentation",
+    inputSchema: {
+      query: z.string().describe("Search query"),
+      limit: z.number().default(5),
+    },
+  },
+  async (args) => handleSearchDocumentation(db, args)
+);
+
 // Start server
-const transport = new StdioServerTransport();
-server.connect(transport);
+async function main() {
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+}
+
+main();
 ```
 
 ---
@@ -673,12 +728,131 @@ npm publish @your-org/mozaic-mcp-server
 ### Option 3: Docker
 
 ```dockerfile
-FROM node:18-alpine
+FROM node:25-alpine
 WORKDIR /app
 COPY . .
 RUN npm ci && npm run build
 CMD ["node", "dist/index.js"]
 ```
+
+---
+
+## Debugging
+
+### Enable Debug Mode
+
+The MCP server supports a `--debug` flag that logs all server activity to a file. This is useful for troubleshooting issues with Claude Desktop.
+
+**Enable debug mode in Claude Desktop config:**
+
+```json
+// claude_desktop_config.json
+{
+  "mcpServers": {
+    "mozaic": {
+      "command": "node",
+      "args": [
+        "path/to/mozaic-mcp-server/dist/index.js",
+        "--debug"
+      ]
+    }
+  }
+}
+```
+
+**Or run manually:**
+
+```bash
+# Start with debug logging
+pnpm start:debug
+
+# Or directly
+node dist/index.js --debug
+```
+
+### Log File Location
+
+When debug mode is enabled, logs are written to:
+
+```
+mcp-server.log
+```
+
+This file is located in the project root directory.
+
+### Log Contents
+
+The debug log includes:
+- Server startup events
+- Database initialization status
+- Tool calls with input parameters
+- Tool results (content length)
+- Any errors encountered
+
+**Example log output:**
+
+```
+[2024-12-14T02:30:00.000Z] === MCP Server Starting ===
+[2024-12-14T02:30:00.001Z] Debug mode enabled: {"DEBUG":true,"argv":["node","dist/index.js","--debug"]}
+[2024-12-14T02:30:00.002Z] Database path: {"dbPath":"/path/to/data/mozaic.db"}
+[2024-12-14T02:30:00.010Z] Initializing database: {"path":"/path/to/data/mozaic.db"}
+[2024-12-14T02:30:00.015Z] Database initialized successfully
+[2024-12-14T02:30:00.020Z] Connecting to stdio transport
+[2024-12-14T02:30:00.025Z] Server connected and ready
+[2024-12-14T02:30:05.100Z] Tool called: get_design_tokens: {"category":"colors","format":"json"}
+[2024-12-14T02:30:05.150Z] Tool result: get_design_tokens: {"contentLength":1}
+```
+
+### Troubleshooting Common Issues
+
+#### Node.js Version Mismatch
+
+If you see an error like:
+
+```
+NODE_MODULE_VERSION X. This version of Node.js requires NODE_MODULE_VERSION Y.
+```
+
+This means the `better-sqlite3` native module was compiled for a different Node.js version than Claude Desktop uses.
+
+**Solution:**
+
+1. Check your Node version matches Claude Desktop (currently Node 25):
+   ```bash
+   node --version  # Should show v25.x.x
+   ```
+
+2. Reinstall dependencies:
+   ```bash
+   rm -rf node_modules pnpm-lock.yaml
+   pnpm install
+   pnpm build
+   ```
+
+3. Restart Claude Desktop
+
+#### Database Not Found
+
+If you see:
+
+```
+Database not found at /path/to/data/mozaic.db
+```
+
+**Solution:**
+
+Run the database build script:
+
+```bash
+pnpm build:index
+```
+
+#### MCP Server Not Connecting
+
+1. Check the log file for errors
+2. Verify the path in `claude_desktop_config.json` is correct
+3. Ensure the `dist/` folder exists (run `pnpm build`)
+4. Restart Claude Desktop after config changes
 
 ---
 

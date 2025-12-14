@@ -10,20 +10,23 @@ importers:
     dependencies:
       '@modelcontextprotocol/sdk':
         specifier: ^1.0.0
-        version: 1.24.3(zod@4.1.13)
+        version: 1.24.3(zod@3.25.76)
       better-sqlite3:
         specifier: 11.10.0
         version: 11.10.0
       glob:
         specifier: ^10.0.0
         version: 10.5.0
+      zod:
+        specifier: ^3.23.0
+        version: 3.25.76
     devDependencies:
       '@types/better-sqlite3':
         specifier: ^7.6.0
         version: 7.6.13
       '@types/node':
         specifier: ^20.0.0
-        version: 20.19.26
+        version: 20.19.27
       tsx:
         specifier: ^4.0.0
         version: 4.21.0
@@ -210,8 +213,8 @@ packages:
   '@types/better-sqlite3@7.6.13':
     resolution: {integrity: sha512-NMv9ASNARoKksWtsq/SHakpYAYnhBrQgGD8zkLYk/jaK8jUGn08CfEdTRgYhMypUQAfzSP8W6gNLe0q19/t4VA==}
 
-  '@types/node@20.19.26':
-    resolution: {integrity: sha512-0l6cjgF0XnihUpndDhk+nyD3exio3iKaYROSgvh/qSevPXax3L8p5DBRFjbvalnwatGgHEQn2R88y2fA3g4irg==}
+  '@types/node@20.19.27':
+    resolution: {integrity: sha512-N2clP5pJhB2YnZJ3PIHFk5RkygRX5WO/5f0WC08tp0wd+sv0rsJk3MqWn3CbNmT2J505a5336jaQj4ph1AdMug==}
 
   accepts@2.0.0:
     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==}
@@ -796,8 +799,8 @@ packages:
     peerDependencies:
       zod: ^3.25 || ^4
 
-  zod@4.1.13:
-    resolution: {integrity: sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==}
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
 snapshots:
 
@@ -888,7 +891,7 @@ snapshots:
       wrap-ansi: 8.1.0
       wrap-ansi-cjs: wrap-ansi@7.0.0
 
-  '@modelcontextprotocol/sdk@1.24.3(zod@4.1.13)':
+  '@modelcontextprotocol/sdk@1.24.3(zod@3.25.76)':
     dependencies:
       ajv: 8.17.1
       ajv-formats: 3.0.1(ajv@8.17.1)
@@ -902,8 +905,8 @@ snapshots:
       jose: 6.1.3
       pkce-challenge: 5.0.1
       raw-body: 3.0.2
-      zod: 4.1.13
-      zod-to-json-schema: 3.25.0(zod@4.1.13)
+      zod: 3.25.76
+      zod-to-json-schema: 3.25.0(zod@3.25.76)
     transitivePeerDependencies:
       - supports-color
 
@@ -912,9 +915,9 @@ snapshots:
 
   '@types/better-sqlite3@7.6.13':
     dependencies:
-      '@types/node': 20.19.26
+      '@types/node': 20.19.27
 
-  '@types/node@20.19.26':
+  '@types/node@20.19.27':
     dependencies:
       undici-types: 6.21.0
 
@@ -1550,8 +1553,8 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  zod-to-json-schema@3.25.0(zod@4.1.13):
+  zod-to-json-schema@3.25.0(zod@3.25.76):
     dependencies:
-      zod: 4.1.13
+      zod: 3.25.76
 
-  zod@4.1.13: {}
+  zod@3.25.76: {}

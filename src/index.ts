@@ -1,40 +1,45 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
 import Database from "better-sqlite3";
-import { existsSync } from "fs";
+import { existsSync, appendFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import { z } from "zod";
+
+// Debug mode - enable with --debug flag
+const DEBUG = process.argv.includes("--debug");
+const LOG_FILE = join(dirname(fileURLToPath(import.meta.url)), "..", "mcp-server.log");
+
+function log(message: string, data?: unknown) {
+  if (!DEBUG) return;
+  const timestamp = new Date().toISOString();
+  const logMessage = data
+    ? `[${timestamp}] ${message}: ${JSON.stringify(data, null, 2)}\n`
+    : `[${timestamp}] ${message}\n`;
+  appendFileSync(LOG_FILE, logMessage);
+}
 
 // Import tool handlers
 import {
   handleGetDesignTokens,
-  getDesignTokensTool,
   type GetDesignTokensInput,
 } from "./tools/get-design-tokens.js";
 import {
   handleGetComponentInfo,
-  getComponentInfoTool,
   type GetComponentInfoInput,
 } from "./tools/get-component-info.js";
 import {
   handleListComponents,
-  listComponentsTool,
   type ListComponentsInput,
 } from "./tools/list-components.js";
 import {
   handleGenerateComponent,
-  generateComponentTool,
   type GenerateComponentInput,
 } from "./tools/generate-component.js";
 import {
   handleSearchDocumentation,
-  searchDocumentationTool,
   type SearchDocumentationInput,
 } from "./tools/search-documentation.js";
 
@@ -47,102 +52,133 @@ const dbPath = join(__dirname, "..", "data", "mozaic.db");
 let db: Database.Database;
 
 function initializeDatabase(): Database.Database {
+  log("Initializing database", { path: dbPath });
   if (!existsSync(dbPath)) {
-    // Don't log to stderr - throw error instead for MCP compatibility
-    throw new Error(`Database not found at ${dbPath}. Run 'npm run build:index' to build the database first.`);
+    const error = `Database not found at ${dbPath}. Run 'npm run build:index' to build the database first.`;
+    log("Database error", { error });
+    throw new Error(error);
   }
 
   const database = new Database(dbPath, { readonly: true });
   database.pragma("journal_mode = WAL");
+  log("Database initialized successfully");
   return database;
 }
 
 // Create MCP server
-const server = new Server(
+const server = new McpServer({
+  name: "mozaic-design-system",
+  version: "1.0.0",
+});
+
+// Register tools using the new McpServer API
+log("Registering MCP tools");
+
+server.registerTool(
+  "get_design_tokens",
   {
-    name: "mozaic-design-system",
-    version: "1.0.0",
-  },
-  {
-    capabilities: {
-      tools: {},
+    description: "Get design tokens (colors, typography, spacing) from Mozaic Design System",
+    inputSchema: {
+      category: z.enum(["colors", "typography", "spacing", "shadows", "borders", "all"])
+        .describe("Token category to retrieve"),
+      format: z.enum(["json", "scss", "css", "js"]).default("json")
+        .describe("Output format for the tokens"),
     },
+  },
+  async (args) => {
+    log("Tool called: get_design_tokens", args);
+    if (!db) db = initializeDatabase();
+    const result = handleGetDesignTokens(db, args as GetDesignTokensInput);
+    log("Tool result: get_design_tokens", { contentLength: result.content.length });
+    return result;
   }
 );
 
-// List available tools
-server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: [
-    getDesignTokensTool,
-    getComponentInfoTool,
-    listComponentsTool,
-    generateComponentTool,
-    searchDocumentationTool,
-  ],
-}));
-
-// Handle tool calls
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
-
-  // Ensure database is initialized
-  if (!db) {
-    db = initializeDatabase();
+server.registerTool(
+  "get_component_info",
+  {
+    description: "Get detailed information about a Mozaic component",
+    inputSchema: {
+      component: z.string().describe("Component name (e.g., 'button', 'modal', 'accordion')"),
+      framework: z.enum(["vue", "react", "html"]).default("vue")
+        .describe("Framework for examples"),
+    },
+  },
+  async (args) => {
+    if (!db) db = initializeDatabase();
+    return handleGetComponentInfo(db, args as GetComponentInfoInput);
   }
+);
 
-  try {
-    switch (name) {
-      case "get_design_tokens":
-        return handleGetDesignTokens(db, args as unknown as GetDesignTokensInput);
-
-      case "get_component_info":
-        return handleGetComponentInfo(db, args as unknown as GetComponentInfoInput);
-
-      case "list_components":
-        return handleListComponents(db, args as unknown as ListComponentsInput);
-
-      case "generate_component":
-        return handleGenerateComponent(db, args as unknown as GenerateComponentInput);
-
-      case "search_documentation":
-        return handleSearchDocumentation(db, args as unknown as SearchDocumentationInput);
-
-      default:
-        throw new Error(`Unknown tool: ${name}`);
-    }
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error: ${errorMessage}`,
-        },
-      ],
-      isError: true,
-    };
+server.registerTool(
+  "list_components",
+  {
+    description: "List all available Mozaic components",
+    inputSchema: {
+      category: z.enum(["form", "navigation", "feedback", "layout", "data-display", "action", "all"])
+        .default("all")
+        .describe("Optional category filter"),
+    },
+  },
+  async (args) => {
+    if (!db) db = initializeDatabase();
+    return handleListComponents(db, args as ListComponentsInput);
   }
-});
+);
+
+server.registerTool(
+  "generate_component",
+  {
+    description: "Generate component code using Mozaic design system",
+    inputSchema: {
+      component: z.string().describe("Component type to generate"),
+      framework: z.enum(["vue", "react", "html"]).describe("Target framework"),
+      props: z.record(z.unknown()).optional().describe("Component properties"),
+      children: z.string().optional().describe("Content to place inside the component"),
+    },
+  },
+  async (args) => {
+    if (!db) db = initializeDatabase();
+    return handleGenerateComponent(db, args as GenerateComponentInput);
+  }
+);
+
+server.registerTool(
+  "search_documentation",
+  {
+    description: "Search Mozaic documentation",
+    inputSchema: {
+      query: z.string().describe("Search query"),
+      limit: z.number().default(5).describe("Maximum number of results"),
+    },
+  },
+  async (args) => {
+    if (!db) db = initializeDatabase();
+    return handleSearchDocumentation(db, args as SearchDocumentationInput);
+  }
+);
 
 // Start server
 async function main() {
+  log("=== MCP Server Starting ===");
+  log("Debug mode enabled", { DEBUG, argv: process.argv });
+  log("Database path", { dbPath });
+
   // Initialize database on startup
   try {
     db = initializeDatabase();
-    // Don't log to stderr in production - it interferes with MCP protocol
-    // console.error("Mozaic MCP Server initialized successfully");
-    // console.error(`Database: ${dbPath}`);
   } catch (error) {
-    // Only log critical errors
-    // console.error("Failed to initialize database:", error);
+    log("Failed to initialize database on startup", { error: String(error) });
     // Continue anyway - will fail gracefully on tool calls
   }
 
+  log("Connecting to stdio transport");
   const transport = new StdioServerTransport();
   await server.connect(transport);
+  log("Server connected and ready");
 }
 
-main().catch(() => {
-  // Don't log to stderr - MCP servers should be silent
+main().catch((error) => {
+  log("Fatal error", { error: String(error) });
   process.exit(1);
 });
