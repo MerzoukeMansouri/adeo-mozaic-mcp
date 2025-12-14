@@ -121,6 +121,8 @@ flowchart TB
             T4[generate_vue_component]
             T5[generate_react_component]
             T6[search_documentation]
+            T7[get_css_utility]
+            T8[list_css_utilities]
         end
 
         Server --> Tools
@@ -181,7 +183,7 @@ flowchart LR
         D2[Vue Components<br/>props, slots, events, examples]
         D3[React Components<br/>props, callbacks, examples]
         D4[Documentation<br/>MDX content, frontmatter]
-        D5[CSS-only Components<br/>layouts, utilities, classes]
+        D5[CSS Utilities<br/>Flexy, Margin, Padding, etc.]
     end
 
     subgraph DB["SQLite Database"]
@@ -195,6 +197,9 @@ flowchart LR
         T6[(component_examples)]
         T7[(documentation)]
         T8[(docs_fts)]
+        CU[(css_utilities)]
+        CUC[(css_utility_classes)]
+        CUE[(css_utility_examples)]
     end
 
     R1 --> TP
@@ -204,13 +209,13 @@ flowchart LR
     T1 --> T1P & T1F
 
     R1 --> P4 --> D4 --> T7 --> T8
-    R1 --> P5 --> D5 --> T2
+    R1 --> P5 --> D5 --> CU
     R2 --> P2 --> D2 --> T2
     R3 --> P3 --> D3 --> T2
 
     D2 --> T3 & T4 & T5 & T6
     D3 --> T3 & T5 & T6
-    D5 --> T6
+    D5 --> CUC & CUE
 `;
 }
 
@@ -294,6 +299,27 @@ erDiagram
         string code
     }
 
+    css_utilities {
+        int id PK
+        string name UK
+        string slug
+        string category
+        string description
+    }
+
+    css_utility_classes {
+        int id PK
+        int utility_id FK
+        string class_name
+    }
+
+    css_utility_examples {
+        int id PK
+        int utility_id FK
+        string title
+        string code
+    }
+
     documentation {
         int id PK
         string title
@@ -314,6 +340,8 @@ erDiagram
     components ||--o{ component_slots : has
     components ||--o{ component_events : has
     components ||--o{ component_examples : has
+    css_utilities ||--o{ css_utility_classes : has
+    css_utilities ||--o{ css_utility_examples : has
 `;
 }
 
@@ -344,6 +372,14 @@ flowchart TB
         LC -->|filter| LCF[category filter]
         GVC -->|input| GVCI[component + props + children]
         GRC -->|input| GRCI[component + props + children]
+    end
+
+    subgraph CssTools["CSS Utility Tools"]
+        GCU[get_css_utility]
+        LCU[list_css_utilities]
+
+        GCU -->|input| GCUI[utility name]
+        LCU -->|filter| LCUF[layout / utility]
     end
 
     subgraph DocTools["Documentation Tools"]
@@ -431,6 +467,8 @@ flowchart TB
                 T4[generate-vue-component.ts]
                 T5[generate-react-component.ts]
                 T6[search-documentation.ts]
+                T7[get-css-utility.ts]
+                T8[list-css-utilities.ts]
             end
         end
 
@@ -538,6 +576,8 @@ flowchart TB
             T4[generate_vue_component]
             T5[generate_react_component]
             T6[search_documentation]
+            T7[get_css_utility]
+            T8[list_css_utilities]
         end
 
         Server --> Tools

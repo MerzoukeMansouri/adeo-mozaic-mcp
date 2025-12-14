@@ -26,6 +26,14 @@ flowchart TB
         GRC -->|input| GRCI[component + props + children]
     end
 
+    subgraph CssTools["CSS Utility Tools"]
+        GCU[get_css_utility]
+        LCU[list_css_utilities]
+
+        GCU -->|input| GCUI[utility name]
+        LCU -->|filter| LCUF[layout / utility]
+    end
+
     subgraph DocTools["Documentation Tools"]
         SD[search_documentation]
         SD -->|FTS5| SDR[Full-text search]

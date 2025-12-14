@@ -77,6 +77,27 @@ erDiagram
         string code
     }
 
+    css_utilities {
+        int id PK
+        string name UK
+        string slug
+        string category
+        string description
+    }
+
+    css_utility_classes {
+        int id PK
+        int utility_id FK
+        string class_name
+    }
+
+    css_utility_examples {
+        int id PK
+        int utility_id FK
+        string title
+        string code
+    }
+
     documentation {
         int id PK
         string title
@@ -97,3 +118,5 @@ erDiagram
     components ||--o{ component_slots : has
     components ||--o{ component_events : has
     components ||--o{ component_examples : has
+    css_utilities ||--o{ css_utility_classes : has
+    css_utilities ||--o{ css_utility_examples : has
