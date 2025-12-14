@@ -171,15 +171,18 @@ server.registerTool(
 server.registerTool(
   "search_documentation",
   {
-    description: "Search Mozaic documentation",
+    description: "Search Mozaic Design System documentation for installation guides, component usage, configuration, styling, tokens, patterns, and best practices. Use this for any question about how to use Mozaic.",
     inputSchema: {
-      query: z.string().describe("Search query"),
+      query: z.string().describe("Search query (e.g., 'installation', 'vue setup', 'button props', 'color tokens')"),
       limit: z.number().default(5).describe("Maximum number of results"),
     },
   },
   async (args) => {
+    log("Tool called: search_documentation", args);
     if (!db) db = initializeDatabase();
-    return handleSearchDocumentation(db, args as SearchDocumentationInput);
+    const result = handleSearchDocumentation(db, args as SearchDocumentationInput);
+    log("Tool result: search_documentation", { contentLength: result.content.length });
+    return result;
   }
 );
 
