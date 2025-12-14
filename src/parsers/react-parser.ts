@@ -156,15 +156,41 @@ function parseStoriesFile(
   try {
     const content = readFileSync(filePath, "utf-8");
 
-    // Match story exports
-    const storyRegex = /export\s+const\s+(\w+)[\s\S]*?args\s*:\s*{([^}]*)}/g;
+    // First, find all exported story names
+    const exportedStories: string[] = [];
+    const exportRegex = /export\s+const\s+(\w+)\s*=/g;
+    let exportMatch;
+    while ((exportMatch = exportRegex.exec(content)) !== null) {
+      const storyName = exportMatch[1];
+      // Skip default export and non-story exports
+      if (storyName !== "default" && storyName !== "Default" && /^[A-Z]/.test(storyName)) {
+        exportedStories.push(storyName);
+      }
+    }
+
+    // For each story, find its args (React CSF format: StoryName.args = {...})
+    for (const storyName of exportedStories) {
+      // Match StoryName.args = {...} - handle nested objects with balanced braces
+      const argsPattern = new RegExp(`${storyName}\\.args\\s*=\\s*\\{([^}]*(?:\\{[^}]*\\}[^}]*)*)\\}`, "s");
+      const argsMatch = content.match(argsPattern);
+
+      if (argsMatch) {
+        examples.push({
+          title: storyName.replace(/([A-Z])/g, " $1").trim(),
+          code: argsMatch[1].trim(),
+        });
+      }
+    }
+
+    // Also try inline args format: export const Story = { args: {...} }
+    const inlineArgsRegex = /export\s+const\s+(\w+)\s*=\s*\{[\s\S]*?args\s*:\s*\{([^}]*)\}/g;
     let match;
-    while ((match = storyRegex.exec(content)) !== null) {
+    while ((match = inlineArgsRegex.exec(content)) !== null) {
       const storyName = match[1];
       const args = match[2];
 
-      // Skip Default story as it's usually just basic usage
-      if (storyName !== "Default") {
+      // Skip Default story and already captured stories
+      if (storyName !== "Default" && !exportedStories.includes(storyName)) {
         examples.push({
           title: storyName.replace(/([A-Z])/g, " $1").trim(),
           code: args.trim(),

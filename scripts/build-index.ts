@@ -25,18 +25,18 @@ const DATA_DIR = join(PROJECT_ROOT, "data");
 const REPOS_DIR = join(PROJECT_ROOT, "repos");
 const DB_PATH = join(DATA_DIR, "mozaic.db");
 
-// Repository URLs
+// Repository URLs (using SSH for private repos)
 const REPOS = {
   designSystem: {
-    url: "https://github.com/adeo/mozaic-design-system.git",
+    url: "git@github.com:adeo/mozaic-design-system.git",
     path: join(REPOS_DIR, "mozaic-design-system"),
   },
   vue: {
-    url: "https://github.com/adeo/mozaic-vue.git",
+    url: "git@github.com:adeo/mozaic-vue.git",
     path: join(REPOS_DIR, "mozaic-vue"),
   },
   react: {
-    url: "https://github.com/adeo/mozaic-react.git",
+    url: "git@github.com:adeo/mozaic-react.git",
     path: join(REPOS_DIR, "mozaic-react"),
   },
 };

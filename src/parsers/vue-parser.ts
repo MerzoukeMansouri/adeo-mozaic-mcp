@@ -233,7 +233,8 @@ function findComponentDirs(baseDir: string): string[] {
     const fullPath = join(baseDir, entry);
     const stat = statSync(fullPath);
 
-    if (stat.isDirectory() && entry.startsWith("M")) {
+    // Accept directories that are lowercase component names (not .mdx files, etc.)
+    if (stat.isDirectory() && /^[a-z]/.test(entry)) {
       dirs.push(fullPath);
     }
   }
@@ -320,10 +321,26 @@ export async function parseVueComponents(
   const componentDirs = findComponentDirs(componentsPath);
 
   for (const dir of componentDirs) {
-    const componentName = basename(dir);
-    const vueFile = join(dir, `${componentName}.vue`);
+    const dirName = basename(dir);
+    // Convert directory name to PascalCase with M prefix (button -> MButton)
+    const componentName = "M" + dirName.charAt(0).toUpperCase() + dirName.slice(1);
 
-    if (existsSync(vueFile)) {
+    // Try multiple file patterns
+    const possibleFiles = [
+      join(dir, `${componentName}.vue`),      // MButton.vue
+      join(dir, `${dirName}.vue`),            // button.vue
+      join(dir, "index.vue"),                 // index.vue
+    ];
+
+    let vueFile: string | null = null;
+    for (const file of possibleFiles) {
+      if (existsSync(file)) {
+        vueFile = file;
+        break;
+      }
+    }
+
+    if (vueFile) {
       const parsed = parseVueFile(vueFile);
 
       if (parsed) {
@@ -339,14 +356,36 @@ export async function parseVueComponents(
           cssClasses: [],
         };
 
-        // Try to find stories file
-        const storiesPath = join(dir, "stories");
-        if (existsSync(storiesPath)) {
-          const storyFiles = readdirSync(storiesPath).filter((f) =>
+        // Try to find stories file - check both in component dir and stories subdir
+        const storyPatterns = [
+          join(dir, `${componentName}.stories.ts`),       // MButton.stories.ts
+          join(dir, `${dirName}.stories.ts`),             // button.stories.ts
+          join(dir, "stories", `${componentName}.stories.ts`),
+          join(dir, "stories", "index.stories.ts"),
+        ];
+
+        for (const storyPath of storyPatterns) {
+          if (existsSync(storyPath)) {
+            const stories = parseStoriesFile(storyPath);
+            component.examples?.push(
+              ...stories.map((s) => ({
+                framework: "vue",
+                title: s.title,
+                code: s.code,
+              }))
+            );
+            break; // Use first found stories file
+          }
+        }
+
+        // Also check for stories directory with multiple files
+        const storiesDir = join(dir, "stories");
+        if (existsSync(storiesDir)) {
+          const storyFiles = readdirSync(storiesDir).filter((f) =>
             f.endsWith(".stories.ts")
           );
           for (const storyFile of storyFiles) {
-            const stories = parseStoriesFile(join(storiesPath, storyFile));
+            const stories = parseStoriesFile(join(storiesDir, storyFile));
             component.examples?.push(
               ...stories.map((s) => ({
                 framework: "vue",
