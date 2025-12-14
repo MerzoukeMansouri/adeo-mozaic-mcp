@@ -210,12 +210,12 @@ flowchart LR
 
     R1 --> P4 --> D4 --> T7 --> T8
     R1 --> P5 --> D5 --> CU
+    CU --> CUC & CUE
     R2 --> P2 --> D2 --> T2
     R3 --> P3 --> D3 --> T2
 
     D2 --> T3 & T4 & T5 & T6
     D3 --> T3 & T5 & T6
-    D5 --> CUC & CUE
 `;
 }
 
