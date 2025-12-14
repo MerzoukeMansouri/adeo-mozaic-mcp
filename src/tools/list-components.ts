@@ -2,7 +2,7 @@ import type Database from "better-sqlite3";
 import { listComponents as dbListComponents } from "../db/queries.js";
 
 export interface ListComponentsInput {
-  category?: "form" | "navigation" | "feedback" | "layout" | "data-display" | "action" | "all";
+  category?: "form" | "navigation" | "feedback" | "layout" | "data-display" | "action" | "utility" | "all";
 }
 
 export interface ComponentListItem {
@@ -70,7 +70,7 @@ export function handleListComponents(
 export const listComponentsTool = {
   name: "list_components",
   description:
-    "List available Mozaic Vue/React components by category. Note: CSS-only layout utilities (Grid, Flexy, Container, margin/padding utilities) are not listed here - use search_documentation to find them.",
+    "List available Mozaic components by category. Includes Vue, React, and HTML/CSS-only components (layout utilities like Flexy, Container, and spacing utilities like Margin, Padding).",
   inputSchema: {
     type: "object" as const,
     properties: {
@@ -83,6 +83,7 @@ export const listComponentsTool = {
           "layout",
           "data-display",
           "action",
+          "utility",
           "all",
         ],
         default: "all",
