@@ -9,6 +9,7 @@ import {
   initDatabase,
   insertTokens,
   insertComponents,
+  insertCssUtilities,
   insertDocs,
   getDatabaseStats,
 } from "../src/db/queries.js";
@@ -16,7 +17,7 @@ import { parseTokens } from "../src/parsers/tokens-parser.js";
 import { parseVueComponents } from "../src/parsers/vue-parser.js";
 import { parseReactComponents } from "../src/parsers/react-parser.js";
 import { parseDocumentation } from "../src/parsers/docs-parser.js";
-import { parseScssComponents } from "../src/parsers/scss-parser.js";
+import { parseCssUtilities } from "../src/parsers/scss-parser.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -183,27 +184,27 @@ async function indexDocumentation(db: ReturnType<typeof initDatabase>): Promise<
   return docs.length;
 }
 
-async function indexScssComponents(db: ReturnType<typeof initDatabase>): Promise<number> {
-  console.log("🎨 Indexing CSS-only components (layouts & utilities)...");
+async function indexCssUtilities(db: ReturnType<typeof initDatabase>): Promise<number> {
+  console.log("🎨 Indexing CSS utilities (layouts & spacing)...");
 
   const stylesPath = join(REPOS.designSystem.path, "packages", "styles");
 
   if (!existsSync(stylesPath)) {
-    console.log("   ⚠ Styles path not found, skipping SCSS components");
+    console.log("   ⚠ Styles path not found, skipping CSS utilities");
     return 0;
   }
 
-  const components = await parseScssComponents(stylesPath);
+  const utilities = await parseCssUtilities(stylesPath);
 
-  if (components.length === 0) {
-    console.log("   ⚠ No SCSS components parsed");
+  if (utilities.length === 0) {
+    console.log("   ⚠ No CSS utilities parsed");
     return 0;
   }
 
-  insertComponents(db, components);
+  insertCssUtilities(db, utilities);
 
-  console.log(`   ✓ Indexed ${components.length} CSS-only components`);
-  return components.length;
+  console.log(`   ✓ Indexed ${utilities.length} CSS utilities`);
+  return utilities.length;
 }
 
 function printHeader(): void {
@@ -252,7 +253,7 @@ async function main(): Promise<void> {
   await indexTokens(db);
   await indexVueComponents(db);
   await indexReactComponents(db);
-  await indexScssComponents(db);
+  await indexCssUtilities(db);
   await indexDocumentation(db);
 
   // Print stats
@@ -260,6 +261,7 @@ async function main(): Promise<void> {
   const stats = getDatabaseStats(db);
   console.log(`   • Tokens: ${stats.tokens}`);
   console.log(`   • Components: ${stats.components}`);
+  console.log(`   • CSS Utilities: ${stats.cssUtilities}`);
   console.log(`   • Documentation: ${stats.documentation}`);
 
   db.close();

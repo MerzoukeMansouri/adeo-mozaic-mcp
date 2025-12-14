@@ -74,6 +74,20 @@ export interface Documentation {
   keywords?: string[];
 }
 
+export interface CssUtilityExample {
+  title?: string;
+  code: string;
+}
+
+export interface CssUtility {
+  name: string;
+  slug: string;
+  category: string;
+  description?: string;
+  classes: string[];
+  examples: CssUtilityExample[];
+}
+
 // Database initialization
 export function initDatabase(dbPath: string): Database.Database {
   const db = new Database(dbPath);
@@ -533,6 +547,115 @@ export function getDocumentationByPath(
     .get(path) as Documentation | undefined;
 }
 
+// CSS Utility operations
+export function insertCssUtility(
+  db: Database.Database,
+  utility: CssUtility
+): number {
+  const result = db
+    .prepare(`
+      INSERT INTO css_utilities (name, slug, category, description)
+      VALUES (@name, @slug, @category, @description)
+    `)
+    .run({
+      name: utility.name,
+      slug: utility.slug,
+      category: utility.category,
+      description: utility.description ?? null,
+    });
+
+  const utilityId = result.lastInsertRowid as number;
+
+  // Insert CSS classes
+  if (utility.classes && utility.classes.length > 0) {
+    const classStmt = db.prepare(`
+      INSERT INTO css_utility_classes (utility_id, class_name)
+      VALUES (@utilityId, @className)
+    `);
+    for (const className of utility.classes) {
+      classStmt.run({ utilityId, className });
+    }
+  }
+
+  // Insert examples
+  if (utility.examples && utility.examples.length > 0) {
+    const exampleStmt = db.prepare(`
+      INSERT INTO css_utility_examples (utility_id, title, code)
+      VALUES (@utilityId, @title, @code)
+    `);
+    for (const example of utility.examples) {
+      exampleStmt.run({
+        utilityId,
+        title: example.title ?? null,
+        code: example.code,
+      });
+    }
+  }
+
+  return utilityId;
+}
+
+export function insertCssUtilities(
+  db: Database.Database,
+  utilities: CssUtility[]
+): void {
+  const transaction = db.transaction((items: CssUtility[]) => {
+    for (const utility of items) {
+      insertCssUtility(db, utility);
+    }
+  });
+  transaction(utilities);
+}
+
+export function getCssUtility(
+  db: Database.Database,
+  name: string
+): CssUtility | null {
+  const row = db
+    .prepare("SELECT * FROM css_utilities WHERE name = ? COLLATE NOCASE OR slug = ? COLLATE NOCASE")
+    .get(name, name) as { id: number; name: string; slug: string; category: string; description: string } | undefined;
+
+  if (!row) return null;
+
+  const classes = db
+    .prepare("SELECT class_name FROM css_utility_classes WHERE utility_id = ?")
+    .all(row.id) as Array<{ class_name: string }>;
+
+  const examples = db
+    .prepare("SELECT title, code FROM css_utility_examples WHERE utility_id = ?")
+    .all(row.id) as Array<{ title: string; code: string }>;
+
+  return {
+    name: row.name,
+    slug: row.slug,
+    category: row.category,
+    description: row.description,
+    classes: classes.map((c) => c.class_name),
+    examples: examples.map((e) => ({
+      title: e.title,
+      code: e.code,
+    })),
+  };
+}
+
+export function listCssUtilities(
+  db: Database.Database,
+  category?: string
+): Array<{ name: string; slug: string; category: string; description: string; classCount: number }> {
+  const query = category && category !== "all"
+    ? `SELECT u.name, u.slug, u.category, u.description,
+         (SELECT COUNT(*) FROM css_utility_classes WHERE utility_id = u.id) as classCount
+       FROM css_utilities u WHERE u.category = ?`
+    : `SELECT u.name, u.slug, u.category, u.description,
+         (SELECT COUNT(*) FROM css_utility_classes WHERE utility_id = u.id) as classCount
+       FROM css_utilities u`;
+
+  if (category && category !== "all") {
+    return db.prepare(query).all(category) as Array<{ name: string; slug: string; category: string; description: string; classCount: number }>;
+  }
+  return db.prepare(query).all() as Array<{ name: string; slug: string; category: string; description: string; classCount: number }>;
+}
+
 // Utility functions
 export function clearDatabase(db: Database.Database): void {
   db.exec(`
@@ -544,6 +667,9 @@ export function clearDatabase(db: Database.Database): void {
     DELETE FROM component_slots;
     DELETE FROM component_props;
     DELETE FROM components;
+    DELETE FROM css_utility_classes;
+    DELETE FROM css_utility_examples;
+    DELETE FROM css_utilities;
     DELETE FROM documentation;
   `);
 }
@@ -551,15 +677,18 @@ export function clearDatabase(db: Database.Database): void {
 export function getDatabaseStats(db: Database.Database): {
   tokens: number;
   components: number;
+  cssUtilities: number;
   documentation: number;
 } {
   const tokens = db.prepare("SELECT COUNT(*) as count FROM tokens").get() as { count: number };
   const components = db.prepare("SELECT COUNT(*) as count FROM components").get() as { count: number };
+  const cssUtilities = db.prepare("SELECT COUNT(*) as count FROM css_utilities").get() as { count: number };
   const documentation = db.prepare("SELECT COUNT(*) as count FROM documentation").get() as { count: number };
 
   return {
     tokens: tokens.count,
     components: components.count,
+    cssUtilities: cssUtilities.count,
     documentation: documentation.count,
   };
 }

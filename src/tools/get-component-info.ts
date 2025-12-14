@@ -117,7 +117,7 @@ function generateBasicExample(
 export const getComponentInfoTool = {
   name: "get_component_info",
   description:
-    "Get detailed information about a Mozaic component including props, slots, events, CSS classes, and examples. Supports Vue, React, and HTML/CSS-only components (Flexy, Container, Margin, Padding, Ratio, Scroll).",
+    "Get detailed information about a Mozaic framework component including props, slots, events, and examples. For CSS-only utilities (Flexy, Container, Margin, Padding), use get_css_utility instead.",
   inputSchema: {
     type: "object" as const,
     properties: {

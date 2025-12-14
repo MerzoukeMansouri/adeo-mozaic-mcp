@@ -128,13 +128,44 @@ CREATE TABLE IF NOT EXISTS component_examples (
 CREATE INDEX IF NOT EXISTS idx_component_examples_component ON component_examples(component_id);
 CREATE INDEX IF NOT EXISTS idx_component_examples_framework ON component_examples(framework);
 
--- CSS Classes
+-- CSS Classes (for framework components)
 CREATE TABLE IF NOT EXISTS component_css_classes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   component_id INTEGER REFERENCES components(id) ON DELETE CASCADE,
   class_name TEXT NOT NULL,
   description TEXT
 );
+
+-- CSS Utilities (layouts & spacing - separate from framework components)
+CREATE TABLE IF NOT EXISTS css_utilities (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE,
+  slug TEXT NOT NULL,
+  category TEXT NOT NULL,
+  description TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_css_utilities_category ON css_utilities(category);
+CREATE INDEX IF NOT EXISTS idx_css_utilities_slug ON css_utilities(slug);
+
+-- CSS Utility Classes
+CREATE TABLE IF NOT EXISTS css_utility_classes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  utility_id INTEGER REFERENCES css_utilities(id) ON DELETE CASCADE,
+  class_name TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_css_utility_classes_utility ON css_utility_classes(utility_id);
+
+-- CSS Utility Examples
+CREATE TABLE IF NOT EXISTS css_utility_examples (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  utility_id INTEGER REFERENCES css_utilities(id) ON DELETE CASCADE,
+  title TEXT,
+  code TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_css_utility_examples_utility ON css_utility_examples(utility_id);
 
 -- Documentation
 CREATE TABLE IF NOT EXISTS documentation (

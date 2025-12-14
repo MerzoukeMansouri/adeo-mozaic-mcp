@@ -1,9 +1,8 @@
-import { readFileSync, existsSync } from "fs";
+import { existsSync } from "fs";
 import { join } from "path";
-import type { Component, ComponentExample } from "../db/queries.js";
+import type { CssUtility, CssUtilityExample } from "../db/queries.js";
 
 // Screen breakpoints for responsive classes
-const SCREENS = ["s", "m", "l", "xl", "xxl"];
 const MAJOR_SCREENS = ["s", "m", "l", "xl"];
 
 // Spacing sizes for margin/padding utilities
@@ -32,43 +31,43 @@ export interface ParseScssOptions {
 }
 
 /**
- * Parse SCSS files to extract CSS-only components (layouts and utilities)
+ * Parse SCSS files to extract CSS-only utilities (layouts and spacing)
  */
-export async function parseScssComponents(
+export async function parseCssUtilities(
   stylesPath: string
-): Promise<Component[]> {
-  const components: Component[] = [];
+): Promise<CssUtility[]> {
+  const utilities: CssUtility[] = [];
 
   // Parse layouts
   const layoutsPath = join(stylesPath, "layouts");
   if (existsSync(layoutsPath)) {
-    components.push(parseFlexyComponent(layoutsPath));
-    components.push(parseContainerComponent(layoutsPath));
+    utilities.push(parseFlexyUtility());
+    utilities.push(parseContainerUtility());
   }
 
   // Parse utilities
   const utilitiesPath = join(stylesPath, "utilities");
   if (existsSync(utilitiesPath)) {
-    components.push(parseMarginComponent(utilitiesPath));
-    components.push(parsePaddingComponent(utilitiesPath));
-    components.push(parseRatioComponent(utilitiesPath));
-    components.push(parseScrollComponent(utilitiesPath));
+    utilities.push(parseMarginUtility());
+    utilities.push(parsePaddingUtility());
+    utilities.push(parseRatioUtility());
+    utilities.push(parseScrollUtility());
   }
 
-  return components;
+  return utilities;
 }
 
 /**
- * Parse Flexy (flexbox grid) component
+ * Parse Flexy (flexbox grid) utility
  */
-function parseFlexyComponent(layoutsPath: string): Component {
-  const cssClasses: string[] = [];
+function parseFlexyUtility(): CssUtility {
+  const classes: string[] = [];
 
   // Base class
-  cssClasses.push(".ml-flexy");
+  classes.push(".ml-flexy");
 
   // Column class
-  cssClasses.push(".ml-flexy__col");
+  classes.push(".ml-flexy__col");
 
   // Modifiers
   const modifiers = [
@@ -86,7 +85,7 @@ function parseFlexyComponent(layoutsPath: string): Component {
   ];
 
   for (const mod of modifiers) {
-    cssClasses.push(`.ml-flexy--${mod}`);
+    classes.push(`.ml-flexy--${mod}`);
   }
 
   // Responsive modifiers (for justify-* classes)
@@ -101,7 +100,7 @@ function parseFlexyComponent(layoutsPath: string): Component {
 
   for (const screen of MAJOR_SCREENS) {
     for (const mod of responsiveModifiers) {
-      cssClasses.push(`.ml-flexy--${mod}@from-${screen}`);
+      classes.push(`.ml-flexy--${mod}@from-${screen}`);
     }
   }
 
@@ -113,34 +112,33 @@ function parseFlexyComponent(layoutsPath: string): Component {
   ];
 
   for (const [num, denom] of fractions) {
-    cssClasses.push(`.ml-flexy__col--${num}of${denom}`);
-    cssClasses.push(`.ml-flexy__col--push-${num}of${denom}`);
+    classes.push(`.ml-flexy__col--${num}of${denom}`);
+    classes.push(`.ml-flexy__col--push-${num}of${denom}`);
 
     // Responsive variants
     for (const screen of MAJOR_SCREENS) {
-      cssClasses.push(`.ml-flexy__col--${num}of${denom}@from-${screen}`);
-      cssClasses.push(`.ml-flexy__col--push-${num}of${denom}@from-${screen}`);
+      classes.push(`.ml-flexy__col--${num}of${denom}@from-${screen}`);
+      classes.push(`.ml-flexy__col--push-${num}of${denom}@from-${screen}`);
     }
   }
 
   // Custom column classes
   const customCols = ["fill", "full", "initial", "grow", "first", "last"];
   for (const col of customCols) {
-    cssClasses.push(`.ml-flexy__col--${col}`);
+    classes.push(`.ml-flexy__col--${col}`);
     for (const screen of MAJOR_SCREENS) {
-      cssClasses.push(`.ml-flexy__col--${col}@from-${screen}`);
+      classes.push(`.ml-flexy__col--${col}@from-${screen}`);
     }
   }
 
   // Push reset
-  cssClasses.push(".ml-flexy__col--push--reset");
+  classes.push(".ml-flexy__col--push--reset");
   for (const screen of MAJOR_SCREENS) {
-    cssClasses.push(`.ml-flexy__col--push--reset@from-${screen}`);
+    classes.push(`.ml-flexy__col--push--reset@from-${screen}`);
   }
 
-  const examples: ComponentExample[] = [
+  const examples: CssUtilityExample[] = [
     {
-      framework: "html",
       title: "Basic 2-column layout",
       code: `<div class="ml-flexy ml-flexy--gutter">
   <div class="ml-flexy__col ml-flexy__col--6of12">Column 1</div>
@@ -148,7 +146,6 @@ function parseFlexyComponent(layoutsPath: string): Component {
 </div>`,
     },
     {
-      framework: "html",
       title: "Responsive columns",
       code: `<div class="ml-flexy ml-flexy--gutter">
   <div class="ml-flexy__col ml-flexy__col--full ml-flexy__col--6of12@from-m ml-flexy__col--4of12@from-l">
@@ -157,7 +154,6 @@ function parseFlexyComponent(layoutsPath: string): Component {
 </div>`,
     },
     {
-      framework: "html",
       title: "Centered content",
       code: `<div class="ml-flexy ml-flexy--justify-center ml-flexy--items-center">
   <div class="ml-flexy__col ml-flexy__col--initial">Centered content</div>
@@ -171,39 +167,33 @@ function parseFlexyComponent(layoutsPath: string): Component {
     category: "layout",
     description:
       "Flexbox-based grid system for creating responsive layouts. Uses 12-column grid with responsive breakpoints and utility modifiers for alignment and spacing.",
-    frameworks: ["html"],
-    props: [],
-    slots: [],
-    events: [],
+    classes,
     examples,
-    cssClasses,
   };
 }
 
 /**
- * Parse Container component
+ * Parse Container utility
  */
-function parseContainerComponent(layoutsPath: string): Component {
-  const cssClasses: string[] = [];
+function parseContainerUtility(): CssUtility {
+  const classes: string[] = [];
 
-  cssClasses.push(".ml-container");
-  cssClasses.push(".ml-container--fluid");
+  classes.push(".ml-container");
+  classes.push(".ml-container--fluid");
 
   // Responsive fluid modifier
   for (const screen of MAJOR_SCREENS) {
-    cssClasses.push(`.ml-container--fluid@from-${screen}`);
+    classes.push(`.ml-container--fluid@from-${screen}`);
   }
 
-  const examples: ComponentExample[] = [
+  const examples: CssUtilityExample[] = [
     {
-      framework: "html",
       title: "Basic container",
       code: `<div class="ml-container">
   <p>Content within max-width container</p>
 </div>`,
     },
     {
-      framework: "html",
       title: "Fluid container",
       code: `<div class="ml-container ml-container--fluid">
   <p>Full-width content with padding</p>
@@ -217,47 +207,40 @@ function parseContainerComponent(layoutsPath: string): Component {
     category: "layout",
     description:
       "Responsive container with automatic max-width and padding. Centers content and provides consistent horizontal spacing across breakpoints.",
-    frameworks: ["html"],
-    props: [],
-    slots: [],
-    events: [],
+    classes,
     examples,
-    cssClasses,
   };
 }
 
 /**
  * Parse Margin utilities
  */
-function parseMarginComponent(utilitiesPath: string): Component {
-  const cssClasses: string[] = [];
+function parseMarginUtility(): CssUtility {
+  const classes: string[] = [];
 
   // Generate all margin utility classes
-  for (const [sideKey, sideName] of Object.entries(SIDES)) {
+  for (const [sideKey] of Object.entries(SIDES)) {
     for (const size of SIZES) {
       if (sideKey === "all") {
-        cssClasses.push(`.mu-m-${size}`);
+        classes.push(`.mu-m-${size}`);
       } else {
-        cssClasses.push(`.mu-m${sideKey}-${size}`);
+        classes.push(`.mu-m${sideKey}-${size}`);
       }
     }
   }
 
-  const examples: ComponentExample[] = [
+  const examples: CssUtilityExample[] = [
     {
-      framework: "html",
       title: "Margin all sides",
       code: `<div class="mu-m-100">16px margin on all sides</div>`,
     },
     {
-      framework: "html",
       title: "Margin specific sides",
       code: `<div class="mu-mt-200 mu-mb-100">
   32px top margin, 16px bottom margin
 </div>`,
     },
     {
-      framework: "html",
       title: "Horizontal/vertical margin",
       code: `<div class="mu-mv-200 mu-mh-100">
   32px vertical margin, 16px horizontal margin
@@ -271,47 +254,40 @@ function parseMarginComponent(utilitiesPath: string): Component {
     category: "utility",
     description:
       "Margin utility classes using magic unit scale (mu). Supports all sides, individual sides, vertical, and horizontal margins.",
-    frameworks: ["html"],
-    props: [],
-    slots: [],
-    events: [],
+    classes,
     examples,
-    cssClasses,
   };
 }
 
 /**
  * Parse Padding utilities
  */
-function parsePaddingComponent(utilitiesPath: string): Component {
-  const cssClasses: string[] = [];
+function parsePaddingUtility(): CssUtility {
+  const classes: string[] = [];
 
   // Generate all padding utility classes
-  for (const [sideKey, sideName] of Object.entries(SIDES)) {
+  for (const [sideKey] of Object.entries(SIDES)) {
     for (const size of SIZES) {
       if (sideKey === "all") {
-        cssClasses.push(`.mu-p-${size}`);
+        classes.push(`.mu-p-${size}`);
       } else {
-        cssClasses.push(`.mu-p${sideKey}-${size}`);
+        classes.push(`.mu-p${sideKey}-${size}`);
       }
     }
   }
 
-  const examples: ComponentExample[] = [
+  const examples: CssUtilityExample[] = [
     {
-      framework: "html",
       title: "Padding all sides",
       code: `<div class="mu-p-100">16px padding on all sides</div>`,
     },
     {
-      framework: "html",
       title: "Padding specific sides",
       code: `<div class="mu-pt-200 mu-pb-100">
   32px top padding, 16px bottom padding
 </div>`,
     },
     {
-      framework: "html",
       title: "Horizontal/vertical padding",
       code: `<div class="mu-pv-200 mu-ph-100">
   32px vertical padding, 16px horizontal padding
@@ -325,38 +301,32 @@ function parsePaddingComponent(utilitiesPath: string): Component {
     category: "utility",
     description:
       "Padding utility classes using magic unit scale (mu). Supports all sides, individual sides, vertical, and horizontal padding.",
-    frameworks: ["html"],
-    props: [],
-    slots: [],
-    events: [],
+    classes,
     examples,
-    cssClasses,
   };
 }
 
 /**
  * Parse Ratio utilities
  */
-function parseRatioComponent(utilitiesPath: string): Component {
-  const cssClasses: string[] = [];
+function parseRatioUtility(): CssUtility {
+  const classes: string[] = [];
 
-  cssClasses.push(".mu-ratio");
-  cssClasses.push(".mu-ratio__item");
+  classes.push(".mu-ratio");
+  classes.push(".mu-ratio__item");
 
   for (const ratio of ASPECT_RATIOS) {
-    cssClasses.push(`.mu-ratio--${ratio}`);
+    classes.push(`.mu-ratio--${ratio}`);
   }
 
-  const examples: ComponentExample[] = [
+  const examples: CssUtilityExample[] = [
     {
-      framework: "html",
       title: "16:9 aspect ratio",
       code: `<div class="mu-ratio mu-ratio--16x9">
   <img class="mu-ratio__item" src="image.jpg" alt="Image with 16:9 ratio" />
 </div>`,
     },
     {
-      framework: "html",
       title: "Square ratio",
       code: `<div class="mu-ratio mu-ratio--1x1">
   <div class="mu-ratio__item">Square content</div>
@@ -370,24 +340,19 @@ function parseRatioComponent(utilitiesPath: string): Component {
     category: "utility",
     description:
       "Aspect ratio utility for maintaining element proportions. Supports common aspect ratios like 16:9, 4:3, 1:1, etc.",
-    frameworks: ["html"],
-    props: [],
-    slots: [],
-    events: [],
+    classes,
     examples,
-    cssClasses,
   };
 }
 
 /**
  * Parse Scroll utilities
  */
-function parseScrollComponent(utilitiesPath: string): Component {
-  const cssClasses = [".mu-prevent-body-scroll"];
+function parseScrollUtility(): CssUtility {
+  const classes = [".mu-prevent-body-scroll"];
 
-  const examples: ComponentExample[] = [
+  const examples: CssUtilityExample[] = [
     {
-      framework: "html",
       title: "Prevent body scroll",
       code: `<!-- Add to html or body element when modal is open -->
 <html class="mu-prevent-body-scroll">
@@ -404,11 +369,7 @@ function parseScrollComponent(utilitiesPath: string): Component {
     category: "utility",
     description:
       "Scroll utility for preventing body scroll. Useful when modals or overlays are open.",
-    frameworks: ["html"],
-    props: [],
-    slots: [],
-    events: [],
+    classes,
     examples,
-    cssClasses,
   };
 }

@@ -17,13 +17,13 @@ const DB_PATH = join(PROJECT_ROOT, "data", "mozaic.db");
 interface DbStats {
   tokens: number;
   components: number;
+  cssUtilities: number;
+  cssUtilityClasses: number;
   documentation: number;
   vueComponents: number;
   reactComponents: number;
-  htmlComponents: number;
   vueExamples: number;
   reactExamples: number;
-  htmlExamples: number;
   categories: Array<{ category: string; count: number }>;
   tokenCategories: Array<{ category: string; count: number }>;
   tokenSubcategories: Array<{ category: string; subcategory: string; count: number }>;
@@ -58,12 +58,12 @@ function getDbStats(): DbStats | null {
     "SELECT COUNT(*) as count FROM component_examples WHERE framework = 'react'"
   ).get() as { count: number };
 
-  const htmlComponents = db.prepare(
-    "SELECT COUNT(*) as count FROM components WHERE frameworks LIKE '%html%'"
+  const cssUtilities = db.prepare(
+    "SELECT COUNT(*) as count FROM css_utilities"
   ).get() as { count: number };
 
-  const htmlExamples = db.prepare(
-    "SELECT COUNT(*) as count FROM component_examples WHERE framework = 'html'"
+  const cssUtilityClasses = db.prepare(
+    "SELECT COUNT(*) as count FROM css_utility_classes"
   ).get() as { count: number };
 
   const categories = db.prepare(
@@ -87,13 +87,13 @@ function getDbStats(): DbStats | null {
   return {
     tokens: tokens.count,
     components: components.count,
+    cssUtilities: cssUtilities.count,
+    cssUtilityClasses: cssUtilityClasses.count,
     documentation: docs.count,
     vueComponents: vueComponents.count,
     reactComponents: reactComponents.count,
-    htmlComponents: htmlComponents.count,
     vueExamples: vueExamples.count,
     reactExamples: reactExamples.count,
-    htmlExamples: htmlExamples.count,
     categories,
     tokenCategories,
     tokenSubcategories,
@@ -492,21 +492,24 @@ ${stats.tokenCategories.map(c => `        T_${c.category.replace(/[^a-zA-Z]/g, "
         direction TB
         Vue["Vue: ${stats.vueComponents}"]
         React["React: ${stats.reactComponents}"]
-        Html["HTML/CSS: ${stats.htmlComponents}"]
     end
 
-    subgraph Examples["Examples: ${stats.vueExamples + stats.reactExamples + stats.htmlExamples}"]
+    subgraph CssUtils["CSS Utilities: ${stats.cssUtilities}"]
+        direction TB
+        CssClasses["${stats.cssUtilityClasses} classes"]
+    end
+
+    subgraph Examples["Examples: ${stats.vueExamples + stats.reactExamples}"]
         direction TB
         VueEx["Vue: ${stats.vueExamples}"]
         ReactEx["React: ${stats.reactExamples}"]
-        HtmlEx["HTML: ${stats.htmlExamples}"]
     end
 
     subgraph Docs["Documentation"]
         DocPages["${stats.documentation} pages"]
     end
 
-    Tokens --> Components --> Examples --> Docs
+    Tokens --> Components --> CssUtils --> Examples --> Docs
 `;
 }
 
@@ -572,7 +575,7 @@ flowchart TB
         S2["Components: ${stats.components}"]
         S3["Vue: ${stats.vueComponents} + ${stats.vueExamples} examples"]
         S4["React: ${stats.reactComponents} + ${stats.reactExamples} examples"]
-        S5["HTML/CSS: ${stats.htmlComponents} + ${stats.htmlExamples} examples"]
+        S5["CSS Utilities: ${stats.cssUtilities} (${stats.cssUtilityClasses} classes)"]
         S6["Documentation: ${stats.documentation} pages"]
     end
 `;
@@ -672,10 +675,10 @@ function generateDocMd(stats: DbStats | null): string {
 | **Components** | ${stats.components} |
 | Vue Components | ${stats.vueComponents} |
 | React Components | ${stats.reactComponents} |
-| HTML/CSS Components | ${stats.htmlComponents} |
 | Vue Examples | ${stats.vueExamples} |
 | React Examples | ${stats.reactExamples} |
-| HTML Examples | ${stats.htmlExamples} |
+| **CSS Utilities** | ${stats.cssUtilities} |
+| CSS Utility Classes | ${stats.cssUtilityClasses} |
 | **Documentation** | ${stats.documentation} |
 
 ### Token Categories

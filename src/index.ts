@@ -46,6 +46,14 @@ import {
   handleSearchDocumentation,
   type SearchDocumentationInput,
 } from "./tools/search-documentation.js";
+import {
+  handleGetCssUtility,
+  type GetCssUtilityInput,
+} from "./tools/get-css-utility.js";
+import {
+  handleListCssUtilities,
+  type ListCssUtilitiesInput,
+} from "./tools/list-css-utilities.js";
 
 // Get database path
 const __filename = fileURLToPath(import.meta.url);
@@ -191,6 +199,42 @@ server.registerTool(
       contentLength: result.content.length,
       resultText: result.content[0]?.text?.substring(0, 500)
     });
+    return result;
+  }
+);
+
+server.registerTool(
+  "get_css_utility",
+  {
+    description: "Get CSS utility classes and examples for Mozaic layout and spacing utilities. These are CSS-only utilities (no framework component needed). Available: Flexy (flexbox grid), Container, Margin, Padding, Ratio, Scroll.",
+    inputSchema: {
+      name: z.string().describe("Utility name (e.g., 'flexy', 'margin', 'padding', 'container')"),
+      includeClasses: z.boolean().default(true).describe("Include all CSS class names in the response"),
+    },
+  },
+  async (args) => {
+    log("Tool called: get_css_utility", args);
+    if (!db) db = initializeDatabase();
+    const result = handleGetCssUtility(db, args as GetCssUtilityInput);
+    log("Tool result: get_css_utility", { contentLength: result.content.length });
+    return result;
+  }
+);
+
+server.registerTool(
+  "list_css_utilities",
+  {
+    description: "List available Mozaic CSS utility classes. These are CSS-only utilities for layout (Flexy, Container) and spacing (Margin, Padding, Ratio, Scroll).",
+    inputSchema: {
+      category: z.enum(["layout", "utility", "all"]).default("all")
+        .describe("Filter by category: 'layout', 'utility', or 'all'"),
+    },
+  },
+  async (args) => {
+    log("Tool called: list_css_utilities", args);
+    if (!db) db = initializeDatabase();
+    const result = handleListCssUtilities(db, args as ListCssUtilitiesInput);
+    log("Tool result: list_css_utilities", { contentLength: result.content.length });
     return result;
   }
 );

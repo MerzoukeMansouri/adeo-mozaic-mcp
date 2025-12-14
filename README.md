@@ -28,18 +28,32 @@ pnpm start   # Starts the MCP server
 | **Design Tokens** | 586 | Colors, typography, spacing, shadows, borders, screens, grid |
 | **Vue Components** | 52 | Props, slots, events, examples |
 | **React Components** | 39 | Props, callbacks, examples |
-| **HTML/CSS Utilities** | 6 | Flexy, Container, Margin, Padding, Ratio, Scroll |
+| **CSS Utilities** | 6 | Flexy, Container, Margin, Padding, Ratio, Scroll (500+ classes) |
 | **Documentation** | 247 | MDX pages with full-text search |
 
 ## MCP Tools
 
+### Component Tools
+
+| Tool | Description |
+|------|-------------|
+| `get_component_info` | Get Vue/React component details (props, slots, events, examples) |
+| `list_components` | List framework components by category |
+| `generate_vue_component` | Generate Vue component code |
+| `generate_react_component` | Generate React component code |
+
+### CSS Utility Tools
+
+| Tool | Description |
+|------|-------------|
+| `get_css_utility` | Get CSS utility classes and examples (Flexy, Margin, etc.) |
+| `list_css_utilities` | List available CSS utilities by category (layout, utility) |
+
+### Other Tools
+
 | Tool | Description |
 |------|-------------|
 | `get_design_tokens` | Query tokens by category (color, spacing, typography, shadow, border, screen, grid) |
-| `get_component_info` | Get component details - works for Vue, React, and CSS-only components |
-| `list_components` | List components by category |
-| `generate_vue_component` | Generate Vue component code |
-| `generate_react_component` | Generate React component code |
 | `search_documentation` | Full-text search across all docs |
 
 ## Token Categories
@@ -55,12 +69,12 @@ pnpm start   # Starts the MCP server
 | radius | 3 | Border radius values |
 | grid | 4 | Gutters, magic-unit, rem values |
 
-## CSS-Only Components
+## CSS Utilities
 
-These layout and utility components are HTML/CSS only (no Vue/React wrapper):
+CSS-only layout and utility classes (no Vue/React wrapper). Use `get_css_utility` tool to get full class lists and examples.
 
-| Component | Category | Description |
-|-----------|----------|-------------|
+| Utility | Category | Description |
+|---------|----------|-------------|
 | **Flexy** | layout | Flexbox 12-column grid with responsive classes |
 | **Container** | layout | Responsive container with max-width |
 | **Margin** | utility | Margin utilities using Magic Unit scale |
@@ -70,13 +84,13 @@ These layout and utility components are HTML/CSS only (no Vue/React wrapper):
 
 Example CSS classes:
 ```css
-.ml-flexy
-.ml-flexy__col--6of12
-.ml-flexy__col--4of12@from-m
-.ml-container
-.mu-m-100
-.mu-p-200
-.mu-ratio--16x9
+.ml-flexy                        /* Flex container */
+.ml-flexy__col--6of12            /* 50% width column */
+.ml-flexy__col--4of12@from-m     /* 33% from medium breakpoint */
+.ml-container                    /* Centered container */
+.mu-m-100                        /* 16px margin all sides */
+.mu-p-200                        /* 32px padding all sides */
+.mu-ratio--16x9                  /* 16:9 aspect ratio */
 ```
 
 ## Architecture
@@ -89,12 +103,12 @@ Example CSS classes:
 ┌─────────────────────────▼───────────────────────────────────┐
 │                    MCP Server                               │
 │  ┌─────────────────────────────────────────────────────┐   │
-│  │ Tools: get_design_tokens, get_component_info, ...   │   │
+│  │ Tools: get_component_info, get_css_utility, ...     │   │
 │  └─────────────────────────┬───────────────────────────┘   │
 │                            │                                │
 │  ┌─────────────────────────▼───────────────────────────┐   │
-│  │              SQLite Database                        │   │
-│  │  tokens | components | documentation | examples     │   │
+│  │                 SQLite Database                     │   │
+│  │  tokens | components | css_utilities | documentation│   │
 │  └─────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
                           ▲
