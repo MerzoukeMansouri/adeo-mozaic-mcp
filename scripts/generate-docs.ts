@@ -533,13 +533,16 @@ async function generateImages(diagrams: Array<{ name: string; content: string }>
       // Remove frontmatter (---title:...) as it's not supported in all diagram types
       const cleanContent = content.replace(/^---[\s\S]*?---\n?/m, "").trim();
 
-      const svg = await page.evaluate(async (diagram: string, id: string) => {
+      let svg = await page.evaluate(async (diagram: string, id: string) => {
         const container = document.getElementById("container")!;
         container.innerHTML = "";
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { svg } = await (window as any).mermaid.render(id, diagram);
         return svg;
       }, cleanContent, `diagram-${name}`);
+
+      // Fix malformed HTML in SVG (mermaid outputs <br> instead of <br/>)
+      svg = svg.replace(/<br>/g, "<br/>");
 
       writeFileSync(outputPath, svg);
       console.log(`  - ${name}.svg`);
