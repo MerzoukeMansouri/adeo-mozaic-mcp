@@ -184,8 +184,8 @@ flowchart LR
     end
 
     R1 --> TP
-    TP --> TP1 & TP2 & TP3 & TP4 & TP5 & TP6
-    TP1 & TP2 & TP3 & TP4 & TP5 & TP6 --> D1
+    TP --> TP1 & TP2 & TP3 & TP4 & TP5 & TP6 & TP7
+    TP1 & TP2 & TP3 & TP4 & TP5 & TP6 & TP7 --> D1
     D1 --> T1
     T1 --> T1P & T1F
 
@@ -313,6 +313,8 @@ flowchart TB
         GT -->|category| GTO3[spacing]
         GT -->|category| GTO4[shadows]
         GT -->|category| GTO5[borders]
+        GT -->|category| GTO6[screens]
+        GT -->|category| GTO7[grid]
         GT -->|format| GTF1[json/scss/css/js]
     end
 
@@ -401,6 +403,7 @@ flowchart TB
                     TBorder[border-parser.ts]
                     TScreen[screen-parser.ts]
                     TTypo[typography-parser.ts]
+                    TGrid[grid-parser.ts]
                 end
             end
 
