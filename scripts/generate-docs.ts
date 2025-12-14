@@ -679,10 +679,15 @@ async function generateImages(diagrams: Array<{ name: string; content: string }>
       svg = svg.replace(/<br>/g, "<br/>");
 
       // Set explicit width for better GitHub preview (remove max-width constraint)
-      svg = svg.replace(/style="max-width:[^"]*"/, 'style="min-width: 800px"');
-      // Add width attribute if not present
+      // Also add white background for better visibility
+      svg = svg.replace(/style="max-width:[^"]*"/, 'style="min-width: 800px; background-color: white"');
+      // Add width attribute and background if not present
       if (!svg.includes('width="')) {
-        svg = svg.replace('<svg ', '<svg width="100%" ');
+        svg = svg.replace('<svg ', '<svg width="100%" style="background-color: white" ');
+      }
+      // Ensure background-color is set even if style already exists but without background
+      if (!svg.includes('background-color')) {
+        svg = svg.replace(/style="([^"]*)"/, 'style="$1; background-color: white"');
       }
 
       writeFileSync(outputPath, svg);
