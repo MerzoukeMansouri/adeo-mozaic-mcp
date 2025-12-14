@@ -11,6 +11,7 @@ const __dirname = dirname(__filename);
 
 const PROJECT_ROOT = join(__dirname, "..");
 const DOC_DIR = join(PROJECT_ROOT, "docs");
+const ASSETS_DIR = join(DOC_DIR, "assets");
 const DB_PATH = join(PROJECT_ROOT, "data", "mozaic.db");
 
 interface DbStats {
@@ -527,7 +528,7 @@ async function generateImages(diagrams: Array<{ name: string; content: string }>
   await page.waitForFunction("typeof window.mermaid !== 'undefined'");
 
   for (const { name, content } of diagrams) {
-    const outputPath = join(DOC_DIR, `${name}.svg`);
+    const outputPath = join(ASSETS_DIR, `${name}.svg`);
 
     try {
       // Remove frontmatter (---title:...) as it's not supported in all diagram types
@@ -562,17 +563,17 @@ async function generateImages(diagrams: Array<{ name: string; content: string }>
   await browser.close();
 }
 
-function generateReadme(diagrams: Array<{ name: string }>, stats: DbStats | null): string {
+function generateDocMd(stats: DbStats | null): string {
   const timestamp = new Date().toISOString().split("T")[0];
 
-  let readme = `# Mozaic MCP Server - Architecture Documentation
+  let doc = `# Mozaic MCP Server - Architecture Documentation
 
 > Auto-generated on ${timestamp}
 
 `;
 
   if (stats) {
-    readme += `## Current Statistics
+    doc += `## Current Statistics
 
 | Metric | Count |
 |--------|-------|
@@ -587,39 +588,99 @@ function generateReadme(diagrams: Array<{ name: string }>, stats: DbStats | null
 `;
   }
 
-  readme += `## Diagrams
+  doc += `## Diagrams
 
 ### Architecture Overview
-<img src="./architecture.svg" width="100%" alt="Architecture">
+<img src="./assets/architecture.svg" width="100%" alt="Architecture">
 
 ### Project Structure
-<img src="./structure.svg" width="100%" alt="Structure">
+<img src="./assets/structure.svg" width="100%" alt="Structure">
 
 ### Data Flow
-<img src="./dataflow.svg" width="100%" alt="Data Flow">
+<img src="./assets/dataflow.svg" width="100%" alt="Data Flow">
 
 ### Database Schema
-<img src="./schema.svg" width="100%" alt="Schema">
+<img src="./assets/schema.svg" width="100%" alt="Schema">
 
 ### MCP Tools
-<img src="./tools.svg" width="100%" alt="Tools">
+<img src="./assets/tools.svg" width="100%" alt="Tools">
 
 ### Request Sequence
-<img src="./sequence.svg" width="100%" alt="Sequence">
+<img src="./assets/sequence.svg" width="100%" alt="Sequence">
 
 ### Complete Overview
-<img src="./full.svg" width="100%" alt="Full Architecture">
+<img src="./assets/full.svg" width="100%" alt="Full Architecture">
 
 `;
 
   if (stats) {
-    readme += `### Statistics
+    doc += `### Statistics
 
-<img src="./stats-components.svg" width="400" alt="Components by Category">
-<img src="./stats-tokens.svg" width="400" alt="Tokens by Category">
-<img src="./stats-summary.svg" width="100%" alt="Statistics Summary">
+<img src="./assets/stats-components.svg" width="400" alt="Components by Category">
+<img src="./assets/stats-tokens.svg" width="400" alt="Tokens by Category">
+<img src="./assets/stats-summary.svg" width="100%" alt="Statistics Summary">
 `;
   }
+
+  return doc;
+}
+
+function generateRootReadme(stats: DbStats | null): string {
+  let readme = `# Mozaic MCP Server
+
+MCP (Model Context Protocol) server for the Mozaic Design System by ADEO. Provides Claude Desktop with access to design tokens, components, and documentation.
+
+## Features
+
+- **Design Tokens**: Colors, typography, spacing, shadows
+- **Components**: Vue 3 and React component info with props, slots, events, examples
+- **Documentation**: Full-text search across Mozaic docs
+- **Code Generation**: Generate Vue/React component code snippets
+
+## Quick Start
+
+\`\`\`bash
+pnpm install
+pnpm build:index  # Clone repos & build database
+pnpm build        # Compile TypeScript
+pnpm start        # Start MCP server
+\`\`\`
+
+## Architecture
+
+`;
+
+  if (stats) {
+    readme += `### Statistics Summary
+<a href="./docs/doc.md">
+  <img src="./docs/assets/stats-summary.svg" width="100%" alt="Statistics Summary">
+</a>
+
+`;
+  }
+
+  readme += `### Data Flow
+<a href="./docs/doc.md">
+  <img src="./docs/assets/dataflow.svg" width="100%" alt="Data Flow">
+</a>
+
+[View full documentation](./docs/doc.md)
+
+## MCP Tools
+
+| Tool | Description |
+|------|-------------|
+| \`get_design_tokens\` | Get design tokens (colors, typography, spacing) |
+| \`get_component_info\` | Get component details (props, slots, events, examples) |
+| \`list_components\` | List available components by category |
+| \`generate_vue_component\` | Generate Vue component code |
+| \`generate_react_component\` | Generate React component code |
+| \`search_documentation\` | Full-text search Mozaic docs |
+
+## License
+
+MIT
+`;
 
   return readme;
 }
@@ -661,20 +722,31 @@ async function main(): Promise<void> {
     );
   }
 
+  // Create assets directory
+  if (!existsSync(ASSETS_DIR)) {
+    mkdirSync(ASSETS_DIR, { recursive: true });
+    console.log("Created docs/assets/ directory");
+  }
+
   console.log("Generated diagrams:");
   for (const { name, content } of diagrams) {
-    const outputPath = join(DOC_DIR, `${name}.mmd`);
+    const outputPath = join(ASSETS_DIR, `${name}.mmd`);
     writeFileSync(outputPath, content);
-    console.log(`  - ${name}.mmd`);
+    console.log(`  - assets/${name}.mmd`);
   }
 
   // Generate SVG images from mermaid files
   await generateImages(diagrams);
 
-  // Generate README for GitHub
-  const readme = generateReadme(diagrams, stats);
-  writeFileSync(join(DOC_DIR, "README.md"), readme);
-  console.log("  - README.md");
+  // Generate doc.md for docs folder
+  const docMd = generateDocMd(stats);
+  writeFileSync(join(DOC_DIR, "doc.md"), docMd);
+  console.log("  - doc.md");
+
+  // Generate root README.md
+  const rootReadme = generateRootReadme(stats);
+  writeFileSync(join(PROJECT_ROOT, "README.md"), rootReadme);
+  console.log("  - README.md (root)");
 
   console.log(`\nAll files saved to: ${DOC_DIR}/`);
 }
