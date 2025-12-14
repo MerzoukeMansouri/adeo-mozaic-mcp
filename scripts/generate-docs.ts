@@ -4,12 +4,13 @@ import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import Database from "better-sqlite3";
+import puppeteer from "puppeteer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const PROJECT_ROOT = join(__dirname, "..");
-const DOC_DIR = join(PROJECT_ROOT, "doc");
+const DOC_DIR = join(PROJECT_ROOT, "docs");
 const DB_PATH = join(PROJECT_ROOT, "data", "mozaic.db");
 
 interface DbStats {
@@ -500,13 +501,64 @@ flowchart TB
   return diagram;
 }
 
+async function generateImages(diagrams: Array<{ name: string; content: string }>): Promise<void> {
+  console.log("\nGenerating SVG images with puppeteer...");
+
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  // Load mermaid from CDN
+  await page.setContent(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+      </head>
+      <body>
+        <div id="container"></div>
+        <script>
+          mermaid.initialize({ startOnLoad: false, theme: 'default' });
+        </script>
+      </body>
+    </html>
+  `);
+
+  // Wait for mermaid to load
+  await page.waitForFunction("typeof window.mermaid !== 'undefined'");
+
+  for (const { name, content } of diagrams) {
+    const outputPath = join(DOC_DIR, `${name}.svg`);
+
+    try {
+      // Remove frontmatter (---title:...) as it's not supported in all diagram types
+      const cleanContent = content.replace(/^---[\s\S]*?---\n?/m, "").trim();
+
+      const svg = await page.evaluate(async (diagram: string, id: string) => {
+        const container = document.getElementById("container")!;
+        container.innerHTML = "";
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { svg } = await (window as any).mermaid.render(id, diagram);
+        return svg;
+      }, cleanContent, `diagram-${name}`);
+
+      writeFileSync(outputPath, svg);
+      console.log(`  - ${name}.svg`);
+    } catch (error: unknown) {
+      const err = error as { message?: string };
+      console.warn(`  - ${name}.svg (failed: ${err.message || "unknown error"})`);
+    }
+  }
+
+  await browser.close();
+}
+
 async function main(): Promise<void> {
   console.log("Generating Mermaid diagrams...\n");
 
-  // Create doc directory
+  // Create docs directory
   if (!existsSync(DOC_DIR)) {
     mkdirSync(DOC_DIR, { recursive: true });
-    console.log("Created doc/ directory");
+    console.log("Created docs/ directory");
   }
 
   // Get database stats
@@ -537,15 +589,17 @@ async function main(): Promise<void> {
     );
   }
 
-  console.log("\nGenerated diagrams:");
+  console.log("Generated diagrams:");
   for (const { name, content } of diagrams) {
     const outputPath = join(DOC_DIR, `${name}.mmd`);
     writeFileSync(outputPath, content);
     console.log(`  - ${name}.mmd`);
   }
 
-  console.log(`\nAll diagrams saved to: ${DOC_DIR}/`);
-  console.log("\nView diagrams at: https://mermaid.live or in VS Code with Mermaid extension");
+  // Generate SVG images from mermaid files
+  await generateImages(diagrams);
+
+  console.log(`\nAll files saved to: ${DOC_DIR}/`);
 }
 
 main().catch((error) => {
