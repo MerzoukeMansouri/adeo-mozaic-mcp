@@ -30,79 +30,64 @@ export function handleSearchDocumentation(
     };
   }
 
-  // Clean and prepare the query for FTS5
-  const cleanQuery = prepareFtsQuery(query);
+  // Generate multiple search strategies from strict to fuzzy
+  const searchStrategies = buildSearchStrategies(query);
 
-  try {
-    const results = dbSearchDocumentation(db, cleanQuery, limit);
-
-    if (results.length === 0) {
-      // Try a more relaxed search with prefix matching
-      const prefixQuery = query
-        .trim()
-        .split(/\s+/)
-        .map((term) => `${term}*`)
-        .join(" ");
-
-      const prefixResults = dbSearchDocumentation(db, prefixQuery, limit);
-
-      if (prefixResults.length === 0) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `No documentation found for: "${query}". Try different keywords or use list_components to see available components.`,
-            },
-          ],
-        };
-      }
-
-      return formatResults(prefixResults, query);
-    }
-
-    return formatResults(results, query);
-  } catch {
-    // FTS5 query syntax error - fall back to simple search
-    const simpleQuery = query
-      .trim()
-      .split(/\s+/)
-      .filter((term) => term.length > 1)
-      .map((term) => `"${term}"`)
-      .join(" OR ");
-
+  // Try each strategy until we find results
+  for (const ftsQuery of searchStrategies) {
     try {
-      const results = dbSearchDocumentation(db, simpleQuery, limit);
-      return formatResults(results, query);
+      const results = dbSearchDocumentation(db, ftsQuery, limit);
+      if (results.length > 0) {
+        return formatResults(results, query);
+      }
     } catch {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Search error. Try using simpler search terms.`,
-          },
-        ],
-      };
+      // FTS5 syntax error - try next strategy
+      continue;
     }
   }
+
+  return {
+    content: [
+      {
+        type: "text",
+        text: `No documentation found for: "${query}". Try different keywords or use list_components to see available components.`,
+      },
+    ],
+  };
 }
 
-// Prepare query for FTS5
-function prepareFtsQuery(query: string): string {
+// Build multiple FTS5 search strategies from strict to fuzzy
+function buildSearchStrategies(query: string): string[] {
   // Remove special characters that might break FTS5
-  const cleaned = query.replace(/[^\w\s-]/g, " ");
+  // Also replace hyphens with spaces since FTS5 tokenizes on hyphens
+  const cleaned = query.replace(/[^\w\s]/g, " ");
 
-  // Split into terms
+  // Split into terms and filter short ones
   const terms = cleaned
     .trim()
     .split(/\s+/)
     .filter((term) => term.length > 1);
 
   if (terms.length === 0) {
-    return query.trim();
+    return [query.trim()];
   }
 
-  // Join with AND for better relevance
-  return terms.join(" AND ");
+  // Single term: just use prefix matching
+  if (terms.length === 1) {
+    return [`${terms[0]}*`];
+  }
+
+  // Multiple terms: try strategies from strict to fuzzy
+  return [
+    // 1. Exact phrase match
+    `"${terms.join(" ")}"`,
+
+    // 2. All terms required with prefix (AND)
+    terms.map((t) => `${t}*`).join(" AND "),
+
+    // 3. Any term matches with prefix (OR) - most fuzzy
+    terms.map((t) => `${t}*`).join(" OR "),
+  ];
 }
 
 function formatResults(

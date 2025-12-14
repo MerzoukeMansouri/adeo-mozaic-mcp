@@ -1,23 +1,23 @@
 #!/usr/bin/env tsx
 
-import { existsSync, mkdirSync, rmSync } from "fs";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
 import { execSync } from "child_process";
+import { existsSync, mkdirSync, rmSync } from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
 import {
+  getDatabaseStats,
   initDatabase,
-  insertTokens,
   insertComponents,
   insertCssUtilities,
   insertDocs,
-  getDatabaseStats,
+  insertTokens,
 } from "../src/db/queries.js";
+import { parseDocumentation } from "../src/parsers/docs-parser.js";
+import { parseReactComponents } from "../src/parsers/react-parser.js";
+import { parseCssUtilities } from "../src/parsers/scss-parser.js";
 import { parseTokens } from "../src/parsers/tokens-parser.js";
 import { parseVueComponents } from "../src/parsers/vue-parser.js";
-import { parseReactComponents } from "../src/parsers/react-parser.js";
-import { parseDocumentation } from "../src/parsers/docs-parser.js";
-import { parseCssUtilities } from "../src/parsers/scss-parser.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
