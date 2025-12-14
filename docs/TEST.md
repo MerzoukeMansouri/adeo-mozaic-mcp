@@ -25,6 +25,7 @@ pnpm test:watch     # Watch mode
 | `src/parsers/__tests__/vue-parser.test.ts` | Vue component parsing |
 | `src/parsers/__tests__/react-parser.test.ts` | React component parsing |
 | `src/__tests__/sanity-check.test.ts` | Database integrity checks |
+| `src/__tests__/tools.integration.test.ts` | MCP tool integration tests |
 
 ### What's Tested
 
@@ -41,6 +42,14 @@ pnpm test:watch     # Watch mode
 - External `.types.ts` file reading
 - Callback prop detection
 - Component category inference
+
+**Integration Tests (MCP Tools):**
+- `get_component_info` - Component lookup, props, examples
+- `get_design_tokens` - Token retrieval, format outputs (JSON/CSS/SCSS)
+- `search_documentation` - FTS search, snippets, limits
+- `list_components` - Component listing, category filtering
+- `get_css_utility` - Utility classes, examples
+- `list_css_utilities` - Utility listing, category filtering
 
 ## Sanity Check
 
