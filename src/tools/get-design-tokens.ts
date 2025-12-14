@@ -3,14 +3,19 @@ import { getTokensByCategory, type Token } from "../db/queries.js";
 import { mapCategoryToDbCategories } from "../parsers/tokens-parser.js";
 
 export interface GetDesignTokensInput {
-  category: "colors" | "typography" | "spacing" | "shadows" | "borders" | "all";
+  category: "colors" | "typography" | "spacing" | "shadows" | "borders" | "screens" | "all";
   format?: "json" | "scss" | "css" | "js";
 }
 
 export interface TokenOutput {
   category: string;
+  subcategory?: string;
+  name: string;
   path: string;
   value: string;
+  valueComputed?: string;
+  cssVariable?: string;
+  scssVariable?: string;
   description?: string;
 }
 
@@ -18,8 +23,9 @@ export interface TokenOutput {
 function formatAsScss(tokens: Token[]): string {
   const lines: string[] = [];
   for (const token of tokens) {
-    const varName = token.path.replace(/\./g, "-");
-    lines.push(`$${varName}: ${token.value};`);
+    // Use scssVariable if available, otherwise generate from path
+    const varName = token.scssVariable || `$${token.path.replace(/\./g, "-")}`;
+    lines.push(`${varName}: ${token.valueRaw};`);
   }
   return lines.join("\n");
 }
@@ -28,8 +34,9 @@ function formatAsScss(tokens: Token[]): string {
 function formatAsCss(tokens: Token[]): string {
   const lines: string[] = [":root {"];
   for (const token of tokens) {
-    const varName = token.path.replace(/\./g, "-");
-    lines.push(`  --${varName}: ${token.value};`);
+    // Use cssVariable if available, otherwise generate from path
+    const varName = token.cssVariable || `--${token.path.replace(/\./g, "-")}`;
+    lines.push(`  ${varName}: ${token.valueRaw};`);
   }
   lines.push("}");
   return lines.join("\n");
@@ -51,7 +58,7 @@ function formatAsJs(tokens: Token[]): string {
       current = current[part] as Record<string, unknown>;
     }
 
-    current[parts[parts.length - 1]] = token.value;
+    current[parts[parts.length - 1]] = token.valueRaw;
   }
 
   return `export const tokens = ${JSON.stringify(obj, null, 2)};`;
@@ -61,8 +68,13 @@ function formatAsJs(tokens: Token[]): string {
 function formatAsJson(tokens: Token[]): TokenOutput[] {
   return tokens.map((t) => ({
     category: t.category,
+    subcategory: t.subcategory,
+    name: t.name,
     path: t.path,
-    value: t.value,
+    value: t.valueRaw,
+    valueComputed: t.valueComputed,
+    cssVariable: t.cssVariable,
+    scssVariable: t.scssVariable,
     description: t.description,
   }));
 }
@@ -127,13 +139,13 @@ export function handleGetDesignTokens(
 export const getDesignTokensTool = {
   name: "get_design_tokens",
   description:
-    "Get design tokens (colors, typography, spacing) from Mozaic Design System",
+    "Get design tokens (colors, typography, spacing, shadows, borders, screens) from Mozaic Design System. Tokens include CSS/SCSS variables and computed values.",
   inputSchema: {
     type: "object" as const,
     properties: {
       category: {
         type: "string",
-        enum: ["colors", "typography", "spacing", "shadows", "borders", "all"],
+        enum: ["colors", "typography", "spacing", "shadows", "borders", "screens", "all"],
         description: "Token category to retrieve",
       },
       format: {
