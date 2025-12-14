@@ -16,6 +16,7 @@ import {
 } from "../src/db/queries.js";
 import { parseTokens } from "../src/parsers/tokens-parser.js";
 import { parseVueComponents, MOZAIC_COMPONENTS } from "../src/parsers/vue-parser.js";
+import { parseReactComponents, MOZAIC_REACT_COMPONENTS } from "../src/parsers/react-parser.js";
 import { parseDocumentation, MOZAIC_DOCS } from "../src/parsers/docs-parser.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -35,6 +36,10 @@ const REPOS = {
   vue: {
     url: "https://github.com/adeo/mozaic-vue.git",
     path: join(REPOS_DIR, "mozaic-vue"),
+  },
+  react: {
+    url: "https://github.com/adeo/mozaic-react.git",
+    path: join(REPOS_DIR, "mozaic-react"),
   },
 };
 
@@ -138,7 +143,7 @@ async function indexTokens(db: ReturnType<typeof initDatabase>): Promise<number>
   return tokens.length;
 }
 
-async function indexComponents(db: ReturnType<typeof initDatabase>): Promise<number> {
+async function indexVueComponents(db: ReturnType<typeof initDatabase>): Promise<number> {
   console.log("🧩 Indexing Vue components...");
 
   const componentsPath = join(REPOS.vue.path, "src", "components");
@@ -151,13 +156,13 @@ async function indexComponents(db: ReturnType<typeof initDatabase>): Promise<num
 
   // If no components were parsed, use the default list
   if (components.length === 0) {
-    console.log("   ⚠ Using default component list");
+    console.log("   ⚠ Using default Vue component list");
     components = MOZAIC_COMPONENTS.map((c) => ({
       name: c.name!,
       slug: c.slug!,
       category: c.category,
       description: c.description,
-      frameworks: ["vue", "react"],
+      frameworks: ["vue"],
       props: [],
       slots: [],
       events: [],
@@ -168,7 +173,41 @@ async function indexComponents(db: ReturnType<typeof initDatabase>): Promise<num
 
   insertComponents(db, components);
 
-  console.log(`   ✓ Indexed ${components.length} components`);
+  console.log(`   ✓ Indexed ${components.length} Vue components`);
+  return components.length;
+}
+
+async function indexReactComponents(db: ReturnType<typeof initDatabase>): Promise<number> {
+  console.log("⚛️  Indexing React components...");
+
+  const componentsPath = join(REPOS.react.path, "src", "components");
+
+  let components: Component[] = [];
+
+  if (existsSync(componentsPath)) {
+    components = await parseReactComponents(componentsPath);
+  }
+
+  // If no components were parsed, use the default list
+  if (components.length === 0) {
+    console.log("   ⚠ Using default React component list");
+    components = MOZAIC_REACT_COMPONENTS.map((c) => ({
+      name: c.name!,
+      slug: c.slug!,
+      category: c.category,
+      description: c.description,
+      frameworks: ["react"],
+      props: [],
+      slots: [],
+      events: [],
+      examples: [],
+      cssClasses: [],
+    }));
+  }
+
+  insertComponents(db, components);
+
+  console.log(`   ✓ Indexed ${components.length} React components`);
   return components.length;
 }
 
@@ -223,7 +262,8 @@ async function main(): Promise<void> {
 
   // Index all data
   await indexTokens(db);
-  await indexComponents(db);
+  await indexVueComponents(db);
+  await indexReactComponents(db);
   await indexDocumentation(db);
 
   // Print stats
