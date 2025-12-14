@@ -125,6 +125,62 @@ CSS-only layout and utility classes (no Vue/React wrapper). Use `get_css_utility
 - [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) - Architecture diagrams and statistics
 - [docs/TEST.md](./docs/TEST.md) - Testing guide
 
+## Next Steps
+
+### Benchmarking: MCP vs Claude Skills
+
+Compare performance and effectiveness of MCP server approach vs native Claude skills:
+
+- [ ] Define benchmark scenarios (component lookup, code generation, documentation search)
+- [ ] Measure response accuracy and completeness
+- [ ] Compare token usage and latency
+- [ ] Evaluate context window efficiency
+- [ ] Document trade-offs and recommendations
+
+### Release Process
+
+Steps to publish the MCP server:
+
+- [ ] **npm registry**: Publish to npm (`npm publish`)
+- [ ] **Smithery**: Submit to [smithery.ai](https://smithery.ai) MCP marketplace
+- [ ] **GitHub release**: Create tagged release with changelog
+- [ ] **Claude Desktop config**: Document installation in `claude_desktop_config.json`
+- [ ] **Version strategy**: Define semver policy for database schema changes
+
+### Future Improvements
+
+- [ ] Incremental database updates (avoid full rebuild)
+- [ ] Watch mode for local development
+- [ ] Caching layer for frequently accessed data
+- [ ] Support for custom/extended tokens
+- [ ] Multi-language documentation support
+
+## Version History
+
+Compatibility with Mozaic Design System versions:
+
+| MCP Server | Mozaic Version | Date       | Changes                                      |
+| ---------- | -------------- | ---------- | -------------------------------------------- |
+| `1.0.0`    | `2.x`          | 2024-12    | Initial release with Vue 3, React, CSS utils |
+
+### Mozaic Repositories Indexed
+
+| Repository              | Branch | Description              |
+| ----------------------- | ------ | ------------------------ |
+| `mozaic-design-system`  | main   | Tokens, docs, styles     |
+| `mozaic-vue`            | main   | Vue 3 components         |
+| `mozaic-react`          | main   | React components         |
+
+### Updating for New Mozaic Versions
+
+When a new Mozaic version is released:
+
+1. Pull latest changes: `pnpm build` (clones/updates repos automatically)
+2. Run sanity check: `pnpm database:sanity`
+3. Run tests: `pnpm test`
+4. Update version table above
+5. Tag release: `git tag vX.Y.Z`
+
 ## License
 
 MIT
