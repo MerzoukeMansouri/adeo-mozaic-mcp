@@ -1,6 +1,8 @@
 # Mozaic MCP Server - Architecture Documentation
 
 > Auto-generated on 2025-12-14
+>
+> For detailed development guide, database schema, and implementation specs, see [DEVELOPMENT.md](./DEVELOPMENT.md).
 
 ## Current Statistics
 

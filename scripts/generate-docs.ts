@@ -707,6 +707,8 @@ function generateDocMd(stats: DbStats | null): string {
   let doc = `# Mozaic MCP Server - Architecture Documentation
 
 > Auto-generated on ${timestamp}
+>
+> For detailed development guide, database schema, and implementation specs, see [DEVELOPMENT.md](./DEVELOPMENT.md).
 
 `;
 
@@ -825,10 +827,10 @@ async function main(): Promise<void> {
   // Generate SVG images from mermaid files
   await generateImages(diagrams);
 
-  // Generate doc.md only (README.md is maintained separately)
+  // Generate ARCHITECTURE.md only (README.md is maintained separately)
   const docMd = generateDocMd(stats);
-  writeFileSync(join(DOC_DIR, "doc.md"), docMd);
-  console.log("  - doc.md");
+  writeFileSync(join(DOC_DIR, "ARCHITECTURE.md"), docMd);
+  console.log("  - ARCHITECTURE.md");
 
   console.log(`\nAll files saved to: ${DOC_DIR}/`);
 }

@@ -131,7 +131,7 @@ Example CSS classes:
 
 ## Documentation
 
-See [docs/doc.md](./docs/doc.md) for detailed architecture diagrams and statistics.
+See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for detailed architecture diagrams and statistics.
 
 ## License
 

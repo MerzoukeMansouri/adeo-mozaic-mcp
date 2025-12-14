@@ -1,5 +1,41 @@
 # Mozaic Design System MCP Server
 
+> Development guide and technical specification for the Mozaic MCP Server.
+> For architecture diagrams and statistics, see [ARCHITECTURE.md](./ARCHITECTURE.md).
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Source Repositories](#source-repositories)
+- [Architecture](#architecture)
+  - [Recommended Stack](#recommended-stack)
+  - [Project Structure](#project-structure)
+- [MCP Tools](#mcp-tools-to-implement)
+  - [get_design_tokens](#1-get_design_tokens)
+  - [get_component_info](#2-get_component_info)
+  - [list_components](#3-list_components)
+  - [generate_component](#4-generate_component)
+  - [search_documentation](#5-search_documentation)
+  - [get_css_utility](#6-get_css_utility)
+  - [list_css_utilities](#7-list_css_utilities)
+- [Data Extraction Strategy](#data-extraction-strategy)
+  - [Phase 1: Clone Repositories](#phase-1-clone-and-parse-repositories)
+  - [Phase 2: Extract Tokens](#phase-2-extract-design-tokens)
+  - [Phase 3: Extract Components](#phase-3-extract-components)
+  - [Phase 4: Extract Documentation](#phase-4-extract-documentation)
+- [SQLite Database Schema](#sqlite-database-schema)
+- [Building the Database](#building-and-refreshing-the-database)
+- [Build-Time Indexing Script](#build-time-indexing-script)
+- [MCP Server Implementation](#mcp-server-implementation)
+- [Component List](#component-list-to-index)
+- [Deployment Options](#deployment-options)
+- [Debugging](#debugging)
+- [Testing Checklist](#testing-checklist)
+- [Next Steps](#next-steps)
+- [Resources](#resources)
+
+---
+
 ## Project Overview
 
 An MCP (Model Context Protocol) server that exposes the **Mozaic Design System** (by ADEO) to Claude and other AI assistants. The MCP server provides intelligent access to design tokens, component documentation, code examples, and code generation capabilities.
@@ -46,11 +82,14 @@ mozaic-mcp-server/
 ├── src/
 │   ├── index.ts              # MCP server entry point
 │   ├── tools/
+│   │   ├── get-design-tokens.ts
 │   │   ├── get-component-info.ts
 │   │   ├── list-components.ts
-│   │   ├── get-design-tokens.ts
-│   │   ├── generate-component.ts
-│   │   └── search-documentation.ts
+│   │   ├── generate-vue-component.ts
+│   │   ├── generate-react-component.ts
+│   │   ├── search-documentation.ts
+│   │   ├── get-css-utility.ts
+│   │   └── list-css-utilities.ts
 │   ├── db/
 │   │   ├── schema.ts         # SQLite schema
 │   │   └── queries.ts        # Database queries
@@ -63,17 +102,19 @@ mozaic-mcp-server/
 │       │   ├── shadow-parser.ts
 │       │   ├── border-parser.ts
 │       │   ├── screen-parser.ts
-│       │   └── typography-parser.ts
+│       │   ├── typography-parser.ts
+│       │   └── grid-parser.ts
 │       ├── vue-parser.ts     # Parse Vue components
 │       ├── react-parser.ts   # Parse React components
-│       └── docs-parser.ts    # Parse markdown documentation
+│       ├── docs-parser.ts    # Parse markdown documentation
+│       └── scss-parser.ts    # Parse CSS utilities (Flexy, Margin, etc.)
 ├── scripts/
 │   ├── build-index.ts        # Build-time indexing script
 │   └── generate-docs.ts      # Generate documentation & diagrams
 ├── data/
 │   └── mozaic.db             # SQLite database (generated)
 ├── docs/
-│   ├── doc.md                # Auto-generated architecture docs
+│   ├── ARCHITECTURE.md       # Auto-generated architecture docs
 │   └── assets/               # SVG diagrams
 ├── package.json
 └── tsconfig.json
@@ -243,6 +284,50 @@ Semantic search across Mozaic documentation.
     }
   },
   "required": ["query"]
+}
+```
+
+### 6. `get_css_utility`
+
+Get CSS utility classes and examples (Flexy, Margin, Padding, etc.).
+
+**Input Schema:**
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Utility name (e.g., 'flexy', 'margin', 'padding')"
+    },
+    "includeClasses": {
+      "type": "boolean",
+      "default": true,
+      "description": "Include all CSS class names"
+    }
+  },
+  "required": ["name"]
+}
+```
+
+### 7. `list_css_utilities`
+
+List available CSS-only utilities by category.
+
+**Input Schema:**
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "string",
+      "enum": ["layout", "utility", "all"],
+      "default": "all",
+      "description": "Filter: layout (Flexy, Container) or utility (Margin, Padding, Ratio, Scroll)"
+    }
+  }
 }
 ```
 
@@ -498,6 +583,32 @@ CREATE TABLE component_css_classes (
   id INTEGER PRIMARY KEY,
   component_id INTEGER REFERENCES components(id),
   class_name TEXT NOT NULL
+);
+
+-- CSS Utilities (layouts & spacing - separate from framework components)
+CREATE TABLE css_utilities (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE,
+  slug TEXT NOT NULL,
+  category TEXT NOT NULL,         -- 'layout', 'utility'
+  description TEXT
+);
+
+CREATE INDEX idx_css_utilities_category ON css_utilities(category);
+
+-- CSS Utility Classes
+CREATE TABLE css_utility_classes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  utility_id INTEGER REFERENCES css_utilities(id) ON DELETE CASCADE,
+  class_name TEXT NOT NULL
+);
+
+-- CSS Utility Examples
+CREATE TABLE css_utility_examples (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  utility_id INTEGER REFERENCES css_utilities(id) ON DELETE CASCADE,
+  title TEXT,
+  code TEXT NOT NULL
 );
 
 -- Documentation
