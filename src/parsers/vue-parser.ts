@@ -1,6 +1,6 @@
 import { readFileSync, existsSync, readdirSync, statSync } from "fs";
 import { join, basename } from "path";
-import type { Component, ComponentProp, ComponentSlot, ComponentEvent, ComponentExample } from "../db/queries.js";
+import type { Component, ComponentProp, ComponentSlot, ComponentEvent } from "../db/queries.js";
 
 interface ParsedVueComponent {
   name: string;
@@ -369,47 +369,3 @@ export async function parseVueComponents(
   return components;
 }
 
-// Default component list based on Mozaic documentation
-export const MOZAIC_COMPONENTS: Partial<Component>[] = [
-  { name: "MButton", slug: "button", category: "action", description: "Button component for user actions" },
-  { name: "MLink", slug: "link", category: "action", description: "Link component for navigation" },
-  { name: "MOptionButton", slug: "optionbutton", category: "action", description: "Option button for selections" },
-  { name: "MOptionCard", slug: "optioncard", category: "action", description: "Option card for visual selections" },
-  { name: "MTextInput", slug: "textinput", category: "form", description: "Text input field" },
-  { name: "MTextArea", slug: "textarea", category: "form", description: "Multi-line text input" },
-  { name: "MSelect", slug: "select", category: "form", description: "Select dropdown" },
-  { name: "MCheckbox", slug: "checkbox", category: "form", description: "Checkbox input" },
-  { name: "MRadio", slug: "radio", category: "form", description: "Radio button input" },
-  { name: "MToggle", slug: "toggle", category: "form", description: "Toggle switch" },
-  { name: "MField", slug: "field", category: "form", description: "Form field wrapper" },
-  { name: "MAutocomplete", slug: "autocomplete", category: "form", description: "Autocomplete input" },
-  { name: "MDatepicker", slug: "datepicker", category: "form", description: "Date picker input" },
-  { name: "MDropdown", slug: "dropdown", category: "form", description: "Dropdown select" },
-  { name: "MFileUploader", slug: "fileuploader", category: "form", description: "File upload component" },
-  { name: "MPasswordInput", slug: "passwordinput", category: "form", description: "Password input field" },
-  { name: "MPhoneNumberInput", slug: "phonenumberinput", category: "form", description: "Phone number input" },
-  { name: "MQuantitySelector", slug: "quantityselector", category: "form", description: "Quantity selector" },
-  { name: "MAccordion", slug: "accordion", category: "navigation", description: "Accordion component" },
-  { name: "MBreadcrumb", slug: "breadcrumb", category: "navigation", description: "Breadcrumb navigation" },
-  { name: "MBuiltInMenu", slug: "builtinmenu", category: "navigation", description: "Built-in menu" },
-  { name: "MPagination", slug: "pagination", category: "navigation", description: "Pagination component" },
-  { name: "MSidebar", slug: "sidebar", category: "navigation", description: "Sidebar navigation" },
-  { name: "MStepper", slug: "stepper", category: "navigation", description: "Step indicator" },
-  { name: "MTabs", slug: "tabs", category: "navigation", description: "Tabs component" },
-  { name: "MBadge", slug: "badge", category: "feedback", description: "Badge indicator" },
-  { name: "MFlag", slug: "flag", category: "feedback", description: "Flag/banner component" },
-  { name: "MLoader", slug: "loader", category: "feedback", description: "Loading indicator" },
-  { name: "MModal", slug: "modal", category: "feedback", description: "Modal dialog" },
-  { name: "MNotification", slug: "notification", category: "feedback", description: "Notification component" },
-  { name: "MProgressBar", slug: "progressbar", category: "feedback", description: "Progress bar" },
-  { name: "MTooltip", slug: "tooltip", category: "feedback", description: "Tooltip component" },
-  { name: "MCard", slug: "card", category: "layout", description: "Card container" },
-  { name: "MDivider", slug: "divider", category: "layout", description: "Visual divider" },
-  { name: "MLayer", slug: "layer", category: "layout", description: "Layer/overlay component" },
-  { name: "MDataTable", slug: "datatable", category: "data-display", description: "Data table" },
-  { name: "MHeading", slug: "heading", category: "data-display", description: "Heading typography" },
-  { name: "MHero", slug: "hero", category: "data-display", description: "Hero section" },
-  { name: "MListbox", slug: "listbox", category: "data-display", description: "Listbox component" },
-  { name: "MRatingStars", slug: "ratingstars", category: "data-display", description: "Star rating" },
-  { name: "MTag", slug: "tag", category: "data-display", description: "Tag/label component" },
-];

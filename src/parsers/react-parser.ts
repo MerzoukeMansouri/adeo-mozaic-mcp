@@ -1,6 +1,6 @@
 import { readFileSync, existsSync, readdirSync, statSync } from "fs";
 import { join, basename } from "path";
-import type { Component, ComponentProp, ComponentSlot, ComponentEvent, ComponentExample } from "../db/queries.js";
+import type { Component, ComponentProp, ComponentEvent } from "../db/queries.js";
 
 interface ParsedReactComponent {
   name: string;
@@ -372,47 +372,3 @@ export async function parseReactComponents(
   return components;
 }
 
-// Default React component list (mirrors Vue components)
-export const MOZAIC_REACT_COMPONENTS: Partial<Component>[] = [
-  { name: "Button", slug: "button", category: "action", description: "Button component for user actions" },
-  { name: "Link", slug: "link", category: "action", description: "Link component for navigation" },
-  { name: "OptionButton", slug: "optionbutton", category: "action", description: "Option button for selections" },
-  { name: "OptionCard", slug: "optioncard", category: "action", description: "Option card for visual selections" },
-  { name: "TextInput", slug: "textinput", category: "form", description: "Text input field" },
-  { name: "TextArea", slug: "textarea", category: "form", description: "Multi-line text input" },
-  { name: "Select", slug: "select", category: "form", description: "Select dropdown" },
-  { name: "Checkbox", slug: "checkbox", category: "form", description: "Checkbox input" },
-  { name: "Radio", slug: "radio", category: "form", description: "Radio button input" },
-  { name: "Toggle", slug: "toggle", category: "form", description: "Toggle switch" },
-  { name: "Field", slug: "field", category: "form", description: "Form field wrapper" },
-  { name: "Autocomplete", slug: "autocomplete", category: "form", description: "Autocomplete input" },
-  { name: "Datepicker", slug: "datepicker", category: "form", description: "Date picker input" },
-  { name: "Dropdown", slug: "dropdown", category: "form", description: "Dropdown select" },
-  { name: "FileUploader", slug: "fileuploader", category: "form", description: "File upload component" },
-  { name: "PasswordInput", slug: "passwordinput", category: "form", description: "Password input field" },
-  { name: "PhoneNumberInput", slug: "phonenumberinput", category: "form", description: "Phone number input" },
-  { name: "QuantitySelector", slug: "quantityselector", category: "form", description: "Quantity selector" },
-  { name: "Accordion", slug: "accordion", category: "navigation", description: "Accordion component" },
-  { name: "Breadcrumb", slug: "breadcrumb", category: "navigation", description: "Breadcrumb navigation" },
-  { name: "Menu", slug: "menu", category: "navigation", description: "Menu component" },
-  { name: "Pagination", slug: "pagination", category: "navigation", description: "Pagination component" },
-  { name: "Sidebar", slug: "sidebar", category: "navigation", description: "Sidebar navigation" },
-  { name: "Stepper", slug: "stepper", category: "navigation", description: "Step indicator" },
-  { name: "Tabs", slug: "tabs", category: "navigation", description: "Tabs component" },
-  { name: "Badge", slug: "badge", category: "feedback", description: "Badge indicator" },
-  { name: "Flag", slug: "flag", category: "feedback", description: "Flag/banner component" },
-  { name: "Loader", slug: "loader", category: "feedback", description: "Loading indicator" },
-  { name: "Modal", slug: "modal", category: "feedback", description: "Modal dialog" },
-  { name: "Notification", slug: "notification", category: "feedback", description: "Notification component" },
-  { name: "ProgressBar", slug: "progressbar", category: "feedback", description: "Progress bar" },
-  { name: "Tooltip", slug: "tooltip", category: "feedback", description: "Tooltip component" },
-  { name: "Card", slug: "card", category: "layout", description: "Card container" },
-  { name: "Divider", slug: "divider", category: "layout", description: "Visual divider" },
-  { name: "Layer", slug: "layer", category: "layout", description: "Layer/overlay component" },
-  { name: "DataTable", slug: "datatable", category: "data-display", description: "Data table" },
-  { name: "Heading", slug: "heading", category: "data-display", description: "Heading typography" },
-  { name: "Hero", slug: "hero", category: "data-display", description: "Hero section" },
-  { name: "Listbox", slug: "listbox", category: "data-display", description: "Listbox component" },
-  { name: "RatingStars", slug: "ratingstars", category: "data-display", description: "Star rating" },
-  { name: "Tag", slug: "tag", category: "data-display", description: "Tag/label component" },
-];

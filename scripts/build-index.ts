@@ -11,13 +11,11 @@ import {
   insertComponents,
   insertDocs,
   getDatabaseStats,
-  clearDatabase,
-  type Component,
 } from "../src/db/queries.js";
 import { parseTokens } from "../src/parsers/tokens-parser.js";
-import { parseVueComponents, MOZAIC_COMPONENTS } from "../src/parsers/vue-parser.js";
-import { parseReactComponents, MOZAIC_REACT_COMPONENTS } from "../src/parsers/react-parser.js";
-import { parseDocumentation, MOZAIC_DOCS } from "../src/parsers/docs-parser.js";
+import { parseVueComponents } from "../src/parsers/vue-parser.js";
+import { parseReactComponents } from "../src/parsers/react-parser.js";
+import { parseDocumentation } from "../src/parsers/docs-parser.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -106,37 +104,15 @@ async function indexTokens(db: ReturnType<typeof initDatabase>): Promise<number>
   const tokensPath = join(REPOS.designSystem.path, "packages", "tokens");
 
   if (!existsSync(tokensPath)) {
-    console.log("   ⚠ Tokens path not found, using sample tokens");
-    // Insert sample tokens
-    const sampleTokens = [
-      { category: "color", path: "color.primary-01.100", value: "#78be20", description: "Primary green" },
-      { category: "color", path: "color.primary-01.200", value: "#5a8f18", description: "Primary green dark" },
-      { category: "color", path: "color.primary-02.100", value: "#0066cc", description: "Primary blue" },
-      { category: "color", path: "color.secondary-blue.100", value: "#0066cc", description: "Secondary blue" },
-      { category: "color", path: "color.danger.100", value: "#df382b", description: "Danger/error red" },
-      { category: "color", path: "color.success.100", value: "#3aaa35", description: "Success green" },
-      { category: "color", path: "color.warning.100", value: "#ffbe00", description: "Warning yellow" },
-      { category: "color", path: "color.info.100", value: "#2196f3", description: "Info blue" },
-      { category: "size", path: "size.space.01", value: "4px", description: "Base spacing unit" },
-      { category: "size", path: "size.space.02", value: "8px", description: "2x spacing" },
-      { category: "size", path: "size.space.03", value: "12px", description: "3x spacing" },
-      { category: "size", path: "size.space.04", value: "16px", description: "4x spacing" },
-      { category: "size", path: "size.space.05", value: "24px", description: "5x spacing" },
-      { category: "size", path: "size.space.06", value: "32px", description: "6x spacing" },
-      { category: "font", path: "font.size.xs", value: "12px", description: "Extra small font" },
-      { category: "font", path: "font.size.s", value: "14px", description: "Small font" },
-      { category: "font", path: "font.size.m", value: "16px", description: "Medium font (base)" },
-      { category: "font", path: "font.size.l", value: "18px", description: "Large font" },
-      { category: "font", path: "font.size.xl", value: "24px", description: "Extra large font" },
-      { category: "font", path: "font.weight.regular", value: "400", description: "Regular weight" },
-      { category: "font", path: "font.weight.semi-bold", value: "600", description: "Semi-bold weight" },
-      { category: "font", path: "font.weight.bold", value: "700", description: "Bold weight" },
-    ];
-    insertTokens(db, sampleTokens);
-    return sampleTokens.length;
+    throw new Error(`Tokens path not found: ${tokensPath}. Make sure the design-system repository was cloned successfully.`);
   }
 
   const tokens = await parseTokens(tokensPath);
+
+  if (tokens.length === 0) {
+    throw new Error("No tokens were parsed from the design-system repository.");
+  }
+
   insertTokens(db, tokens);
 
   console.log(`   ✓ Indexed ${tokens.length} tokens`);
@@ -148,27 +124,14 @@ async function indexVueComponents(db: ReturnType<typeof initDatabase>): Promise<
 
   const componentsPath = join(REPOS.vue.path, "src", "components");
 
-  let components: Component[] = [];
-
-  if (existsSync(componentsPath)) {
-    components = await parseVueComponents(componentsPath);
+  if (!existsSync(componentsPath)) {
+    throw new Error(`Vue components path not found: ${componentsPath}. Make sure the mozaic-vue repository was cloned successfully.`);
   }
 
-  // If no components were parsed, use the default list
+  const components = await parseVueComponents(componentsPath);
+
   if (components.length === 0) {
-    console.log("   ⚠ Using default Vue component list");
-    components = MOZAIC_COMPONENTS.map((c) => ({
-      name: c.name!,
-      slug: c.slug!,
-      category: c.category,
-      description: c.description,
-      frameworks: ["vue"],
-      props: [],
-      slots: [],
-      events: [],
-      examples: [],
-      cssClasses: [],
-    }));
+    throw new Error("No Vue components were parsed from the mozaic-vue repository.");
   }
 
   insertComponents(db, components);
@@ -182,27 +145,14 @@ async function indexReactComponents(db: ReturnType<typeof initDatabase>): Promis
 
   const componentsPath = join(REPOS.react.path, "src", "components");
 
-  let components: Component[] = [];
-
-  if (existsSync(componentsPath)) {
-    components = await parseReactComponents(componentsPath);
+  if (!existsSync(componentsPath)) {
+    throw new Error(`React components path not found: ${componentsPath}. Make sure the mozaic-react repository was cloned successfully.`);
   }
 
-  // If no components were parsed, use the default list
+  const components = await parseReactComponents(componentsPath);
+
   if (components.length === 0) {
-    console.log("   ⚠ Using default React component list");
-    components = MOZAIC_REACT_COMPONENTS.map((c) => ({
-      name: c.name!,
-      slug: c.slug!,
-      category: c.category,
-      description: c.description,
-      frameworks: ["react"],
-      props: [],
-      slots: [],
-      events: [],
-      examples: [],
-      cssClasses: [],
-    }));
+    throw new Error("No React components were parsed from the mozaic-react repository.");
   }
 
   insertComponents(db, components);
@@ -216,12 +166,14 @@ async function indexDocumentation(db: ReturnType<typeof initDatabase>): Promise<
 
   const docsPath = join(REPOS.designSystem.path, "src", "docs");
 
-  let docs = await parseDocumentation(docsPath);
+  if (!existsSync(docsPath)) {
+    throw new Error(`Documentation path not found: ${docsPath}. Make sure the design-system repository was cloned successfully.`);
+  }
 
-  // Add fallback docs if none were parsed
+  const docs = await parseDocumentation(docsPath);
+
   if (docs.length === 0) {
-    console.log("   ⚠ Using default documentation");
-    docs = MOZAIC_DOCS;
+    throw new Error("No documentation was parsed from the design-system repository.");
   }
 
   insertDocs(db, docs);
