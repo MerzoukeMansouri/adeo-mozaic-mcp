@@ -206,17 +206,17 @@ function rowToToken(row: TokenRow, properties?: TokenPropertyRow[]): Token {
   return token;
 }
 
-export function getTokensByCategory(
-  db: Database.Database,
-  category: string
-): Token[] {
-  const rows = category === "all"
-    ? db.prepare("SELECT * FROM tokens").all() as TokenRow[]
-    : db.prepare("SELECT * FROM tokens WHERE category = ?").all(category) as TokenRow[];
+export function getTokensByCategory(db: Database.Database, category: string): Token[] {
+  const rows =
+    category === "all"
+      ? (db.prepare("SELECT * FROM tokens").all() as TokenRow[])
+      : (db.prepare("SELECT * FROM tokens WHERE category = ?").all(category) as TokenRow[]);
 
   return rows.map((row) => {
     const properties = db
-      .prepare("SELECT property, value, value_number, value_unit FROM token_properties WHERE token_id = ?")
+      .prepare(
+        "SELECT property, value, value_number, value_unit FROM token_properties WHERE token_id = ?"
+      )
       .all(row.id) as TokenPropertyRow[];
     return rowToToken(row, properties);
   });
@@ -233,58 +233,54 @@ export function getTokensBySubcategory(
 
   return rows.map((row) => {
     const properties = db
-      .prepare("SELECT property, value, value_number, value_unit FROM token_properties WHERE token_id = ?")
+      .prepare(
+        "SELECT property, value, value_number, value_unit FROM token_properties WHERE token_id = ?"
+      )
       .all(row.id) as TokenPropertyRow[];
     return rowToToken(row, properties);
   });
 }
 
-export function getTokenByPath(
-  db: Database.Database,
-  path: string
-): Token | undefined {
-  const row = db
-    .prepare("SELECT * FROM tokens WHERE path = ?")
-    .get(path) as TokenRow | undefined;
+export function getTokenByPath(db: Database.Database, path: string): Token | undefined {
+  const row = db.prepare("SELECT * FROM tokens WHERE path = ?").get(path) as TokenRow | undefined;
 
   if (!row) return undefined;
 
   const properties = db
-    .prepare("SELECT property, value, value_number, value_unit FROM token_properties WHERE token_id = ?")
+    .prepare(
+      "SELECT property, value, value_number, value_unit FROM token_properties WHERE token_id = ?"
+    )
     .all(row.id) as TokenPropertyRow[];
 
   return rowToToken(row, properties);
 }
 
-export function searchTokens(
-  db: Database.Database,
-  query: string,
-  limit: number = 20
-): Token[] {
+export function searchTokens(db: Database.Database, query: string, limit: number = 20): Token[] {
   const rows = db
-    .prepare(`
+    .prepare(
+      `
       SELECT t.*
       FROM tokens_fts
       JOIN tokens t ON tokens_fts.rowid = t.id
       WHERE tokens_fts MATCH ?
       ORDER BY rank
       LIMIT ?
-    `)
+    `
+    )
     .all(query, limit) as TokenRow[];
 
   return rows.map((row) => {
     const properties = db
-      .prepare("SELECT property, value, value_number, value_unit FROM token_properties WHERE token_id = ?")
+      .prepare(
+        "SELECT property, value, value_number, value_unit FROM token_properties WHERE token_id = ?"
+      )
       .all(row.id) as TokenPropertyRow[];
     return rowToToken(row, properties);
   });
 }
 
 // Component operations
-export function insertComponent(
-  db: Database.Database,
-  component: Component
-): number {
+export function insertComponent(db: Database.Database, component: Component): number {
   const result = db
     .prepare(
       `
@@ -297,9 +293,7 @@ export function insertComponent(
       slug: component.slug,
       category: component.category ?? null,
       description: component.description ?? null,
-      frameworks: component.frameworks
-        ? JSON.stringify(component.frameworks)
-        : null,
+      frameworks: component.frameworks ? JSON.stringify(component.frameworks) : null,
     });
 
   const componentId = result.lastInsertRowid as number;
@@ -385,10 +379,7 @@ export function insertComponent(
   return componentId;
 }
 
-export function insertComponents(
-  db: Database.Database,
-  components: Component[]
-): void {
+export function insertComponents(db: Database.Database, components: Component[]): void {
   const transaction = db.transaction((items: Component[]) => {
     for (const component of items) {
       insertComponent(db, component);
@@ -397,26 +388,30 @@ export function insertComponents(
   transaction(components);
 }
 
-export function getComponentBySlug(
-  db: Database.Database,
-  slug: string
-): Component | null {
-  const row = db
-    .prepare("SELECT * FROM components WHERE slug = ? COLLATE NOCASE")
-    .get(slug) as { id: number; name: string; slug: string; category: string; description: string; frameworks: string } | undefined;
+export function getComponentBySlug(db: Database.Database, slug: string): Component | null {
+  const row = db.prepare("SELECT * FROM components WHERE slug = ? COLLATE NOCASE").get(slug) as
+    | {
+        id: number;
+        name: string;
+        slug: string;
+        category: string;
+        description: string;
+        frameworks: string;
+      }
+    | undefined;
 
   if (!row) return null;
 
   const props = db
     .prepare("SELECT * FROM component_props WHERE component_id = ?")
     .all(row.id) as Array<{
-      name: string;
-      type: string;
-      default_value: string;
-      required: number;
-      options: string;
-      description: string;
-    }>;
+    name: string;
+    type: string;
+    default_value: string;
+    required: number;
+    options: string;
+    description: string;
+  }>;
 
   const slots = db
     .prepare("SELECT * FROM component_slots WHERE component_id = ?")
@@ -429,11 +424,11 @@ export function getComponentBySlug(
   const examples = db
     .prepare("SELECT * FROM component_examples WHERE component_id = ?")
     .all(row.id) as Array<{
-      framework: string;
-      title: string;
-      code: string;
-      description: string;
-    }>;
+    framework: string;
+    title: string;
+    code: string;
+    description: string;
+  }>;
 
   const cssClasses = db
     .prepare("SELECT class_name FROM component_css_classes WHERE component_id = ?")
@@ -478,21 +473,24 @@ export function listComponents(
 ): Array<{ name: string; slug: string; category: string; description: string }> {
   if (category && category !== "all") {
     return db
-      .prepare(
-        "SELECT name, slug, category, description FROM components WHERE category = ?"
-      )
-      .all(category) as Array<{ name: string; slug: string; category: string; description: string }>;
+      .prepare("SELECT name, slug, category, description FROM components WHERE category = ?")
+      .all(category) as Array<{
+      name: string;
+      slug: string;
+      category: string;
+      description: string;
+    }>;
   }
-  return db
-    .prepare("SELECT name, slug, category, description FROM components")
-    .all() as Array<{ name: string; slug: string; category: string; description: string }>;
+  return db.prepare("SELECT name, slug, category, description FROM components").all() as Array<{
+    name: string;
+    slug: string;
+    category: string;
+    description: string;
+  }>;
 }
 
 // Documentation operations
-export function insertDocs(
-  db: Database.Database,
-  docs: Documentation[]
-): void {
+export function insertDocs(db: Database.Database, docs: Documentation[]): void {
   const stmt = db.prepare(`
     INSERT INTO documentation (title, path, content, category, keywords)
     VALUES (@title, @path, @content, @category, @keywords)
@@ -542,21 +540,20 @@ export function getDocumentationByPath(
   db: Database.Database,
   path: string
 ): Documentation | undefined {
-  return db
-    .prepare("SELECT * FROM documentation WHERE path = ?")
-    .get(path) as Documentation | undefined;
+  return db.prepare("SELECT * FROM documentation WHERE path = ?").get(path) as
+    | Documentation
+    | undefined;
 }
 
 // CSS Utility operations
-export function insertCssUtility(
-  db: Database.Database,
-  utility: CssUtility
-): number {
+export function insertCssUtility(db: Database.Database, utility: CssUtility): number {
   const result = db
-    .prepare(`
+    .prepare(
+      `
       INSERT INTO css_utilities (name, slug, category, description)
       VALUES (@name, @slug, @category, @description)
-    `)
+    `
+    )
     .run({
       name: utility.name,
       slug: utility.slug,
@@ -595,10 +592,7 @@ export function insertCssUtility(
   return utilityId;
 }
 
-export function insertCssUtilities(
-  db: Database.Database,
-  utilities: CssUtility[]
-): void {
+export function insertCssUtilities(db: Database.Database, utilities: CssUtility[]): void {
   const transaction = db.transaction((items: CssUtility[]) => {
     for (const utility of items) {
       insertCssUtility(db, utility);
@@ -607,13 +601,12 @@ export function insertCssUtilities(
   transaction(utilities);
 }
 
-export function getCssUtility(
-  db: Database.Database,
-  name: string
-): CssUtility | null {
+export function getCssUtility(db: Database.Database, name: string): CssUtility | null {
   const row = db
     .prepare("SELECT * FROM css_utilities WHERE name = ? COLLATE NOCASE OR slug = ? COLLATE NOCASE")
-    .get(name, name) as { id: number; name: string; slug: string; category: string; description: string } | undefined;
+    .get(name, name) as
+    | { id: number; name: string; slug: string; category: string; description: string }
+    | undefined;
 
   if (!row) return null;
 
@@ -641,19 +634,38 @@ export function getCssUtility(
 export function listCssUtilities(
   db: Database.Database,
   category?: string
-): Array<{ name: string; slug: string; category: string; description: string; classCount: number }> {
-  const query = category && category !== "all"
-    ? `SELECT u.name, u.slug, u.category, u.description,
+): Array<{
+  name: string;
+  slug: string;
+  category: string;
+  description: string;
+  classCount: number;
+}> {
+  const query =
+    category && category !== "all"
+      ? `SELECT u.name, u.slug, u.category, u.description,
          (SELECT COUNT(*) FROM css_utility_classes WHERE utility_id = u.id) as classCount
        FROM css_utilities u WHERE u.category = ?`
-    : `SELECT u.name, u.slug, u.category, u.description,
+      : `SELECT u.name, u.slug, u.category, u.description,
          (SELECT COUNT(*) FROM css_utility_classes WHERE utility_id = u.id) as classCount
        FROM css_utilities u`;
 
   if (category && category !== "all") {
-    return db.prepare(query).all(category) as Array<{ name: string; slug: string; category: string; description: string; classCount: number }>;
+    return db.prepare(query).all(category) as Array<{
+      name: string;
+      slug: string;
+      category: string;
+      description: string;
+      classCount: number;
+    }>;
   }
-  return db.prepare(query).all() as Array<{ name: string; slug: string; category: string; description: string; classCount: number }>;
+  return db.prepare(query).all() as Array<{
+    name: string;
+    slug: string;
+    category: string;
+    description: string;
+    classCount: number;
+  }>;
 }
 
 // Utility functions
@@ -681,9 +693,15 @@ export function getDatabaseStats(db: Database.Database): {
   documentation: number;
 } {
   const tokens = db.prepare("SELECT COUNT(*) as count FROM tokens").get() as { count: number };
-  const components = db.prepare("SELECT COUNT(*) as count FROM components").get() as { count: number };
-  const cssUtilities = db.prepare("SELECT COUNT(*) as count FROM css_utilities").get() as { count: number };
-  const documentation = db.prepare("SELECT COUNT(*) as count FROM documentation").get() as { count: number };
+  const components = db.prepare("SELECT COUNT(*) as count FROM components").get() as {
+    count: number;
+  };
+  const cssUtilities = db.prepare("SELECT COUNT(*) as count FROM css_utilities").get() as {
+    count: number;
+  };
+  const documentation = db.prepare("SELECT COUNT(*) as count FROM documentation").get() as {
+    count: number;
+  };
 
   return {
     tokens: tokens.count,

@@ -1,5 +1,5 @@
 import { readFileSync, existsSync, readdirSync, statSync } from "fs";
-import { join, basename } from "path";
+import { join } from "path";
 import type { Token } from "./types.js";
 import { parseValue, pathToCssVariable, pathToScssVariable } from "./types.js";
 

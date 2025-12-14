@@ -40,10 +40,10 @@ describe("Vue Parser - extractProps", () => {
         if (jsdocMatch) {
           // Remove leading whitespace, asterisks, and collapse to single line
           description = jsdocMatch[1]
-            .split('\n')
-            .map(line => line.replace(/^\s*\*?\s*/, '').trim())
-            .filter(line => line.length > 0)
-            .join(' ')
+            .split("\n")
+            .map((line) => line.replace(/^\s*\*?\s*/, "").trim())
+            .filter((line) => line.length > 0)
+            .join(" ")
             .trim();
         }
 
@@ -204,10 +204,7 @@ describe("Vue Parser - extractEvents", () => {
     const seenEvents = new Set<string>();
 
     // Match emit calls: emit('eventName') or $emit('eventName')
-    const emitPatterns = [
-      /emit\s*\(\s*['"]([^'"]+)['"]/g,
-      /\$emit\s*\(\s*['"]([^'"]+)['"]/g,
-    ];
+    const emitPatterns = [/emit\s*\(\s*['"]([^'"]+)['"]/g, /\$emit\s*\(\s*['"]([^'"]+)['"]/g];
 
     for (const pattern of emitPatterns) {
       let match;

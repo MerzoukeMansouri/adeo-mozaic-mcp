@@ -191,7 +191,10 @@ import React from 'react'
 });
 
 // Helper functions to test - reimplemented for unit testing
-function extractFrontmatter(content: string): { frontmatter: Record<string, string>; body: string } {
+function extractFrontmatter(content: string): {
+  frontmatter: Record<string, string>;
+  body: string;
+} {
   const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
   const match = content.match(frontmatterRegex);
 
@@ -205,7 +208,10 @@ function extractFrontmatter(content: string): { frontmatter: Record<string, stri
       const colonIndex = line.indexOf(":");
       if (colonIndex !== -1) {
         const key = line.substring(0, colonIndex).trim();
-        const value = line.substring(colonIndex + 1).trim().replace(/^['"]|['"]$/g, "");
+        const value = line
+          .substring(colonIndex + 1)
+          .trim()
+          .replace(/^['"]|['"]$/g, "");
         frontmatter[key] = value;
       }
     }

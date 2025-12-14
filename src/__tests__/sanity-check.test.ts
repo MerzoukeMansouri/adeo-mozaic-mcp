@@ -22,9 +22,9 @@ describe("Sanity Check - Database Integrity", () => {
         "INSERT INTO tokens (category, name, path, value_raw, css_variable) VALUES (?, ?, ?, ?, ?)"
       ).run("color", "primary", "color.primary", "#000", "--color-primary");
 
-      const categories = db
-        .prepare("SELECT DISTINCT category FROM tokens")
-        .all() as Array<{ category: string }>;
+      const categories = db.prepare("SELECT DISTINCT category FROM tokens").all() as Array<{
+        category: string;
+      }>;
 
       expect(categories).toHaveLength(1);
       expect(categories[0].category).toBe("color");
@@ -54,9 +54,12 @@ describe("Sanity Check - Database Integrity", () => {
 
     it("should detect missing required fields", () => {
       // Insert token with missing path
-      db.prepare(
-        "INSERT INTO tokens (category, name, path, value_raw) VALUES (?, ?, ?, ?)"
-      ).run("color", "test", "", "value");
+      db.prepare("INSERT INTO tokens (category, name, path, value_raw) VALUES (?, ?, ?, ?)").run(
+        "color",
+        "test",
+        "",
+        "value"
+      );
 
       const emptyPath = db
         .prepare("SELECT COUNT(*) as count FROM tokens WHERE path IS NULL OR path = ''")
@@ -104,7 +107,9 @@ describe("Sanity Check - Database Integrity", () => {
       insertProp.run(c1.lastInsertRowid, "size", "string");
       insertProp.run(c2.lastInsertRowid, "value", "string");
 
-      const total = db.prepare("SELECT COUNT(*) as count FROM components").get() as { count: number };
+      const total = db.prepare("SELECT COUNT(*) as count FROM components").get() as {
+        count: number;
+      };
       const withProps = db
         .prepare("SELECT COUNT(DISTINCT component_id) as count FROM component_props")
         .get() as { count: number };
@@ -156,9 +161,11 @@ describe("Sanity Check - Database Integrity", () => {
       const u1 = insertUtility.run("Flexy", "flexy", "layout");
       insertUtility.run("Container", "container", "layout");
 
-      insertExample.run(u1.lastInsertRowid, "Basic", "<div class=\"ml-flexy\"></div>");
+      insertExample.run(u1.lastInsertRowid, "Basic", '<div class="ml-flexy"></div>');
 
-      const total = db.prepare("SELECT COUNT(*) as count FROM css_utilities").get() as { count: number };
+      const total = db.prepare("SELECT COUNT(*) as count FROM css_utilities").get() as {
+        count: number;
+      };
       const withExamples = db
         .prepare("SELECT COUNT(DISTINCT utility_id) as count FROM css_utility_examples")
         .get() as { count: number };
@@ -258,7 +265,13 @@ describe("Sanity Check - Database Integrity", () => {
     it("should index documentation for FTS", () => {
       db.prepare(
         "INSERT INTO documentation (title, path, content, category, keywords) VALUES (?, ?, ?, ?, ?)"
-      ).run("Button", "/components/button", "Button component documentation", "components", "button,action");
+      ).run(
+        "Button",
+        "/components/button",
+        "Button component documentation",
+        "components",
+        "button,action"
+      );
 
       db.prepare(
         "INSERT INTO documentation (title, path, content, category, keywords) VALUES (?, ?, ?, ?, ?)"

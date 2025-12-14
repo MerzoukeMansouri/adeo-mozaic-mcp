@@ -1,7 +1,6 @@
-import { readFileSync, existsSync } from "fs";
+import { existsSync } from "fs";
 import { join } from "path";
 import type { Token } from "./types.js";
-import { remToPx } from "./types.js";
 
 // Magic Unit spacing tokens from SCSS
 // Base: $magic-unit = 16px (1rem)

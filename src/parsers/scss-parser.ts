@@ -7,9 +7,23 @@ const MAJOR_SCREENS = ["s", "m", "l", "xl"];
 
 // Spacing sizes for margin/padding utilities
 const SIZES = [
-  "025", "050", "075", "100", "125", "150",
-  "200", "250", "300", "350", "400", "500",
-  "600", "700", "800", "900", "1000"
+  "025",
+  "050",
+  "075",
+  "100",
+  "125",
+  "150",
+  "200",
+  "250",
+  "300",
+  "350",
+  "400",
+  "500",
+  "600",
+  "700",
+  "800",
+  "900",
+  "1000",
 ];
 
 // Sides for margin/padding utilities
@@ -33,9 +47,7 @@ export interface ParseScssOptions {
 /**
  * Parse SCSS files to extract CSS-only utilities (layouts and spacing)
  */
-export async function parseCssUtilities(
-  stylesPath: string
-): Promise<CssUtility[]> {
+export async function parseCssUtilities(stylesPath: string): Promise<CssUtility[]> {
   const utilities: CssUtility[] = [];
 
   // Parse layouts
@@ -106,9 +118,24 @@ function parseFlexyUtility(): CssUtility {
 
   // Column width classes (fractions)
   const fractions = [
-    [1, 2], [1, 3], [2, 3], [1, 4], [3, 4], [1, 6], [5, 6],
-    [1, 12], [2, 12], [3, 12], [4, 12], [5, 12], [6, 12],
-    [7, 12], [8, 12], [9, 12], [10, 12], [11, 12],
+    [1, 2],
+    [1, 3],
+    [2, 3],
+    [1, 4],
+    [3, 4],
+    [1, 6],
+    [5, 6],
+    [1, 12],
+    [2, 12],
+    [3, 12],
+    [4, 12],
+    [5, 12],
+    [6, 12],
+    [7, 12],
+    [8, 12],
+    [9, 12],
+    [10, 12],
+    [11, 12],
   ];
 
   for (const [num, denom] of fractions) {

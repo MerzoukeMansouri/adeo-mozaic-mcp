@@ -54,7 +54,8 @@ export const listCssUtilitiesTool = {
         type: "string",
         enum: ["layout", "utility", "all"],
         default: "all",
-        description: "Filter by category: 'layout' (Flexy, Container), 'utility' (Margin, Padding, etc.), or 'all'",
+        description:
+          "Filter by category: 'layout' (Flexy, Container), 'utility' (Margin, Padding, etc.), or 'all'",
       },
     },
     required: [],

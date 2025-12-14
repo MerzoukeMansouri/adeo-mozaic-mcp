@@ -94,10 +94,7 @@ export function handleGetComponentInfo(
 }
 
 // Generate a basic example if none exist
-function generateBasicExample(
-  componentName: string,
-  framework: string
-): string | null {
+function generateBasicExample(componentName: string, framework: string): string | null {
   const tag = componentName;
 
   switch (framework) {
@@ -105,9 +102,10 @@ function generateBasicExample(
       return `<${tag}>Content</${tag}>`;
     case "react":
       return `<${tag}>Content</${tag}>`;
-    case "html":
+    case "html": {
       const cssClass = `mc-${componentName.replace(/^M/, "").toLowerCase()}`;
       return `<div class="${cssClass}">Content</div>`;
+    }
     default:
       return null;
   }
@@ -123,8 +121,7 @@ export const getComponentInfoTool = {
     properties: {
       component: {
         type: "string",
-        description:
-          "Component name (e.g., 'button', 'modal', 'MButton', 'accordion')",
+        description: "Component name (e.g., 'button', 'modal', 'MButton', 'accordion')",
       },
       framework: {
         type: "string",

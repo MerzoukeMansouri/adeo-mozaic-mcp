@@ -1,7 +1,6 @@
-import { readFileSync, existsSync, readdirSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 import type { Token } from "./types.js";
-import { remToPx } from "./types.js";
 
 interface FontValue {
   value: number | string;

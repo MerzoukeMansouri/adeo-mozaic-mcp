@@ -1,5 +1,5 @@
 import { readFileSync, existsSync, readdirSync, statSync } from "fs";
-import { join, basename, dirname, relative } from "path";
+import { join, relative } from "path";
 import type { Documentation } from "../db/queries.js";
 
 interface ParsedDoc {
@@ -10,7 +10,10 @@ interface ParsedDoc {
 }
 
 // Extract frontmatter from MDX files
-function extractFrontmatter(content: string): { frontmatter: Record<string, string>; body: string } {
+function extractFrontmatter(content: string): {
+  frontmatter: Record<string, string>;
+  body: string;
+} {
   const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
   const match = content.match(frontmatterRegex);
 
@@ -24,7 +27,10 @@ function extractFrontmatter(content: string): { frontmatter: Record<string, stri
       const colonIndex = line.indexOf(":");
       if (colonIndex !== -1) {
         const key = line.substring(0, colonIndex).trim();
-        const value = line.substring(colonIndex + 1).trim().replace(/^['"]|['"]$/g, "");
+        const value = line
+          .substring(colonIndex + 1)
+          .trim()
+          .replace(/^['"]|['"]$/g, "");
         frontmatter[key] = value;
       }
     }
@@ -125,7 +131,7 @@ function inferCategory(filePath: string): string {
   return "other";
 }
 
-function parseMdxFile(filePath: string, basePath: string): ParsedDoc | null {
+function parseMdxFile(filePath: string, _basePath: string): ParsedDoc | null {
   try {
     const content = readFileSync(filePath, "utf-8");
     const { frontmatter, body } = extractFrontmatter(content);
@@ -206,4 +212,3 @@ export async function parseDocumentation(docsPath: string): Promise<Documentatio
 
   return docs;
 }
-

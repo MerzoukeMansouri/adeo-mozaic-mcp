@@ -102,7 +102,10 @@ describe("React Parser - extractPropsFromInterface", () => {
           const constNameLower = constName.toLowerCase();
           // Match if type contains const name or const name contains type suffix
           // e.g., "buttonvariant" should match "variant" or "variants"
-          if (typeName.includes(constNameLower) || typeName.includes(constNameLower.replace(/s$/, ""))) {
+          if (
+            typeName.includes(constNameLower) ||
+            typeName.includes(constNameLower.replace(/s$/, ""))
+          ) {
             options = values;
             break;
           }
@@ -280,11 +283,23 @@ describe("React Parser - inferCategory", () => {
     const name = componentName.toLowerCase();
 
     if (["button", "link", "optionbutton"].some((n) => name.includes(n))) return "action";
-    if (["input", "select", "checkbox", "radio", "toggle", "textarea", "field"].some((n) => name.includes(n))) return "form";
-    if (["accordion", "breadcrumb", "menu", "pagination", "tabs"].some((n) => name.includes(n))) return "navigation";
-    if (["badge", "flag", "loader", "modal", "notification", "progress", "tooltip"].some((n) => name.includes(n))) return "feedback";
+    if (
+      ["input", "select", "checkbox", "radio", "toggle", "textarea", "field"].some((n) =>
+        name.includes(n)
+      )
+    )
+      return "form";
+    if (["accordion", "breadcrumb", "menu", "pagination", "tabs"].some((n) => name.includes(n)))
+      return "navigation";
+    if (
+      ["badge", "flag", "loader", "modal", "notification", "progress", "tooltip"].some((n) =>
+        name.includes(n)
+      )
+    )
+      return "feedback";
     if (["card", "divider", "layer"].some((n) => name.includes(n))) return "layout";
-    if (["table", "heading", "hero", "listbox", "rating", "tag"].some((n) => name.includes(n))) return "data-display";
+    if (["table", "heading", "hero", "listbox", "rating", "tag"].some((n) => name.includes(n)))
+      return "data-display";
 
     return "other";
   }

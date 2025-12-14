@@ -20,7 +20,9 @@ function extractProps(content: string): ComponentProp[] {
     const propsContent = definePropsMatch[1];
 
     // Extract defaults from withDefaults if present
-    const defaultsMatch = content.match(/withDefaults\s*\(\s*defineProps<[\s\S]*?>\s*\(\)\s*,\s*\{([\s\S]*?)\}\s*\)/);
+    const defaultsMatch = content.match(
+      /withDefaults\s*\(\s*defineProps<[\s\S]*?>\s*\(\)\s*,\s*\{([\s\S]*?)\}\s*\)/
+    );
     const defaultsContent = defaultsMatch ? defaultsMatch[1] : "";
 
     // Parse each prop with its JSDoc comment
@@ -44,13 +46,15 @@ function extractProps(content: string): ComponentProp[] {
       }
 
       // Extract default value
-      const defaultMatch = defaultsContent.match(new RegExp(`${propName}\\s*:\\s*['"\`]?([^'"\`,}]+)['"\`]?`));
+      const defaultMatch = defaultsContent.match(
+        new RegExp(`${propName}\\s*:\\s*['"\`]?([^'"\`,}]+)['"\`]?`)
+      );
       const defaultValue = defaultMatch ? defaultMatch[1].trim() : undefined;
 
       // Extract options from union types like 'a' | 'b' | 'c'
       let options: string[] | undefined;
       const unionMatch = propType.match(/^['"]([^'"]+)['"](?:\s*\|\s*['"]([^'"]+)['"])+$/);
-      if (unionMatch || propType.includes("'") && propType.includes("|")) {
+      if (unionMatch || (propType.includes("'") && propType.includes("|"))) {
         options = propType
           .split("|")
           .map((s) => s.trim().replace(/['"]/g, ""))
@@ -215,9 +219,7 @@ function parseVueFile(filePath: string): ParsedVueComponent | null {
 }
 
 // Parse storybook stories for examples
-function parseStoriesFile(
-  filePath: string
-): Array<{ title: string; code: string }> {
+function parseStoriesFile(filePath: string): Array<{ title: string; code: string }> {
   const examples: Array<{ title: string; code: string }> = [];
 
   try {
@@ -279,11 +281,7 @@ function findComponentDirs(baseDir: string): string[] {
 function inferCategory(componentName: string): string {
   const name = componentName.toLowerCase();
 
-  if (
-    ["button", "link", "optionbutton", "optioncard"].some((n) =>
-      name.includes(n)
-    )
-  ) {
+  if (["button", "link", "optionbutton", "optioncard"].some((n) => name.includes(n))) {
     return "action";
   }
   if (
@@ -307,48 +305,30 @@ function inferCategory(componentName: string): string {
     return "form";
   }
   if (
-    [
-      "accordion",
-      "breadcrumb",
-      "menu",
-      "pagination",
-      "sidebar",
-      "stepper",
-      "tabs",
-    ].some((n) => name.includes(n))
+    ["accordion", "breadcrumb", "menu", "pagination", "sidebar", "stepper", "tabs"].some((n) =>
+      name.includes(n)
+    )
   ) {
     return "navigation";
   }
   if (
-    [
-      "badge",
-      "flag",
-      "loader",
-      "modal",
-      "notification",
-      "progress",
-      "tooltip",
-    ].some((n) => name.includes(n))
+    ["badge", "flag", "loader", "modal", "notification", "progress", "tooltip"].some((n) =>
+      name.includes(n)
+    )
   ) {
     return "feedback";
   }
   if (["card", "divider", "layer"].some((n) => name.includes(n))) {
     return "layout";
   }
-  if (
-    ["table", "heading", "hero", "listbox", "rating", "tag"].some((n) =>
-      name.includes(n)
-    )
-  ) {
+  if (["table", "heading", "hero", "listbox", "rating", "tag"].some((n) => name.includes(n))) {
     return "data-display";
   }
 
   return "other";
 }
 
-export async function parseVueComponents(
-  componentsPath: string
-): Promise<Component[]> {
+export async function parseVueComponents(componentsPath: string): Promise<Component[]> {
   const components: Component[] = [];
 
   const componentDirs = findComponentDirs(componentsPath);
@@ -360,9 +340,9 @@ export async function parseVueComponents(
 
     // Try multiple file patterns
     const possibleFiles = [
-      join(dir, `${componentName}.vue`),      // MButton.vue
-      join(dir, `${dirName}.vue`),            // button.vue
-      join(dir, "index.vue"),                 // index.vue
+      join(dir, `${componentName}.vue`), // MButton.vue
+      join(dir, `${dirName}.vue`), // button.vue
+      join(dir, "index.vue"), // index.vue
     ];
 
     let vueFile: string | null = null;
@@ -391,8 +371,8 @@ export async function parseVueComponents(
 
         // Try to find stories file - check both in component dir and stories subdir
         const storyPatterns = [
-          join(dir, `${componentName}.stories.ts`),       // MButton.stories.ts
-          join(dir, `${dirName}.stories.ts`),             // button.stories.ts
+          join(dir, `${componentName}.stories.ts`), // MButton.stories.ts
+          join(dir, `${dirName}.stories.ts`), // button.stories.ts
           join(dir, "stories", `${componentName}.stories.ts`),
           join(dir, "stories", "index.stories.ts"),
         ];
@@ -414,9 +394,7 @@ export async function parseVueComponents(
         // Also check for stories directory with multiple files
         const storiesDir = join(dir, "stories");
         if (existsSync(storiesDir)) {
-          const storyFiles = readdirSync(storiesDir).filter((f) =>
-            f.endsWith(".stories.ts")
-          );
+          const storyFiles = readdirSync(storiesDir).filter((f) => f.endsWith(".stories.ts"));
           for (const storyFile of storyFiles) {
             const stories = parseStoriesFile(join(storiesDir, storyFile));
             component.examples?.push(
@@ -440,4 +418,3 @@ export async function parseVueComponents(
 
   return components;
 }
-

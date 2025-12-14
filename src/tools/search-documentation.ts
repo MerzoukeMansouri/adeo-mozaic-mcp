@@ -61,7 +61,7 @@ export function handleSearchDocumentation(
     }
 
     return formatResults(results, query);
-  } catch (error) {
+  } catch {
     // FTS5 query syntax error - fall back to simple search
     const simpleQuery = query
       .trim()
@@ -89,10 +89,13 @@ export function handleSearchDocumentation(
 // Prepare query for FTS5
 function prepareFtsQuery(query: string): string {
   // Remove special characters that might break FTS5
-  let cleaned = query.replace(/[^\w\s-]/g, " ");
+  const cleaned = query.replace(/[^\w\s-]/g, " ");
 
   // Split into terms
-  const terms = cleaned.trim().split(/\s+/).filter((term) => term.length > 1);
+  const terms = cleaned
+    .trim()
+    .split(/\s+/)
+    .filter((term) => term.length > 1);
 
   if (terms.length === 0) {
     return query.trim();
@@ -133,9 +136,7 @@ function cleanSnippet(snippet: string): string {
   if (!snippet) return "";
 
   // Remove HTML tags but keep the text
-  let cleaned = snippet
-    .replace(/<mark>/g, "**")
-    .replace(/<\/mark>/g, "**");
+  let cleaned = snippet.replace(/<mark>/g, "**").replace(/<\/mark>/g, "**");
 
   // Normalize whitespace
   cleaned = cleaned.replace(/\s+/g, " ").trim();
@@ -151,8 +152,7 @@ function cleanSnippet(snippet: string): string {
 // Tool definition for MCP
 export const searchDocumentationTool = {
   name: "search_documentation",
-  description:
-    "Search Mozaic Design System documentation for components, patterns, and guidelines",
+  description: "Search Mozaic Design System documentation for components, patterns, and guidelines",
   inputSchema: {
     type: "object" as const,
     properties: {

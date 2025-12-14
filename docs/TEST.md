@@ -4,7 +4,10 @@
 
 ```bash
 pnpm test            # Run unit tests
+pnpm test:coverage   # Run tests with coverage report
 pnpm sanity-check    # Run database sanity checks
+pnpm lint            # Run ESLint
+pnpm format:check    # Check Prettier formatting
 ```
 
 ## Unit Tests
@@ -16,7 +19,10 @@ Unit tests validate the parser logic for extracting data from Vue, React, docume
 ```bash
 pnpm test           # Run once
 pnpm test:watch     # Watch mode
+pnpm test:coverage  # With coverage report
 ```
+
+Coverage report generated at `coverage/index.html`.
 
 ### Test Files
 
@@ -104,15 +110,38 @@ pnpm sanity-check
 | FTS | Full-text search indexes work |
 | FK Integrity | No orphaned records |
 
+## Code Quality
+
+### Linting
+
+```bash
+pnpm lint        # Check for issues
+pnpm lint:fix    # Auto-fix issues
+```
+
+### Formatting
+
+```bash
+pnpm format        # Format all files
+pnpm format:check  # Check formatting
+```
+
+### Pre-commit Hooks
+
+Husky runs lint-staged on commit, which:
+- Runs ESLint with auto-fix
+- Runs Prettier formatting
+
 ## CI/CD
 
-GitHub Actions runs both test suites on push/PR to `main`:
+GitHub Actions runs on push/PR to `main`:
 
 ```yaml
 # .github/workflows/test.yml
 jobs:
-  test:     # pnpm test
+  lint:     # pnpm lint && pnpm format:check
+  test:     # pnpm test:coverage
   sanity:   # pnpm sanity-check
 ```
 
-Both jobs run in parallel. The database (`data/mozaic.db`) must be committed for sanity checks to pass.
+All jobs run in parallel. The database (`data/mozaic.db`) must be committed for sanity checks to pass.

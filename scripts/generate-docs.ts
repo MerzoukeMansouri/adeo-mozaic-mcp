@@ -39,48 +39,54 @@ function getDbStats(): DbStats | null {
   const db = new Database(DB_PATH, { readonly: true });
 
   const tokens = db.prepare("SELECT COUNT(*) as count FROM tokens").get() as { count: number };
-  const components = db.prepare("SELECT COUNT(*) as count FROM components").get() as { count: number };
+  const components = db.prepare("SELECT COUNT(*) as count FROM components").get() as {
+    count: number;
+  };
   const docs = db.prepare("SELECT COUNT(*) as count FROM documentation").get() as { count: number };
 
-  const vueComponents = db.prepare(
-    "SELECT COUNT(*) as count FROM components WHERE frameworks LIKE '%vue%'"
-  ).get() as { count: number };
+  const vueComponents = db
+    .prepare("SELECT COUNT(*) as count FROM components WHERE frameworks LIKE '%vue%'")
+    .get() as { count: number };
 
-  const reactComponents = db.prepare(
-    "SELECT COUNT(*) as count FROM components WHERE frameworks LIKE '%react%'"
-  ).get() as { count: number };
+  const reactComponents = db
+    .prepare("SELECT COUNT(*) as count FROM components WHERE frameworks LIKE '%react%'")
+    .get() as { count: number };
 
-  const vueExamples = db.prepare(
-    "SELECT COUNT(*) as count FROM component_examples WHERE framework = 'vue'"
-  ).get() as { count: number };
+  const vueExamples = db
+    .prepare("SELECT COUNT(*) as count FROM component_examples WHERE framework = 'vue'")
+    .get() as { count: number };
 
-  const reactExamples = db.prepare(
-    "SELECT COUNT(*) as count FROM component_examples WHERE framework = 'react'"
-  ).get() as { count: number };
+  const reactExamples = db
+    .prepare("SELECT COUNT(*) as count FROM component_examples WHERE framework = 'react'")
+    .get() as { count: number };
 
-  const cssUtilities = db.prepare(
-    "SELECT COUNT(*) as count FROM css_utilities"
-  ).get() as { count: number };
+  const cssUtilities = db.prepare("SELECT COUNT(*) as count FROM css_utilities").get() as {
+    count: number;
+  };
 
-  const cssUtilityClasses = db.prepare(
-    "SELECT COUNT(*) as count FROM css_utility_classes"
-  ).get() as { count: number };
+  const cssUtilityClasses = db
+    .prepare("SELECT COUNT(*) as count FROM css_utility_classes")
+    .get() as { count: number };
 
-  const categories = db.prepare(
-    "SELECT category, COUNT(*) as count FROM components GROUP BY category ORDER BY count DESC"
-  ).all() as Array<{ category: string; count: number }>;
+  const categories = db
+    .prepare(
+      "SELECT category, COUNT(*) as count FROM components GROUP BY category ORDER BY count DESC"
+    )
+    .all() as Array<{ category: string; count: number }>;
 
-  const tokenCategories = db.prepare(
-    "SELECT category, COUNT(*) as count FROM tokens GROUP BY category ORDER BY count DESC"
-  ).all() as Array<{ category: string; count: number }>;
+  const tokenCategories = db
+    .prepare("SELECT category, COUNT(*) as count FROM tokens GROUP BY category ORDER BY count DESC")
+    .all() as Array<{ category: string; count: number }>;
 
-  const tokenSubcategories = db.prepare(
-    "SELECT category, subcategory, COUNT(*) as count FROM tokens WHERE subcategory IS NOT NULL GROUP BY category, subcategory ORDER BY category, count DESC"
-  ).all() as Array<{ category: string; subcategory: string; count: number }>;
+  const tokenSubcategories = db
+    .prepare(
+      "SELECT category, subcategory, COUNT(*) as count FROM tokens WHERE subcategory IS NOT NULL GROUP BY category, subcategory ORDER BY category, count DESC"
+    )
+    .all() as Array<{ category: string; subcategory: string; count: number }>;
 
-  const tokenProperties = db.prepare(
-    "SELECT COUNT(*) as count FROM token_properties"
-  ).get() as { count: number };
+  const tokenProperties = db.prepare("SELECT COUNT(*) as count FROM token_properties").get() as {
+    count: number;
+  };
 
   db.close();
 
@@ -502,7 +508,7 @@ function generateComponentsCategoryPie(stats: DbStats): string {
 title: Components by Category
 ---
 pie showData
-${stats.categories.map(c => `    "${c.category}" : ${c.count}`).join("\n")}
+${stats.categories.map((c) => `    "${c.category}" : ${c.count}`).join("\n")}
 `;
 }
 
@@ -511,7 +517,7 @@ function generateTokensCategoryPie(stats: DbStats): string {
 title: Tokens by Category
 ---
 pie showData
-${stats.tokenCategories.map(c => `    "${c.category}" : ${c.count}`).join("\n")}
+${stats.tokenCategories.map((c) => `    "${c.category}" : ${c.count}`).join("\n")}
 `;
 }
 
@@ -522,7 +528,7 @@ title: Database Statistics Summary
 flowchart LR
     subgraph Tokens["Tokens: ${stats.tokens}"]
         direction TB
-${stats.tokenCategories.map(c => `        T_${c.category.replace(/[^a-zA-Z]/g, "")}["${c.category}: ${c.count}"]`).join("\n")}
+${stats.tokenCategories.map((c) => `        T_${c.category.replace(/[^a-zA-Z]/g, "")}["${c.category}: ${c.count}"]`).join("\n")}
         T_Props["composite properties: ${stats.tokenProperties}"]
     end
 
@@ -667,26 +673,34 @@ async function generateImages(diagrams: Array<{ name: string; content: string }>
       // Remove frontmatter (---title:...) as it's not supported in all diagram types
       const cleanContent = content.replace(/^---[\s\S]*?---\n?/m, "").trim();
 
-      let svg = await page.evaluate(async (diagram: string, id: string) => {
-        const container = document.getElementById("container")!;
-        container.innerHTML = "";
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { svg } = await (window as any).mermaid.render(id, diagram);
-        return svg;
-      }, cleanContent, `diagram-${name}`);
+      let svg = await page.evaluate(
+        async (diagram: string, id: string) => {
+          const container = document.getElementById("container");
+          if (!container) throw new Error("Container not found");
+          container.innerHTML = "";
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { svg } = await (window as any).mermaid.render(id, diagram);
+          return svg;
+        },
+        cleanContent,
+        `diagram-${name}`
+      );
 
       // Fix malformed HTML in SVG (mermaid outputs <br> instead of <br/>)
       svg = svg.replace(/<br>/g, "<br/>");
 
       // Set explicit width for better GitHub preview (remove max-width constraint)
       // Also add white background for better visibility
-      svg = svg.replace(/style="max-width:[^"]*"/, 'style="min-width: 800px; background-color: white"');
+      svg = svg.replace(
+        /style="max-width:[^"]*"/,
+        'style="min-width: 800px; background-color: white"'
+      );
       // Add width attribute and background if not present
       if (!svg.includes('width="')) {
-        svg = svg.replace('<svg ', '<svg width="100%" style="background-color: white" ');
+        svg = svg.replace("<svg ", '<svg width="100%" style="background-color: white" ');
       }
       // Ensure background-color is set even if style already exists but without background
-      if (!svg.includes('background-color')) {
+      if (!svg.includes("background-color")) {
         svg = svg.replace(/style="([^"]*)"/, 'style="$1; background-color: white"');
       }
 
@@ -732,7 +746,7 @@ function generateDocMd(stats: DbStats | null): string {
 
 | Category | Count |
 |----------|-------|
-${stats.tokenCategories.map(c => `| ${c.category} | ${c.count} |`).join("\n")}
+${stats.tokenCategories.map((c) => `| ${c.category} | ${c.count} |`).join("\n")}
 
 `;
   }
@@ -807,7 +821,7 @@ async function main(): Promise<void> {
     diagrams.push(
       { name: "stats-components", content: generateComponentsCategoryPie(stats) },
       { name: "stats-tokens", content: generateTokensCategoryPie(stats) },
-      { name: "stats-summary", content: generateStatsSummary(stats) },
+      { name: "stats-summary", content: generateStatsSummary(stats) }
     );
   }
 

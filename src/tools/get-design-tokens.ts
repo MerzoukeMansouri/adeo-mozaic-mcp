@@ -3,7 +3,15 @@ import { getTokensByCategory, type Token } from "../db/queries.js";
 import { mapCategoryToDbCategories } from "../parsers/tokens-parser.js";
 
 export interface GetDesignTokensInput {
-  category: "colors" | "typography" | "spacing" | "shadows" | "borders" | "screens" | "grid" | "all";
+  category:
+    | "colors"
+    | "typography"
+    | "spacing"
+    | "shadows"
+    | "borders"
+    | "screens"
+    | "grid"
+    | "all";
   format?: "json" | "scss" | "css" | "js";
 }
 

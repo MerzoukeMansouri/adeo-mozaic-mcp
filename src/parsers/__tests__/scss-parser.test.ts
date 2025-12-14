@@ -208,11 +208,33 @@ describe("SCSS Parser", () => {
 // Reimplemented utility functions for testing
 const MAJOR_SCREENS = ["s", "m", "l", "xl"];
 const SIZES = [
-  "025", "050", "075", "100", "125", "150",
-  "200", "250", "300", "350", "400", "500",
-  "600", "700", "800", "900", "1000"
+  "025",
+  "050",
+  "075",
+  "100",
+  "125",
+  "150",
+  "200",
+  "250",
+  "300",
+  "350",
+  "400",
+  "500",
+  "600",
+  "700",
+  "800",
+  "900",
+  "1000",
 ];
-const SIDES = { t: "top", r: "right", l: "left", b: "bottom", all: "all", v: "vertical", h: "horizontal" };
+const SIDES = {
+  t: "top",
+  r: "right",
+  l: "left",
+  b: "bottom",
+  all: "all",
+  v: "vertical",
+  h: "horizontal",
+};
 const ASPECT_RATIOS = ["1x1", "2x3", "3x2", "3x4", "4x3", "16x9"];
 
 interface CssUtility {
@@ -230,9 +252,17 @@ function parseFlexyUtility(): CssUtility {
   classes.push(".ml-flexy__col");
 
   const modifiers = [
-    "gutter", "space-around", "justify-between", "justify-evenly",
-    "justify-start", "justify-center", "justify-end",
-    "items-stretch", "items-start", "items-center", "items-end",
+    "gutter",
+    "space-around",
+    "justify-between",
+    "justify-evenly",
+    "justify-start",
+    "justify-center",
+    "justify-end",
+    "items-stretch",
+    "items-start",
+    "items-center",
+    "items-end",
   ];
 
   for (const mod of modifiers) {
@@ -240,8 +270,12 @@ function parseFlexyUtility(): CssUtility {
   }
 
   const responsiveModifiers = [
-    "space-around", "justify-between", "justify-evenly",
-    "justify-start", "justify-center", "justify-end",
+    "space-around",
+    "justify-between",
+    "justify-evenly",
+    "justify-start",
+    "justify-center",
+    "justify-end",
   ];
 
   for (const screen of MAJOR_SCREENS) {
@@ -251,9 +285,24 @@ function parseFlexyUtility(): CssUtility {
   }
 
   const fractions = [
-    [1, 2], [1, 3], [2, 3], [1, 4], [3, 4], [1, 6], [5, 6],
-    [1, 12], [2, 12], [3, 12], [4, 12], [5, 12], [6, 12],
-    [7, 12], [8, 12], [9, 12], [10, 12], [11, 12],
+    [1, 2],
+    [1, 3],
+    [2, 3],
+    [1, 4],
+    [3, 4],
+    [1, 6],
+    [5, 6],
+    [1, 12],
+    [2, 12],
+    [3, 12],
+    [4, 12],
+    [5, 12],
+    [6, 12],
+    [7, 12],
+    [8, 12],
+    [9, 12],
+    [10, 12],
+    [11, 12],
   ];
 
   for (const [num, denom] of fractions) {

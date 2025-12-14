@@ -72,7 +72,7 @@ async function cloneRepositories(): Promise<void> {
   }
 }
 
-async function buildDesignTokens(): Promise<void> {
+async function _buildDesignTokens(): Promise<void> {
   console.log("🔧 Building design tokens...");
 
   const designSystemPath = REPOS.designSystem.path;
@@ -106,7 +106,9 @@ async function indexTokens(db: ReturnType<typeof initDatabase>): Promise<number>
   const tokensPath = join(REPOS.designSystem.path, "packages", "tokens");
 
   if (!existsSync(tokensPath)) {
-    throw new Error(`Tokens path not found: ${tokensPath}. Make sure the design-system repository was cloned successfully.`);
+    throw new Error(
+      `Tokens path not found: ${tokensPath}. Make sure the design-system repository was cloned successfully.`
+    );
   }
 
   const tokens = await parseTokens(tokensPath);
@@ -127,7 +129,9 @@ async function indexVueComponents(db: ReturnType<typeof initDatabase>): Promise<
   const componentsPath = join(REPOS.vue.path, "src", "components");
 
   if (!existsSync(componentsPath)) {
-    throw new Error(`Vue components path not found: ${componentsPath}. Make sure the mozaic-vue repository was cloned successfully.`);
+    throw new Error(
+      `Vue components path not found: ${componentsPath}. Make sure the mozaic-vue repository was cloned successfully.`
+    );
   }
 
   const components = await parseVueComponents(componentsPath);
@@ -148,7 +152,9 @@ async function indexReactComponents(db: ReturnType<typeof initDatabase>): Promis
   const componentsPath = join(REPOS.react.path, "src", "components");
 
   if (!existsSync(componentsPath)) {
-    throw new Error(`React components path not found: ${componentsPath}. Make sure the mozaic-react repository was cloned successfully.`);
+    throw new Error(
+      `React components path not found: ${componentsPath}. Make sure the mozaic-react repository was cloned successfully.`
+    );
   }
 
   const components = await parseReactComponents(componentsPath);
@@ -169,7 +175,9 @@ async function indexDocumentation(db: ReturnType<typeof initDatabase>): Promise<
   const docsPath = join(REPOS.designSystem.path, "src", "docs");
 
   if (!existsSync(docsPath)) {
-    throw new Error(`Documentation path not found: ${docsPath}. Make sure the design-system repository was cloned successfully.`);
+    throw new Error(
+      `Documentation path not found: ${docsPath}. Make sure the design-system repository was cloned successfully.`
+    );
   }
 
   const docs = await parseDocumentation(docsPath);

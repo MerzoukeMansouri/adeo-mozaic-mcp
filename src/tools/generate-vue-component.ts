@@ -86,8 +86,7 @@ function generatePropsString(props: Record<string, unknown>): string {
 // Tool definition for MCP
 export const generateVueComponentTool = {
   name: "generate_vue_component",
-  description:
-    "Generate Vue component code using Mozaic Design System (@mozaic-ds/vue-3)",
+  description: "Generate Vue component code using Mozaic Design System (@mozaic-ds/vue-3)",
   inputSchema: {
     type: "object" as const,
     properties: {

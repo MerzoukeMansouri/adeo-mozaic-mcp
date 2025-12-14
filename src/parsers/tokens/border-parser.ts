@@ -18,7 +18,7 @@ export async function parseBorderTokens(tokensPath: string): Promise<Token[]> {
   // Parse border tokens
   const borderPath = join(tokensPath, "properties", "border");
   if (existsSync(borderPath)) {
-    const files = readdirSync(borderPath).filter(f => f.endsWith(".json"));
+    const files = readdirSync(borderPath).filter((f) => f.endsWith(".json"));
 
     for (const file of files) {
       const filePath = join(borderPath, file);
@@ -60,7 +60,7 @@ export async function parseBorderTokens(tokensPath: string): Promise<Token[]> {
   // Parse radius tokens
   const radiusPath = join(tokensPath, "properties", "radius");
   if (existsSync(radiusPath)) {
-    const files = readdirSync(radiusPath).filter(f => f.endsWith(".json"));
+    const files = readdirSync(radiusPath).filter((f) => f.endsWith(".json"));
 
     for (const file of files) {
       const filePath = join(radiusPath, file);

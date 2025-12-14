@@ -12,8 +12,8 @@ import { parseGridTokens } from "./tokens/grid-parser.js";
 export type { Token } from "./tokens/types.js";
 
 export interface ParseTokensOptions {
-  tokensPath: string;   // Path to tokens JSON files (e.g., repos/mozaic-design-system/packages/tokens)
-  stylesPath?: string;  // Path to styles SCSS files (e.g., repos/mozaic-design-system/packages/styles)
+  tokensPath: string; // Path to tokens JSON files (e.g., repos/mozaic-design-system/packages/tokens)
+  stylesPath?: string; // Path to styles SCSS files (e.g., repos/mozaic-design-system/packages/styles)
 }
 
 export async function parseTokens(tokensPath: string, stylesPath?: string): Promise<Token[]> {

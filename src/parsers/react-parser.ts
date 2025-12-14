@@ -74,7 +74,7 @@ function extractPropsFromInterface(
   while ((propMatch = propRegex.exec(interfaceBody)) !== null) {
     const propName = propMatch[1];
     const isOptional = !!propMatch[2];
-    let propType = propMatch[3].trim();
+    const propType = propMatch[3].trim();
 
     // Skip already seen, callbacks, children
     if (seenProps.has(propName)) continue;
@@ -123,7 +123,9 @@ function extractProps(content: string, componentDir?: string): ComponentProp[] {
   // First try to find imported Props type and load external types file
   if (componentDir) {
     // Match: import { IButtonProps } from './Button.types'
-    const importMatch = content.match(/import\s*\{[^}]*?(I\w*Props)\s*[^}]*\}\s*from\s*['"]\.\/(\w+)\.types['"]/);
+    const importMatch = content.match(
+      /import\s*\{[^}]*?(I\w*Props)\s*[^}]*\}\s*from\s*['"]\.\/(\w+)\.types['"]/
+    );
 
     if (importMatch) {
       const propsInterface = importMatch[1];
@@ -136,8 +138,13 @@ function extractProps(content: string, componentDir?: string): ComponentProp[] {
           const constArrays = extractConstArrays(typesContent);
           const allInterfaces = new Map<string, string>();
 
-          props = extractPropsFromInterface(typesContent, propsInterface, constArrays, allInterfaces);
-        } catch (e) {
+          props = extractPropsFromInterface(
+            typesContent,
+            propsInterface,
+            constArrays,
+            allInterfaces
+          );
+        } catch {
           // Fall through to inline extraction
         }
       }
@@ -161,7 +168,7 @@ function extractProps(content: string, componentDir?: string): ComponentProp[] {
         while ((match = propRegex.exec(interfaceContent)) !== null) {
           const propName = match[1];
           const isOptional = !!match[2];
-          let propType = match[3].trim();
+          const propType = match[3].trim();
 
           if (propType.includes("=>") || propName.startsWith("on")) continue;
           if (propName === "children") continue;
@@ -274,9 +281,7 @@ function parseReactFile(filePath: string, componentDir: string): ParsedReactComp
 }
 
 // Parse storybook stories for examples
-function parseStoriesFile(
-  filePath: string
-): Array<{ title: string; code: string }> {
+function parseStoriesFile(filePath: string): Array<{ title: string; code: string }> {
   const examples: Array<{ title: string; code: string }> = [];
 
   try {
@@ -297,7 +302,10 @@ function parseStoriesFile(
     // For each story, find its args (React CSF format: StoryName.args = {...})
     for (const storyName of exportedStories) {
       // Match StoryName.args = {...} - handle nested objects with balanced braces
-      const argsPattern = new RegExp(`${storyName}\\.args\\s*=\\s*\\{([^}]*(?:\\{[^}]*\\}[^}]*)*)\\}`, "s");
+      const argsPattern = new RegExp(
+        `${storyName}\\.args\\s*=\\s*\\{([^}]*(?:\\{[^}]*\\}[^}]*)*)\\}`,
+        "s"
+      );
       const argsMatch = content.match(argsPattern);
 
       if (argsMatch) {
@@ -364,11 +372,7 @@ function findComponentDirs(baseDir: string): string[] {
 function inferCategory(componentName: string): string {
   const name = componentName.toLowerCase();
 
-  if (
-    ["button", "link", "optionbutton", "optioncard"].some((n) =>
-      name.includes(n)
-    )
-  ) {
+  if (["button", "link", "optionbutton", "optioncard"].some((n) => name.includes(n))) {
     return "action";
   }
   if (
@@ -392,48 +396,30 @@ function inferCategory(componentName: string): string {
     return "form";
   }
   if (
-    [
-      "accordion",
-      "breadcrumb",
-      "menu",
-      "pagination",
-      "sidebar",
-      "stepper",
-      "tabs",
-    ].some((n) => name.includes(n))
+    ["accordion", "breadcrumb", "menu", "pagination", "sidebar", "stepper", "tabs"].some((n) =>
+      name.includes(n)
+    )
   ) {
     return "navigation";
   }
   if (
-    [
-      "badge",
-      "flag",
-      "loader",
-      "modal",
-      "notification",
-      "progress",
-      "tooltip",
-    ].some((n) => name.includes(n))
+    ["badge", "flag", "loader", "modal", "notification", "progress", "tooltip"].some((n) =>
+      name.includes(n)
+    )
   ) {
     return "feedback";
   }
   if (["card", "divider", "layer"].some((n) => name.includes(n))) {
     return "layout";
   }
-  if (
-    ["table", "heading", "hero", "listbox", "rating", "tag"].some((n) =>
-      name.includes(n)
-    )
-  ) {
+  if (["table", "heading", "hero", "listbox", "rating", "tag"].some((n) => name.includes(n))) {
     return "data-display";
   }
 
   return "other";
 }
 
-export async function parseReactComponents(
-  componentsPath: string
-): Promise<Component[]> {
+export async function parseReactComponents(componentsPath: string): Promise<Component[]> {
   const components: Component[] = [];
 
   const componentDirs = findComponentDirs(componentsPath);
@@ -442,10 +428,7 @@ export async function parseReactComponents(
     const componentName = basename(dir);
 
     // React components are typically named Component.tsx or index.tsx
-    const possibleFiles = [
-      join(dir, `${componentName}.tsx`),
-      join(dir, "index.tsx"),
-    ];
+    const possibleFiles = [join(dir, `${componentName}.tsx`), join(dir, "index.tsx")];
 
     let tsxFile: string | null = null;
     for (const file of possibleFiles) {
@@ -497,9 +480,7 @@ export async function parseReactComponents(
         // Also check for stories directory
         const storiesDir = join(dir, "stories");
         if (existsSync(storiesDir)) {
-          const storyFiles = readdirSync(storiesDir).filter((f) =>
-            f.endsWith(".stories.tsx")
-          );
+          const storyFiles = readdirSync(storiesDir).filter((f) => f.endsWith(".stories.tsx"));
           for (const storyFile of storyFiles) {
             const stories = parseStoriesFile(join(storiesDir, storyFile));
             component.examples?.push(
@@ -523,4 +504,3 @@ export async function parseReactComponents(
 
   return components;
 }
-

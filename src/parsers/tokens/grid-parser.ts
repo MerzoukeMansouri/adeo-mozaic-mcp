@@ -45,7 +45,6 @@ export async function parseGridTokens(tokensPath: string): Promise<Token[]> {
 
         const muValue = gutterDef.value;
         const pxValue = muValue * MAGIC_UNIT_PX;
-        const remValue = muValue;
 
         tokens.push({
           category: "grid",

@@ -1,4 +1,4 @@
-import { readFileSync, existsSync, readdirSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 import type { Token } from "./types.js";
 import { parseValue } from "./types.js";

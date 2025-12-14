@@ -25,9 +25,10 @@ export function handleListComponents(
       content: [
         {
           type: "text",
-          text: category === "all"
-            ? "No components found in the database."
-            : `No components found in category: ${category}`,
+          text:
+            category === "all"
+              ? "No components found in the database."
+              : `No components found in category: ${category}`,
         },
       ],
     };
@@ -76,15 +77,7 @@ export const listComponentsTool = {
     properties: {
       category: {
         type: "string",
-        enum: [
-          "form",
-          "navigation",
-          "feedback",
-          "layout",
-          "data-display",
-          "action",
-          "all",
-        ],
+        enum: ["form", "navigation", "feedback", "layout", "data-display", "action", "all"],
         default: "all",
         description: "Filter components by category",
       },

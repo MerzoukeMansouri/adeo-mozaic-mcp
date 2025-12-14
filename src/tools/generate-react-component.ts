@@ -86,8 +86,7 @@ function generatePropsString(props: Record<string, unknown>): string {
 // Tool definition for MCP
 export const generateReactComponentTool = {
   name: "generate_react_component",
-  description:
-    "Generate React component code using Mozaic Design System (@mozaic-ds/react)",
+  description: "Generate React component code using Mozaic Design System (@mozaic-ds/react)",
   inputSchema: {
     type: "object" as const,
     properties: {

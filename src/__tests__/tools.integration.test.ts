@@ -27,7 +27,9 @@ describe("MCP Tools Integration Tests", () => {
 
       expect(data.name).toBe("MButton");
       expect(data.props.length).toBeGreaterThan(0);
-      expect(data.props.some((p: { name: string }) => p.name === "size" || p.name === "appearance")).toBe(true);
+      expect(
+        data.props.some((p: { name: string }) => p.name === "size" || p.name === "appearance")
+      ).toBe(true);
     });
 
     it("returns Vue examples by default", () => {
@@ -147,9 +149,11 @@ describe("MCP Tools Integration Tests", () => {
       const data = JSON.parse(result.content[0].text);
 
       expect(data.components.action).toBeDefined();
-      expect(data.components.action.some((c: { name: string }) =>
-        c.name === "MButton" || c.name === "Button"
-      )).toBe(true);
+      expect(
+        data.components.action.some(
+          (c: { name: string }) => c.name === "MButton" || c.name === "Button"
+        )
+      ).toBe(true);
     });
 
     it("filters by category", () => {
