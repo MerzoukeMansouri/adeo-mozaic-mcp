@@ -24,6 +24,8 @@ interface DbStats {
   reactExamples: number;
   categories: Array<{ category: string; count: number }>;
   tokenCategories: Array<{ category: string; count: number }>;
+  tokenSubcategories: Array<{ category: string; subcategory: string; count: number }>;
+  tokenProperties: number;
 }
 
 function getDbStats(): DbStats | null {
@@ -62,6 +64,14 @@ function getDbStats(): DbStats | null {
     "SELECT category, COUNT(*) as count FROM tokens GROUP BY category ORDER BY count DESC"
   ).all() as Array<{ category: string; count: number }>;
 
+  const tokenSubcategories = db.prepare(
+    "SELECT category, subcategory, COUNT(*) as count FROM tokens WHERE subcategory IS NOT NULL GROUP BY category, subcategory ORDER BY category, count DESC"
+  ).all() as Array<{ category: string; subcategory: string; count: number }>;
+
+  const tokenProperties = db.prepare(
+    "SELECT COUNT(*) as count FROM token_properties"
+  ).get() as { count: number };
+
   db.close();
 
   return {
@@ -74,6 +84,8 @@ function getDbStats(): DbStats | null {
     reactExamples: reactExamples.count,
     categories,
     tokenCategories,
+    tokenSubcategories,
+    tokenProperties: tokenProperties.count,
   };
 }
 
@@ -134,15 +146,24 @@ flowchart LR
         R3[mozaic-react]
     end
 
-    subgraph Parsers["Parsers"]
-        P1[tokens-parser.ts]
+    subgraph TokenParsers["Token Parsers"]
+        TP[tokens-parser.ts<br/>orchestrator]
+        TP1[color-parser]
+        TP2[spacing-parser]
+        TP3[shadow-parser]
+        TP4[border-parser]
+        TP5[screen-parser]
+        TP6[typography-parser]
+    end
+
+    subgraph OtherParsers["Other Parsers"]
         P2[vue-parser.ts]
         P3[react-parser.ts]
         P4[docs-parser.ts]
     end
 
     subgraph Data["Extracted Data"]
-        D1[Design Tokens<br/>colors, spacing, typography]
+        D1[Design Tokens<br/>colors, spacing, typography,<br/>shadows, borders, screens]
         D2[Vue Components<br/>props, slots, events, examples]
         D3[React Components<br/>props, callbacks, examples]
         D4[Documentation<br/>MDX content, frontmatter]
@@ -150,16 +171,23 @@ flowchart LR
 
     subgraph DB["SQLite Database"]
         T1[(tokens)]
+        T1P[(token_properties)]
+        T1F[(tokens_fts)]
         T2[(components)]
         T3[(component_props)]
         T4[(component_slots)]
         T5[(component_events)]
         T6[(component_examples)]
         T7[(documentation)]
-        T8[(documentation_fts)]
+        T8[(docs_fts)]
     end
 
-    R1 --> P1 --> D1 --> T1
+    R1 --> TP
+    TP --> TP1 & TP2 & TP3 & TP4 & TP5 & TP6
+    TP1 & TP2 & TP3 & TP4 & TP5 & TP6 --> D1
+    D1 --> T1
+    T1 --> T1P & T1F
+
     R1 --> P4 --> D4 --> T7 --> T8
     R2 --> P2 --> D2 --> T2
     R3 --> P3 --> D3 --> T2
@@ -177,10 +205,33 @@ erDiagram
     tokens {
         int id PK
         string category
-        string path
-        string value
+        string subcategory
+        string name
+        string path UK
+        string css_variable
+        string scss_variable
+        string value_raw
+        float value_number
+        string value_unit
+        string value_computed
         string description
         string platform
+        string source_file
+    }
+
+    token_properties {
+        int id PK
+        int token_id FK
+        string property
+        string value
+        float value_number
+        string value_unit
+    }
+
+    tokens_fts {
+        string name
+        string path
+        string description
     }
 
     components {
@@ -235,12 +286,13 @@ erDiagram
         string keywords
     }
 
-    documentation_fts {
+    docs_fts {
         string title
         string content
         string keywords
     }
 
+    tokens ||--o{ token_properties : has
     components ||--o{ component_props : has
     components ||--o{ component_slots : has
     components ||--o{ component_events : has
@@ -330,6 +382,7 @@ flowchart TB
             Index[index.ts<br/>MCP Server Entry]
 
             subgraph DbDir["db/"]
+                Schema[schema.ts]
                 Queries[queries.ts]
             end
 
@@ -338,6 +391,16 @@ flowchart TB
                 VP[vue-parser.ts]
                 RP[react-parser.ts]
                 DP[docs-parser.ts]
+
+                subgraph TokensDir["tokens/"]
+                    TTypes[types.ts]
+                    TColor[color-parser.ts]
+                    TSpacing[spacing-parser.ts]
+                    TShadow[shadow-parser.ts]
+                    TBorder[border-parser.ts]
+                    TScreen[screen-parser.ts]
+                    TTypo[typography-parser.ts]
+                end
             end
 
             subgraph ToolsDir["tools/"]
@@ -360,8 +423,8 @@ flowchart TB
             R3[mozaic-react/]
         end
 
-        subgraph DocDir["doc/"]
-            MD[*.mmd diagrams]
+        subgraph DocDir["docs/"]
+            MD[doc.md + assets/]
         end
     end
 
@@ -369,6 +432,7 @@ flowchart TB
     ToolsDir --> DbDir
     DbDir --> DataDir
     BI --> ParsersDir
+    TP --> TokensDir
     ParsersDir --> DataDir
     BI --> ReposDir
 `;
@@ -400,6 +464,7 @@ flowchart LR
     subgraph Tokens["Tokens: ${stats.tokens}"]
         direction TB
 ${stats.tokenCategories.map(c => `        T_${c.category.replace(/[^a-zA-Z]/g, "")}["${c.category}: ${c.count}"]`).join("\n")}
+        T_Props["composite properties: ${stats.tokenProperties}"]
     end
 
     subgraph Components["Components: ${stats.components}"]
@@ -577,13 +642,20 @@ function generateDocMd(stats: DbStats | null): string {
 
 | Metric | Count |
 |--------|-------|
-| Tokens | ${stats.tokens} |
-| Components | ${stats.components} |
+| **Tokens** | ${stats.tokens} |
+| Token Properties (composite) | ${stats.tokenProperties} |
+| **Components** | ${stats.components} |
 | Vue Components | ${stats.vueComponents} |
 | React Components | ${stats.reactComponents} |
 | Vue Examples | ${stats.vueExamples} |
 | React Examples | ${stats.reactExamples} |
-| Documentation | ${stats.documentation} |
+| **Documentation** | ${stats.documentation} |
+
+### Token Categories
+
+| Category | Count |
+|----------|-------|
+${stats.tokenCategories.map(c => `| ${c.category} | ${c.count} |`).join("\n")}
 
 `;
   }

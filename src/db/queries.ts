@@ -2,12 +2,28 @@ import Database from "better-sqlite3";
 import { initSchema } from "./schema.js";
 
 // Types
+export interface TokenProperty {
+  property: string;
+  value: string;
+  valueNumber?: number;
+  valueUnit?: string;
+}
+
 export interface Token {
   category: string;
+  subcategory?: string;
+  name: string;
   path: string;
-  value: string;
+  cssVariable?: string;
+  scssVariable?: string;
+  valueRaw: string;
+  valueNumber?: number;
+  valueUnit?: string;
+  valueComputed?: string;
   description?: string;
   platform?: string;
+  sourceFile?: string;
+  properties?: TokenProperty[];
 }
 
 export interface ComponentProp {
@@ -68,45 +84,186 @@ export function initDatabase(dbPath: string): Database.Database {
 
 // Token operations
 export function insertTokens(db: Database.Database, tokens: Token[]): void {
-  const stmt = db.prepare(`
-    INSERT INTO tokens (category, path, value, description, platform)
-    VALUES (@category, @path, @value, @description, @platform)
+  const tokenStmt = db.prepare(`
+    INSERT INTO tokens (
+      category, subcategory, name, path, css_variable, scss_variable,
+      value_raw, value_number, value_unit, value_computed,
+      description, platform, source_file
+    )
+    VALUES (
+      @category, @subcategory, @name, @path, @cssVariable, @scssVariable,
+      @valueRaw, @valueNumber, @valueUnit, @valueComputed,
+      @description, @platform, @sourceFile
+    )
+  `);
+
+  const propertyStmt = db.prepare(`
+    INSERT INTO token_properties (token_id, property, value, value_number, value_unit)
+    VALUES (@tokenId, @property, @value, @valueNumber, @valueUnit)
   `);
 
   const insertMany = db.transaction((items: Token[]) => {
     for (const item of items) {
-      stmt.run({
+      const result = tokenStmt.run({
         category: item.category,
+        subcategory: item.subcategory ?? null,
+        name: item.name,
         path: item.path,
-        value: item.value,
+        cssVariable: item.cssVariable ?? null,
+        scssVariable: item.scssVariable ?? null,
+        valueRaw: item.valueRaw,
+        valueNumber: item.valueNumber ?? null,
+        valueUnit: item.valueUnit ?? null,
+        valueComputed: item.valueComputed ?? null,
         description: item.description ?? null,
         platform: item.platform ?? "all",
+        sourceFile: item.sourceFile ?? null,
       });
+
+      // Insert token properties if any (for composite tokens like shadows)
+      if (item.properties && item.properties.length > 0) {
+        const tokenId = result.lastInsertRowid as number;
+        for (const prop of item.properties) {
+          propertyStmt.run({
+            tokenId,
+            property: prop.property,
+            value: prop.value,
+            valueNumber: prop.valueNumber ?? null,
+            valueUnit: prop.valueUnit ?? null,
+          });
+        }
+      }
     }
   });
 
   insertMany(tokens);
 }
 
+interface TokenRow {
+  id: number;
+  category: string;
+  subcategory: string | null;
+  name: string;
+  path: string;
+  css_variable: string | null;
+  scss_variable: string | null;
+  value_raw: string;
+  value_number: number | null;
+  value_unit: string | null;
+  value_computed: string | null;
+  description: string | null;
+  platform: string;
+  source_file: string | null;
+}
+
+interface TokenPropertyRow {
+  property: string;
+  value: string;
+  value_number: number | null;
+  value_unit: string | null;
+}
+
+function rowToToken(row: TokenRow, properties?: TokenPropertyRow[]): Token {
+  const token: Token = {
+    category: row.category,
+    subcategory: row.subcategory ?? undefined,
+    name: row.name,
+    path: row.path,
+    cssVariable: row.css_variable ?? undefined,
+    scssVariable: row.scss_variable ?? undefined,
+    valueRaw: row.value_raw,
+    valueNumber: row.value_number ?? undefined,
+    valueUnit: row.value_unit ?? undefined,
+    valueComputed: row.value_computed ?? undefined,
+    description: row.description ?? undefined,
+    platform: row.platform,
+    sourceFile: row.source_file ?? undefined,
+  };
+
+  if (properties && properties.length > 0) {
+    token.properties = properties.map((p) => ({
+      property: p.property,
+      value: p.value,
+      valueNumber: p.value_number ?? undefined,
+      valueUnit: p.value_unit ?? undefined,
+    }));
+  }
+
+  return token;
+}
+
 export function getTokensByCategory(
   db: Database.Database,
   category: string
 ): Token[] {
-  if (category === "all") {
-    return db.prepare("SELECT * FROM tokens").all() as Token[];
-  }
-  return db
-    .prepare("SELECT * FROM tokens WHERE category = ?")
-    .all(category) as Token[];
+  const rows = category === "all"
+    ? db.prepare("SELECT * FROM tokens").all() as TokenRow[]
+    : db.prepare("SELECT * FROM tokens WHERE category = ?").all(category) as TokenRow[];
+
+  return rows.map((row) => {
+    const properties = db
+      .prepare("SELECT property, value, value_number, value_unit FROM token_properties WHERE token_id = ?")
+      .all(row.id) as TokenPropertyRow[];
+    return rowToToken(row, properties);
+  });
+}
+
+export function getTokensBySubcategory(
+  db: Database.Database,
+  category: string,
+  subcategory: string
+): Token[] {
+  const rows = db
+    .prepare("SELECT * FROM tokens WHERE category = ? AND subcategory = ?")
+    .all(category, subcategory) as TokenRow[];
+
+  return rows.map((row) => {
+    const properties = db
+      .prepare("SELECT property, value, value_number, value_unit FROM token_properties WHERE token_id = ?")
+      .all(row.id) as TokenPropertyRow[];
+    return rowToToken(row, properties);
+  });
 }
 
 export function getTokenByPath(
   db: Database.Database,
   path: string
 ): Token | undefined {
-  return db
+  const row = db
     .prepare("SELECT * FROM tokens WHERE path = ?")
-    .get(path) as Token | undefined;
+    .get(path) as TokenRow | undefined;
+
+  if (!row) return undefined;
+
+  const properties = db
+    .prepare("SELECT property, value, value_number, value_unit FROM token_properties WHERE token_id = ?")
+    .all(row.id) as TokenPropertyRow[];
+
+  return rowToToken(row, properties);
+}
+
+export function searchTokens(
+  db: Database.Database,
+  query: string,
+  limit: number = 20
+): Token[] {
+  const rows = db
+    .prepare(`
+      SELECT t.*
+      FROM tokens_fts
+      JOIN tokens t ON tokens_fts.rowid = t.id
+      WHERE tokens_fts MATCH ?
+      ORDER BY rank
+      LIMIT ?
+    `)
+    .all(query, limit) as TokenRow[];
+
+  return rows.map((row) => {
+    const properties = db
+      .prepare("SELECT property, value, value_number, value_unit FROM token_properties WHERE token_id = ?")
+      .all(row.id) as TokenPropertyRow[];
+    return rowToToken(row, properties);
+  });
 }
 
 // Component operations
@@ -379,6 +536,7 @@ export function getDocumentationByPath(
 // Utility functions
 export function clearDatabase(db: Database.Database): void {
   db.exec(`
+    DELETE FROM token_properties;
     DELETE FROM tokens;
     DELETE FROM component_css_classes;
     DELETE FROM component_examples;

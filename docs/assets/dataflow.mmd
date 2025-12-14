@@ -8,15 +8,24 @@ flowchart LR
         R3[mozaic-react]
     end
 
-    subgraph Parsers["Parsers"]
-        P1[tokens-parser.ts]
+    subgraph TokenParsers["Token Parsers"]
+        TP[tokens-parser.ts<br/>orchestrator]
+        TP1[color-parser]
+        TP2[spacing-parser]
+        TP3[shadow-parser]
+        TP4[border-parser]
+        TP5[screen-parser]
+        TP6[typography-parser]
+    end
+
+    subgraph OtherParsers["Other Parsers"]
         P2[vue-parser.ts]
         P3[react-parser.ts]
         P4[docs-parser.ts]
     end
 
     subgraph Data["Extracted Data"]
-        D1[Design Tokens<br/>colors, spacing, typography]
+        D1[Design Tokens<br/>colors, spacing, typography,<br/>shadows, borders, screens]
         D2[Vue Components<br/>props, slots, events, examples]
         D3[React Components<br/>props, callbacks, examples]
         D4[Documentation<br/>MDX content, frontmatter]
@@ -24,16 +33,23 @@ flowchart LR
 
     subgraph DB["SQLite Database"]
         T1[(tokens)]
+        T1P[(token_properties)]
+        T1F[(tokens_fts)]
         T2[(components)]
         T3[(component_props)]
         T4[(component_slots)]
         T5[(component_events)]
         T6[(component_examples)]
         T7[(documentation)]
-        T8[(documentation_fts)]
+        T8[(docs_fts)]
     end
 
-    R1 --> P1 --> D1 --> T1
+    R1 --> TP
+    TP --> TP1 & TP2 & TP3 & TP4 & TP5 & TP6
+    TP1 & TP2 & TP3 & TP4 & TP5 & TP6 --> D1
+    D1 --> T1
+    T1 --> T1P & T1F
+
     R1 --> P4 --> D4 --> T7 --> T8
     R2 --> P2 --> D2 --> T2
     R3 --> P3 --> D3 --> T2

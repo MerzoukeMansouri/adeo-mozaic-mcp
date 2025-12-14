@@ -5,10 +5,33 @@ erDiagram
     tokens {
         int id PK
         string category
-        string path
-        string value
+        string subcategory
+        string name
+        string path UK
+        string css_variable
+        string scss_variable
+        string value_raw
+        float value_number
+        string value_unit
+        string value_computed
         string description
         string platform
+        string source_file
+    }
+
+    token_properties {
+        int id PK
+        int token_id FK
+        string property
+        string value
+        float value_number
+        string value_unit
+    }
+
+    tokens_fts {
+        string name
+        string path
+        string description
     }
 
     components {
@@ -63,12 +86,13 @@ erDiagram
         string keywords
     }
 
-    documentation_fts {
+    docs_fts {
         string title
         string content
         string keywords
     }
 
+    tokens ||--o{ token_properties : has
     components ||--o{ component_props : has
     components ||--o{ component_slots : has
     components ||--o{ component_events : has

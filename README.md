@@ -1,4 +1,8 @@
+# Mozaic MCP Server
+
 > ⚠️ **Work In Progress**: This project is currently in draft stage and under active development. Feel free to collaborate and contribute!
+
+An MCP (Model Context Protocol) server that exposes the **Mozaic Design System** (by ADEO) to Claude and other AI assistants.
 
 ## Project Status
 
@@ -6,9 +10,12 @@
 
 ## Features
 
-- **Design Tokens**: Colors, typography, spacing, shadows
-- **Components**: Vue 3 and React component info with props, slots, events, examples
-- **Documentation**: Full-text search across Mozaic docs
+- **Design Tokens** (580+): Colors, typography, spacing (Magic Unit), shadows, borders, screens
+  - Organized by category and subcategory for precise queries
+  - Multiple value formats (raw, computed, CSS/SCSS variables)
+  - Composite token properties (shadow x, y, blur, spread, opacity)
+- **Components** (90+): Vue 3 and React component info with props, slots, events, examples
+- **Documentation** (240+): Full-text search across Mozaic docs
 - **Code Generation**: Generate Vue/React component code snippets
 
 ## Quick Start
@@ -40,12 +47,24 @@ pnpm start        # Start MCP server
 
 | Tool                       | Description                                            |
 | -------------------------- | ------------------------------------------------------ |
-| `get_design_tokens`        | Get design tokens (colors, typography, spacing)        |
+| `get_design_tokens`        | Get design tokens (colors, typography, spacing, shadows, borders, screens) |
 | `get_component_info`       | Get component details (props, slots, events, examples) |
 | `list_components`          | List available components by category                  |
 | `generate_vue_component`   | Generate Vue component code                            |
 | `generate_react_component` | Generate React component code                          |
 | `search_documentation`     | Full-text search Mozaic docs                           |
+
+## Token Categories
+
+| Category | Count | Description |
+|----------|-------|-------------|
+| color | 482 | Component colors organized by subcategory (button, primary, badge, etc.) |
+| typography | 60 | Font sizes and line heights |
+| spacing | 19 | Magic Unit system (mu025 to mu1000) |
+| screen | 12 | Breakpoint definitions |
+| border | 3 | Border widths |
+| radius | 3 | Border radius values |
+| shadow | 3 | Box shadows with composite properties |
 
 ## License
 

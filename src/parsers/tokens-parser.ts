@@ -1,125 +1,55 @@
-import { readFileSync, existsSync, readdirSync, statSync } from "fs";
-import { join, basename } from "path";
-import type { Token } from "../db/queries.js";
+import { join } from "path";
+import type { Token } from "./tokens/types.js";
+import { parseColorTokens } from "./tokens/color-parser.js";
+import { parseSpacingTokens } from "./tokens/spacing-parser.js";
+import { parseShadowTokens } from "./tokens/shadow-parser.js";
+import { parseBorderTokens } from "./tokens/border-parser.js";
+import { parseScreenTokens } from "./tokens/screen-parser.js";
+import { parseTypographyTokens } from "./tokens/typography-parser.js";
 
-interface TokenValue {
-  value: string;
-  description?: string;
+// Re-export Token type for backwards compatibility
+export type { Token } from "./tokens/types.js";
+
+export interface ParseTokensOptions {
+  tokensPath: string;   // Path to tokens JSON files (e.g., repos/mozaic-design-system/packages/tokens)
+  stylesPath?: string;  // Path to styles SCSS files (e.g., repos/mozaic-design-system/packages/styles)
 }
 
-type TokenObject = {
-  [key: string]: TokenObject | TokenValue;
-};
-
-function isTokenValue(obj: unknown): obj is TokenValue {
-  return (
-    typeof obj === "object" &&
-    obj !== null &&
-    "value" in obj &&
-    typeof (obj as TokenValue).value === "string"
-  );
-}
-
-function flattenTokens(
-  obj: TokenObject,
-  category: string,
-  prefix: string = ""
-): Token[] {
-  const tokens: Token[] = [];
-
-  for (const [key, value] of Object.entries(obj)) {
-    const path = prefix ? `${prefix}.${key}` : key;
-
-    if (isTokenValue(value)) {
-      tokens.push({
-        category,
-        path,
-        value: value.value,
-        description: value.description,
-        platform: "all",
-      });
-    } else if (typeof value === "object" && value !== null) {
-      tokens.push(...flattenTokens(value as TokenObject, category, path));
-    }
-  }
-
-  return tokens;
-}
-
-function parseJsonFile(filePath: string, category: string): Token[] {
-  try {
-    const content = readFileSync(filePath, "utf-8");
-    const data = JSON.parse(content) as TokenObject;
-    return flattenTokens(data, category);
-  } catch (error) {
-    console.warn(`Warning: Could not parse ${filePath}:`, error);
-    return [];
-  }
-}
-
-function getCategoryFromPath(filePath: string): string {
-  const parts = filePath.split("/");
-  const propertiesIndex = parts.indexOf("properties");
-  if (propertiesIndex !== -1 && parts[propertiesIndex + 1]) {
-    return parts[propertiesIndex + 1];
-  }
-  return basename(filePath, ".json");
-}
-
-function findJsonFiles(dir: string): string[] {
-  const files: string[] = [];
-
-  if (!existsSync(dir)) {
-    return files;
-  }
-
-  const entries = readdirSync(dir);
-  for (const entry of entries) {
-    const fullPath = join(dir, entry);
-    const stat = statSync(fullPath);
-
-    if (stat.isDirectory()) {
-      files.push(...findJsonFiles(fullPath));
-    } else if (entry.endsWith(".json")) {
-      files.push(fullPath);
-    }
-  }
-
-  return files;
-}
-
-export async function parseTokens(tokensPath: string): Promise<Token[]> {
+export async function parseTokens(tokensPath: string, stylesPath?: string): Promise<Token[]> {
   const allTokens: Token[] = [];
 
-  // Parse from properties directory (source JSON files)
-  const propertiesPath = join(tokensPath, "properties");
-  if (existsSync(propertiesPath)) {
-    const jsonFiles = findJsonFiles(propertiesPath);
+  // Determine styles path if not provided
+  const effectiveStylesPath = stylesPath || join(tokensPath, "..", "styles");
 
-    for (const file of jsonFiles) {
-      const category = getCategoryFromPath(file);
-      const tokens = parseJsonFile(file, category);
-      allTokens.push(...tokens);
-    }
-  }
+  console.log("  Parsing color tokens...");
+  const colorTokens = await parseColorTokens(tokensPath);
+  allTokens.push(...colorTokens);
+  console.log(`    ✓ ${colorTokens.length} color tokens`);
 
-  // Also try to parse from build directory if available
-  const buildJsPath = join(tokensPath, "build", "js", "tokensObject.js");
-  if (existsSync(buildJsPath)) {
-    try {
-      // Read the JS file and extract the object
-      const content = readFileSync(buildJsPath, "utf-8");
-      // Simple extraction - the file exports a tokens object
-      const match = content.match(/export\s+(?:default\s+)?({[\s\S]*})/);
-      if (match) {
-        // This is a simplified approach - in production you might want to use
-        // a proper JS parser or just import the module
-        console.log("Found tokensObject.js - using properties files instead");
-      }
-    } catch (error) {
-      console.warn("Could not parse tokensObject.js:", error);
-    }
-  }
+  console.log("  Parsing spacing tokens...");
+  const spacingTokens = await parseSpacingTokens(effectiveStylesPath);
+  allTokens.push(...spacingTokens);
+  console.log(`    ✓ ${spacingTokens.length} spacing tokens`);
+
+  console.log("  Parsing shadow tokens...");
+  const shadowTokens = await parseShadowTokens(tokensPath);
+  allTokens.push(...shadowTokens);
+  console.log(`    ✓ ${shadowTokens.length} shadow tokens`);
+
+  console.log("  Parsing border/radius tokens...");
+  const borderTokens = await parseBorderTokens(tokensPath);
+  allTokens.push(...borderTokens);
+  console.log(`    ✓ ${borderTokens.length} border/radius tokens`);
+
+  console.log("  Parsing screen tokens...");
+  const screenTokens = await parseScreenTokens(tokensPath);
+  allTokens.push(...screenTokens);
+  console.log(`    ✓ ${screenTokens.length} screen tokens`);
+
+  console.log("  Parsing typography tokens...");
+  const typographyTokens = await parseTypographyTokens(tokensPath);
+  allTokens.push(...typographyTokens);
+  console.log(`    ✓ ${typographyTokens.length} typography tokens`);
 
   return allTokens;
 }
@@ -127,10 +57,11 @@ export async function parseTokens(tokensPath: string): Promise<Token[]> {
 // Category mapping for token queries
 export const TOKEN_CATEGORIES = {
   colors: ["color"],
-  typography: ["font", "text"],
-  spacing: ["size", "space"],
+  typography: ["typography"],
+  spacing: ["spacing"],
   shadows: ["shadow"],
   borders: ["border", "radius"],
+  screens: ["screen"],
 } as const;
 
 export function mapCategoryToDbCategories(category: string): string[] {

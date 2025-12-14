@@ -15,6 +15,7 @@ flowchart TB
             Index[index.ts<br/>MCP Server Entry]
 
             subgraph DbDir["db/"]
+                Schema[schema.ts]
                 Queries[queries.ts]
             end
 
@@ -23,6 +24,16 @@ flowchart TB
                 VP[vue-parser.ts]
                 RP[react-parser.ts]
                 DP[docs-parser.ts]
+
+                subgraph TokensDir["tokens/"]
+                    TTypes[types.ts]
+                    TColor[color-parser.ts]
+                    TSpacing[spacing-parser.ts]
+                    TShadow[shadow-parser.ts]
+                    TBorder[border-parser.ts]
+                    TScreen[screen-parser.ts]
+                    TTypo[typography-parser.ts]
+                end
             end
 
             subgraph ToolsDir["tools/"]
@@ -45,8 +56,8 @@ flowchart TB
             R3[mozaic-react/]
         end
 
-        subgraph DocDir["doc/"]
-            MD[*.mmd diagrams]
+        subgraph DocDir["docs/"]
+            MD[doc.md + assets/]
         end
     end
 
@@ -54,5 +65,6 @@ flowchart TB
     ToolsDir --> DbDir
     DbDir --> DataDir
     BI --> ParsersDir
+    TP --> TokensDir
     ParsersDir --> DataDir
     BI --> ReposDir

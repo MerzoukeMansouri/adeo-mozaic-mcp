@@ -6,13 +6,26 @@
 
 | Metric | Count |
 |--------|-------|
-| Tokens | 510 |
-| Components | 91 |
+| **Tokens** | 582 |
+| Token Properties (composite) | 15 |
+| **Components** | 91 |
 | Vue Components | 52 |
 | React Components | 39 |
 | Vue Examples | 238 |
 | React Examples | 60 |
-| Documentation | 247 |
+| **Documentation** | 247 |
+
+### Token Categories
+
+| Category | Count |
+|----------|-------|
+| color | 482 |
+| typography | 60 |
+| spacing | 19 |
+| screen | 12 |
+| border | 3 |
+| radius | 3 |
+| shadow | 3 |
 
 ## Diagrams
 

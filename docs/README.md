@@ -55,13 +55,26 @@ mozaic-mcp-server/
 │   │   ├── schema.ts         # SQLite schema
 │   │   └── queries.ts        # Database queries
 │   └── parsers/
-│       ├── tokens-parser.ts  # Parse @mozaic-ds/tokens
+│       ├── tokens-parser.ts  # Orchestrates all token parsers
+│       ├── tokens/           # Split token parsers
+│       │   ├── types.ts      # Shared types (Token, TokenProperty)
+│       │   ├── color-parser.ts
+│       │   ├── spacing-parser.ts
+│       │   ├── shadow-parser.ts
+│       │   ├── border-parser.ts
+│       │   ├── screen-parser.ts
+│       │   └── typography-parser.ts
 │       ├── vue-parser.ts     # Parse Vue components
+│       ├── react-parser.ts   # Parse React components
 │       └── docs-parser.ts    # Parse markdown documentation
 ├── scripts/
-│   └── build-index.ts        # Build-time indexing script
+│   ├── build-index.ts        # Build-time indexing script
+│   └── generate-docs.ts      # Generate documentation & diagrams
 ├── data/
 │   └── mozaic.db             # SQLite database (generated)
+├── docs/
+│   ├── doc.md                # Auto-generated architecture docs
+│   └── assets/               # SVG diagrams
 ├── package.json
 └── tsconfig.json
 ```
@@ -251,6 +264,17 @@ cd mozaic-design-system && yarn install && yarn tokens:build
 
 ### Phase 2: Extract Design Tokens
 
+The token extraction uses **split parsers** for each token category:
+
+| Parser | Source | Tokens |
+|--------|--------|--------|
+| `color-parser.ts` | `properties/color/*.json` | Colors with subcategory extraction |
+| `spacing-parser.ts` | SCSS Magic Unit definitions | 19 spacing values (mu025-mu1000) |
+| `shadow-parser.ts` | `properties/shadow/*.json` | Shadows with x, y, blur, spread, opacity |
+| `border-parser.ts` | `properties/size/*.json` | Border widths and radius |
+| `screen-parser.ts` | `properties/size/screens.json` | Breakpoint definitions |
+| `typography-parser.ts` | `properties/size/font.json` | Font sizes and line heights |
+
 **Token File Locations:**
 
 ```
@@ -261,9 +285,11 @@ mozaic-design-system/packages/tokens/
 │   │   ├── font.json    # Text colors
 │   │   └── button.json  # Component-specific colors
 │   ├── size/
-│   │   └── *.json
-│   └── font/
-│       └── *.json
+│   │   ├── font.json    # Font sizes, line heights
+│   │   ├── screens.json # Breakpoints
+│   │   └── *.json       # Border, radius
+│   └── shadow/
+│       └── *.json       # Shadow definitions
 └── build/                # Generated outputs
     ├── scss/_tokens.scss
     └── js/tokensObject.js
@@ -281,6 +307,15 @@ mozaic-design-system/packages/tokens/
   }
 }
 ```
+
+**Spacing (Magic Unit) System:**
+
+The spacing system uses a base unit of 16px with multipliers:
+- `mu025` = 4px (0.25rem)
+- `mu050` = 8px (0.5rem)
+- `mu100` = 16px (1rem) - base unit
+- `mu200` = 32px (2rem)
+- ... up to `mu1000` = 160px (10rem)
 
 ### Phase 3: Extract Components
 
@@ -360,18 +395,52 @@ mozaic-design-system/src/docs/
 ## SQLite Database Schema
 
 ```sql
--- Design Tokens
+-- Design Tokens (enhanced with subcategory, multiple value formats)
 CREATE TABLE tokens (
-  id INTEGER PRIMARY KEY,
-  category TEXT NOT NULL,        -- 'color', 'spacing', 'typography'
-  path TEXT NOT NULL,            -- 'color.primary-01.100'
-  value TEXT NOT NULL,           -- '#78be20'
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  category TEXT NOT NULL,        -- 'color', 'spacing', 'typography', 'shadow', 'border', 'radius', 'screen'
+  subcategory TEXT,              -- e.g., 'primary', 'button', 'font-size', 'magic-unit'
+  name TEXT NOT NULL,            -- Token name: 'primary-01-100', 'mu100'
+  path TEXT NOT NULL UNIQUE,     -- Full path: 'color.primary-01.100'
+  css_variable TEXT,             -- CSS var: '--color-primary-01-100'
+  scss_variable TEXT,            -- SCSS var: '$color-primary-01-100'
+  value_raw TEXT NOT NULL,       -- Raw value: '1rem', '#78be20'
+  value_number REAL,             -- Numeric part: 1, null for colors
+  value_unit TEXT,               -- Unit: 'rem', 'px', null for colors
+  value_computed TEXT,           -- Computed value: '16px' (rem→px)
   description TEXT,
-  platform TEXT DEFAULT 'all'    -- 'all', 'web', 'ios', 'android'
+  platform TEXT DEFAULT 'all',
+  source_file TEXT               -- Source file path
 );
 
 CREATE INDEX idx_tokens_category ON tokens(category);
+CREATE INDEX idx_tokens_subcategory ON tokens(category, subcategory);
 CREATE INDEX idx_tokens_path ON tokens(path);
+
+-- Token Properties (for composite tokens like shadows)
+CREATE TABLE token_properties (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  token_id INTEGER NOT NULL REFERENCES tokens(id) ON DELETE CASCADE,
+  property TEXT NOT NULL,        -- 'x', 'y', 'blur', 'spread', 'opacity'
+  value TEXT NOT NULL,
+  value_number REAL,
+  value_unit TEXT
+);
+
+CREATE INDEX idx_token_properties_token ON token_properties(token_id);
+
+-- Full-text search for tokens
+CREATE VIRTUAL TABLE tokens_fts USING fts5(
+  name, path, description,
+  content='tokens',
+  content_rowid='id'
+);
+
+-- Triggers to keep FTS in sync
+CREATE TRIGGER tokens_ai AFTER INSERT ON tokens BEGIN
+  INSERT INTO tokens_fts(rowid, name, path, description)
+  VALUES (new.id, new.name, new.path, new.description);
+END;
 
 -- Components
 CREATE TABLE components (
@@ -397,6 +466,23 @@ CREATE TABLE component_props (
   description TEXT
 );
 
+-- Component Slots
+CREATE TABLE component_slots (
+  id INTEGER PRIMARY KEY,
+  component_id INTEGER REFERENCES components(id),
+  name TEXT NOT NULL,
+  description TEXT
+);
+
+-- Component Events
+CREATE TABLE component_events (
+  id INTEGER PRIMARY KEY,
+  component_id INTEGER REFERENCES components(id),
+  name TEXT NOT NULL,
+  payload TEXT,
+  description TEXT
+);
+
 -- Component Examples
 CREATE TABLE component_examples (
   id INTEGER PRIMARY KEY,
@@ -407,19 +493,28 @@ CREATE TABLE component_examples (
   description TEXT
 );
 
+-- Component CSS Classes
+CREATE TABLE component_css_classes (
+  id INTEGER PRIMARY KEY,
+  component_id INTEGER REFERENCES components(id),
+  class_name TEXT NOT NULL
+);
+
 -- Documentation
 CREATE TABLE documentation (
   id INTEGER PRIMARY KEY,
   title TEXT NOT NULL,
-  path TEXT NOT NULL,            -- URL path: '/components/button'
+  path TEXT NOT NULL UNIQUE,     -- URL path: '/components/button'
   content TEXT NOT NULL,         -- Full markdown content
   category TEXT,
   keywords TEXT                  -- JSON array for search
 );
 
+-- Full-text search for documentation
 CREATE VIRTUAL TABLE docs_fts USING fts5(
-  title, content, keywords,
-  content=documentation
+  title, content,
+  content='documentation',
+  content_rowid='id'
 );
 ```
 
@@ -455,9 +550,16 @@ This script will:
 ### Database Contents
 
 The database includes:
-- **Design Tokens**: Colors, typography, spacing, shadows, borders
-- **Components**: 40+ Mozaic components with their props, slots/children, events, and code examples for Vue and React
-- **Documentation**: Searchable documentation content with full-text search support
+- **Design Tokens**: 580+ tokens organized by category and subcategory
+  - Colors (480+): Organized by component/purpose (button, primary, badge, etc.)
+  - Spacing (19): Magic Unit system (mu025 to mu1000)
+  - Typography (60): Font sizes and line heights
+  - Shadows (3): With composite properties (x, y, blur, spread, opacity)
+  - Borders (3): Border widths
+  - Radius (3): Border radius values
+  - Screens (12): Breakpoint definitions
+- **Components**: 90+ Mozaic components with their props, slots/children, events, and code examples for Vue and React
+- **Documentation**: 240+ searchable documentation pages with full-text search support
 
 ### Fallback Behavior
 
