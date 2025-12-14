@@ -70,7 +70,7 @@ export function handleListComponents(
 export const listComponentsTool = {
   name: "list_components",
   description:
-    "List all available Mozaic components, optionally filtered by category",
+    "List available Mozaic Vue/React components by category. Note: CSS-only layout utilities (Grid, Flexy, Container, margin/padding utilities) are not listed here - use search_documentation to find them.",
   inputSchema: {
     type: "object" as const,
     properties: {
