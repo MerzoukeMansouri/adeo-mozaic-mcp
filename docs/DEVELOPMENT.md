@@ -351,14 +351,14 @@ cd mozaic-design-system && yarn install && yarn tokens:build
 
 The token extraction uses **split parsers** for each token category:
 
-| Parser | Source | Tokens |
-|--------|--------|--------|
-| `color-parser.ts` | `properties/color/*.json` | Colors with subcategory extraction |
-| `spacing-parser.ts` | SCSS Magic Unit definitions | 19 spacing values (mu025-mu1000) |
-| `shadow-parser.ts` | `properties/shadow/*.json` | Shadows with x, y, blur, spread, opacity |
-| `border-parser.ts` | `properties/size/*.json` | Border widths and radius |
-| `screen-parser.ts` | `properties/size/screens.json` | Breakpoint definitions |
-| `typography-parser.ts` | `properties/size/font.json` | Font sizes and line heights |
+| Parser                 | Source                         | Tokens                                   |
+| ---------------------- | ------------------------------ | ---------------------------------------- |
+| `color-parser.ts`      | `properties/color/*.json`      | Colors with subcategory extraction       |
+| `spacing-parser.ts`    | SCSS Magic Unit definitions    | 19 spacing values (mu025-mu1000)         |
+| `shadow-parser.ts`     | `properties/shadow/*.json`     | Shadows with x, y, blur, spread, opacity |
+| `border-parser.ts`     | `properties/size/*.json`       | Border widths and radius                 |
+| `screen-parser.ts`     | `properties/size/screens.json` | Breakpoint definitions                   |
+| `typography-parser.ts` | `properties/size/font.json`    | Font sizes and line heights              |
 
 **Token File Locations:**
 
@@ -396,6 +396,7 @@ mozaic-design-system/packages/tokens/
 **Spacing (Magic Unit) System:**
 
 The spacing system uses a base unit of 16px with multipliers:
+
 - `mu025` = 4px (0.25rem)
 - `mu050` = 8px (0.5rem)
 - `mu100` = 16px (1rem) - base unit
@@ -642,10 +643,11 @@ The Mozaic MCP Server uses a SQLite database (`data/mozaic.db`) that contains al
 To build or refresh the database, run:
 
 ```bash
-npm run build:index
+pnpm build
 ```
 
 This script will:
+
 1. **Clone repositories** from GitHub (or update them if they already exist):
    - `https://github.com/adeo/mozaic-design-system`
    - `https://github.com/adeo/mozaic-vue`
@@ -661,6 +663,7 @@ This script will:
 ### Database Contents
 
 The database includes:
+
 - **Design Tokens**: 580+ tokens organized by category and subcategory
   - Colors (480+): Organized by component/purpose (button, primary, badge, etc.)
   - Spacing (19): Magic Unit system (mu025 to mu1000)
@@ -675,6 +678,7 @@ The database includes:
 ### Fallback Behavior
 
 If the GitHub repositories are unavailable or cannot be cloned, the build script will use fallback data to ensure a minimal working dataset:
+
 - 23 sample design tokens
 - 42 pre-defined Mozaic components (Vue and React compatible)
 - 7 default documentation entries
@@ -682,11 +686,13 @@ If the GitHub repositories are unavailable or cannot be cloned, the build script
 ### Database Location
 
 The SQLite database file is stored at:
+
 ```
 data/mozaic.db
 ```
 
 Additional SQLite files may be present:
+
 - `data/mozaic.db-wal` - Write-Ahead Log (for performance)
 - `data/mozaic.db-shm` - Shared memory file (for concurrency)
 
@@ -775,9 +781,12 @@ server.registerTool(
   {
     description: "Get design tokens (colors, typography, spacing) from Mozaic",
     inputSchema: {
-      category: z.enum(["colors", "typography", "spacing", "shadows", "borders", "all"])
+      category: z
+        .enum(["colors", "typography", "spacing", "shadows", "borders", "all"])
         .describe("Token category to retrieve"),
-      format: z.enum(["json", "scss", "css", "js"]).default("json")
+      format: z
+        .enum(["json", "scss", "css", "js"])
+        .default("json")
         .describe("Output format"),
     },
   },
@@ -801,7 +810,16 @@ server.registerTool(
   {
     description: "List all available Mozaic components",
     inputSchema: {
-      category: z.enum(["form", "navigation", "feedback", "layout", "data-display", "action", "all"])
+      category: z
+        .enum([
+          "form",
+          "navigation",
+          "feedback",
+          "layout",
+          "data-display",
+          "action",
+          "all",
+        ])
         .default("all"),
     },
   },
@@ -958,10 +976,7 @@ The MCP server supports a `--debug` flag that logs all server activity to a file
   "mcpServers": {
     "mozaic": {
       "command": "node",
-      "args": [
-        "path/to/mozaic-mcp-server/dist/index.js",
-        "--debug"
-      ]
+      "args": ["path/to/mozaic-mcp-server/dist/index.js", "--debug"]
     }
   }
 }
@@ -990,6 +1005,7 @@ This file is located in the project root directory.
 ### Log Contents
 
 The debug log includes:
+
 - Server startup events
 - Database initialization status
 - Tool calls with input parameters
@@ -1025,11 +1041,13 @@ This means the `better-sqlite3` native module was compiled for a different Node.
 **Solution:**
 
 1. Check your Node version matches Claude Desktop (currently Node 25):
+
    ```bash
    node --version  # Should show v25.x.x
    ```
 
 2. Reinstall dependencies:
+
    ```bash
    rm -rf node_modules pnpm-lock.yaml
    pnpm install
