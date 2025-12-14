@@ -20,8 +20,10 @@ interface DbStats {
   documentation: number;
   vueComponents: number;
   reactComponents: number;
+  htmlComponents: number;
   vueExamples: number;
   reactExamples: number;
+  htmlExamples: number;
   categories: Array<{ category: string; count: number }>;
   tokenCategories: Array<{ category: string; count: number }>;
   tokenSubcategories: Array<{ category: string; subcategory: string; count: number }>;
@@ -56,6 +58,14 @@ function getDbStats(): DbStats | null {
     "SELECT COUNT(*) as count FROM component_examples WHERE framework = 'react'"
   ).get() as { count: number };
 
+  const htmlComponents = db.prepare(
+    "SELECT COUNT(*) as count FROM components WHERE frameworks LIKE '%html%'"
+  ).get() as { count: number };
+
+  const htmlExamples = db.prepare(
+    "SELECT COUNT(*) as count FROM component_examples WHERE framework = 'html'"
+  ).get() as { count: number };
+
   const categories = db.prepare(
     "SELECT category, COUNT(*) as count FROM components GROUP BY category ORDER BY count DESC"
   ).all() as Array<{ category: string; count: number }>;
@@ -80,8 +90,10 @@ function getDbStats(): DbStats | null {
     documentation: docs.count,
     vueComponents: vueComponents.count,
     reactComponents: reactComponents.count,
+    htmlComponents: htmlComponents.count,
     vueExamples: vueExamples.count,
     reactExamples: reactExamples.count,
+    htmlExamples: htmlExamples.count,
     categories,
     tokenCategories,
     tokenSubcategories,
@@ -161,6 +173,7 @@ flowchart LR
         P2[vue-parser.ts]
         P3[react-parser.ts]
         P4[docs-parser.ts]
+        P5[scss-parser.ts]
     end
 
     subgraph Data["Extracted Data"]
@@ -168,6 +181,7 @@ flowchart LR
         D2[Vue Components<br/>props, slots, events, examples]
         D3[React Components<br/>props, callbacks, examples]
         D4[Documentation<br/>MDX content, frontmatter]
+        D5[CSS-only Components<br/>layouts, utilities, classes]
     end
 
     subgraph DB["SQLite Database"]
@@ -190,11 +204,13 @@ flowchart LR
     T1 --> T1P & T1F
 
     R1 --> P4 --> D4 --> T7 --> T8
+    R1 --> P5 --> D5 --> T2
     R2 --> P2 --> D2 --> T2
     R3 --> P3 --> D3 --> T2
 
     D2 --> T3 & T4 & T5 & T6
     D3 --> T3 & T5 & T6
+    D5 --> T6
 `;
 }
 
@@ -394,6 +410,7 @@ flowchart TB
                 VP[vue-parser.ts]
                 RP[react-parser.ts]
                 DP[docs-parser.ts]
+                SP[scss-parser.ts]
 
                 subgraph TokensDir["tokens/"]
                     TTypes[types.ts]
@@ -475,12 +492,14 @@ ${stats.tokenCategories.map(c => `        T_${c.category.replace(/[^a-zA-Z]/g, "
         direction TB
         Vue["Vue: ${stats.vueComponents}"]
         React["React: ${stats.reactComponents}"]
+        Html["HTML/CSS: ${stats.htmlComponents}"]
     end
 
-    subgraph Examples["Examples: ${stats.vueExamples + stats.reactExamples}"]
+    subgraph Examples["Examples: ${stats.vueExamples + stats.reactExamples + stats.htmlExamples}"]
         direction TB
         VueEx["Vue: ${stats.vueExamples}"]
         ReactEx["React: ${stats.reactExamples}"]
+        HtmlEx["HTML: ${stats.htmlExamples}"]
     end
 
     subgraph Docs["Documentation"]
@@ -534,6 +553,7 @@ flowchart TB
         P2[vue-parser]
         P3[react-parser]
         P4[docs-parser]
+        P5[scss-parser]
     end
 
     subgraph Sources["Source Repositories (ADEO)"]
@@ -552,7 +572,8 @@ flowchart TB
         S2["Components: ${stats.components}"]
         S3["Vue: ${stats.vueComponents} + ${stats.vueExamples} examples"]
         S4["React: ${stats.reactComponents} + ${stats.reactExamples} examples"]
-        S5["Documentation: ${stats.documentation} pages"]
+        S5["HTML/CSS: ${stats.htmlComponents} + ${stats.htmlExamples} examples"]
+        S6["Documentation: ${stats.documentation} pages"]
     end
 `;
   }
@@ -651,8 +672,10 @@ function generateDocMd(stats: DbStats | null): string {
 | **Components** | ${stats.components} |
 | Vue Components | ${stats.vueComponents} |
 | React Components | ${stats.reactComponents} |
+| HTML/CSS Components | ${stats.htmlComponents} |
 | Vue Examples | ${stats.vueExamples} |
 | React Examples | ${stats.reactExamples} |
+| HTML Examples | ${stats.htmlExamples} |
 | **Documentation** | ${stats.documentation} |
 
 ### Token Categories

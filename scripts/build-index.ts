@@ -16,6 +16,7 @@ import { parseTokens } from "../src/parsers/tokens-parser.js";
 import { parseVueComponents } from "../src/parsers/vue-parser.js";
 import { parseReactComponents } from "../src/parsers/react-parser.js";
 import { parseDocumentation } from "../src/parsers/docs-parser.js";
+import { parseScssComponents } from "../src/parsers/scss-parser.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -182,6 +183,29 @@ async function indexDocumentation(db: ReturnType<typeof initDatabase>): Promise<
   return docs.length;
 }
 
+async function indexScssComponents(db: ReturnType<typeof initDatabase>): Promise<number> {
+  console.log("🎨 Indexing CSS-only components (layouts & utilities)...");
+
+  const stylesPath = join(REPOS.designSystem.path, "packages", "styles");
+
+  if (!existsSync(stylesPath)) {
+    console.log("   ⚠ Styles path not found, skipping SCSS components");
+    return 0;
+  }
+
+  const components = await parseScssComponents(stylesPath);
+
+  if (components.length === 0) {
+    console.log("   ⚠ No SCSS components parsed");
+    return 0;
+  }
+
+  insertComponents(db, components);
+
+  console.log(`   ✓ Indexed ${components.length} CSS-only components`);
+  return components.length;
+}
+
 async function main(): Promise<void> {
   console.log("🔧 Building Mozaic MCP index...\n");
 
@@ -216,6 +240,7 @@ async function main(): Promise<void> {
   await indexTokens(db);
   await indexVueComponents(db);
   await indexReactComponents(db);
+  await indexScssComponents(db);
   await indexDocumentation(db);
 
   // Print stats
