@@ -544,6 +544,13 @@ async function generateImages(diagrams: Array<{ name: string; content: string }>
       // Fix malformed HTML in SVG (mermaid outputs <br> instead of <br/>)
       svg = svg.replace(/<br>/g, "<br/>");
 
+      // Set explicit width for better GitHub preview (remove max-width constraint)
+      svg = svg.replace(/style="max-width:[^"]*"/, 'style="min-width: 800px"');
+      // Add width attribute if not present
+      if (!svg.includes('width="')) {
+        svg = svg.replace('<svg ', '<svg width="100%" ');
+      }
+
       writeFileSync(outputPath, svg);
       console.log(`  - ${name}.svg`);
     } catch (error: unknown) {
@@ -553,6 +560,68 @@ async function generateImages(diagrams: Array<{ name: string; content: string }>
   }
 
   await browser.close();
+}
+
+function generateReadme(diagrams: Array<{ name: string }>, stats: DbStats | null): string {
+  const timestamp = new Date().toISOString().split("T")[0];
+
+  let readme = `# Mozaic MCP Server - Architecture Documentation
+
+> Auto-generated on ${timestamp}
+
+`;
+
+  if (stats) {
+    readme += `## Current Statistics
+
+| Metric | Count |
+|--------|-------|
+| Tokens | ${stats.tokens} |
+| Components | ${stats.components} |
+| Vue Components | ${stats.vueComponents} |
+| React Components | ${stats.reactComponents} |
+| Vue Examples | ${stats.vueExamples} |
+| React Examples | ${stats.reactExamples} |
+| Documentation | ${stats.documentation} |
+
+`;
+  }
+
+  readme += `## Diagrams
+
+### Architecture Overview
+<img src="./architecture.svg" width="100%" alt="Architecture">
+
+### Project Structure
+<img src="./structure.svg" width="100%" alt="Structure">
+
+### Data Flow
+<img src="./dataflow.svg" width="100%" alt="Data Flow">
+
+### Database Schema
+<img src="./schema.svg" width="100%" alt="Schema">
+
+### MCP Tools
+<img src="./tools.svg" width="100%" alt="Tools">
+
+### Request Sequence
+<img src="./sequence.svg" width="100%" alt="Sequence">
+
+### Complete Overview
+<img src="./full.svg" width="100%" alt="Full Architecture">
+
+`;
+
+  if (stats) {
+    readme += `### Statistics
+
+<img src="./stats-components.svg" width="400" alt="Components by Category">
+<img src="./stats-tokens.svg" width="400" alt="Tokens by Category">
+<img src="./stats-summary.svg" width="100%" alt="Statistics Summary">
+`;
+  }
+
+  return readme;
 }
 
 async function main(): Promise<void> {
@@ -601,6 +670,11 @@ async function main(): Promise<void> {
 
   // Generate SVG images from mermaid files
   await generateImages(diagrams);
+
+  // Generate README for GitHub
+  const readme = generateReadme(diagrams, stats);
+  writeFileSync(join(DOC_DIR, "README.md"), readme);
+  console.log("  - README.md");
 
   console.log(`\nAll files saved to: ${DOC_DIR}/`);
 }
