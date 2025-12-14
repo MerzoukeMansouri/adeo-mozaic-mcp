@@ -16,6 +16,7 @@
     "start:debug": "node dist/index.js --debug",
     "dev": "tsx watch src/index.ts",
     "clean": "rm -rf dist data/mozaic.db",
+    "sanity-check": "tsx scripts/sanity-check.ts",
     "prebuild": "rm -rf dist",
     "install-mcp": "./scripts/install.sh",
     "uninstall-mcp": "./scripts/uninstall.sh"
