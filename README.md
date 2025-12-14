@@ -29,7 +29,12 @@ pnpm start   # Starts the MCP server
 | **Vue Components**   | 52    | Props, slots, events, examples                                  |
 | **React Components** | 39    | Props, callbacks, examples                                      |
 | **CSS Utilities**    | 6     | Flexy, Container, Margin, Padding, Ratio, Scroll (500+ classes) |
-| **Documentation**    | 247   | MDX pages with full-text search                                 |
+| **Documentation**    | 309   | MDX pages with full-text search                                 |
+
+Documentation sources:
+- Design System docs (247 pages)
+- Vue Storybook docs (58 pages) - Getting Started, Usage guides
+- React Storybook docs (4 pages) - Getting Started, Usage guides
 
 ## MCP Tools
 

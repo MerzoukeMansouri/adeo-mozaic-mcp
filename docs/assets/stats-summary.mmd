@@ -32,8 +32,11 @@ flowchart LR
         ReactEx["React: 60"]
     end
 
-    subgraph Docs["Documentation"]
-        DocPages["247 pages"]
+    subgraph Docs["Documentation: 309"]
+        direction TB
+        DSDoc["Design System: 247"]
+        VueDoc["Vue Storybook: 58"]
+        ReactDoc["React Storybook: 4"]
     end
 
     Tokens --> Components --> CssUtils --> Examples --> Docs

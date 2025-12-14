@@ -207,6 +207,8 @@ flowchart LR
     subgraph Data["Extracted Data"]
         D1[Design Tokens<br/>colors, spacing, typography,<br/>shadows, borders, screens, grid]
         D2[Vue Components<br/>props, slots, events, examples]
+        D4V[Vue Storybook Docs<br/>Getting Started, Usage]
+        D4R[React Storybook Docs<br/>Getting Started, Usage]
         D3[React Components<br/>props, callbacks, examples]
         D4[Documentation<br/>MDX content, frontmatter]
         D5[CSS Utilities<br/>Flexy, Margin, Padding, etc.]
@@ -237,6 +239,8 @@ flowchart LR
     R1 --> P4 --> D4 --> T7 --> T8
     R1 --> P5 --> D5 --> CU
     CU --> CUC & CUE
+    R2 --> P4 --> D4V --> T7
+    R3 --> P4 --> D4R --> T7
     R2 --> P2 --> D2 --> T2
     R3 --> P3 --> D3 --> T2
 
@@ -569,8 +573,11 @@ ${stats.tokenCategories.map((c) => `        T_${c.category.replace(/[^a-zA-Z]/g,
         ReactEx["React: ${stats.reactExamples}"]
     end
 
-    subgraph Docs["Documentation"]
-        DocPages["${stats.documentation} pages"]
+    subgraph Docs["Documentation: ${stats.documentation}"]
+        direction TB
+        DSDoc["Design System: ${stats.designSystemDocs}"]
+        VueDoc["Vue Storybook: ${stats.vueDocs}"]
+        ReactDoc["React Storybook: ${stats.reactDocs}"]
     end
 
     Tokens --> Components --> CssUtils --> Examples --> Docs
@@ -759,6 +766,9 @@ function generateDocMd(stats: DbStats | null): string {
 | Vue Examples | ${stats.vueExamples} |
 | React Examples | ${stats.reactExamples} |
 | **CSS Utilities** | ${stats.cssUtilities} |
+| Design System Docs | ${stats.designSystemDocs} |
+| Vue Storybook Docs | ${stats.vueDocs} |
+| React Storybook Docs | ${stats.reactDocs} |
 | CSS Utility Classes | ${stats.cssUtilityClasses} |
 | **Documentation** | ${stats.documentation} |
 

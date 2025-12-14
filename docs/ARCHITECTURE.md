@@ -16,8 +16,11 @@
 | Vue Examples | 238 |
 | React Examples | 60 |
 | **CSS Utilities** | 6 |
+| Design System Docs | 247 |
+| Vue Storybook Docs | 58 |
+| React Storybook Docs | 4 |
 | CSS Utility Classes | 505 |
-| **Documentation** | 247 |
+| **Documentation** | 309 |
 
 ### Token Categories
 
