@@ -118,7 +118,7 @@ CSS-only layout and utility classes (no Vue/React wrapper). Use `get_css_utility
 | `pnpm dev`        | Development mode with watch           |
 | `pnpm clean`      | Remove dist and database              |
 | `pnpm test`       | Run unit tests                        |
-| `pnpm sanity-check` | Validate database integrity         |
+| `pnpm database:sanity` | Validate database integrity         |
 
 ## Documentation
 

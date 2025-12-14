@@ -80,4 +80,4 @@ jobs:
         run: pnpm install
 
       - name: Run sanity check
-        run: pnpm sanity-check
+        run: pnpm database:sanity

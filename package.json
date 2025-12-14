@@ -16,7 +16,7 @@
     "start:debug": "node dist/index.js --debug",
     "dev": "tsx watch src/index.ts",
     "clean": "rm -rf dist data/mozaic.db",
-    "sanity-check": "tsx scripts/sanity-check.ts",
+    "database:sanity": "tsx scripts/sanity-check.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

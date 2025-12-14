@@ -5,7 +5,7 @@
 ```bash
 pnpm test            # Run unit tests
 pnpm test:coverage   # Run tests with coverage report
-pnpm sanity-check    # Run database sanity checks
+pnpm database:sanity # Run database sanity checks
 pnpm lint            # Run ESLint
 pnpm format:check    # Check Prettier formatting
 ```
@@ -89,7 +89,7 @@ The sanity check validates the built database contains expected data.
 ### Run
 
 ```bash
-pnpm sanity-check
+pnpm database:sanity
 ```
 
 ### Exit Codes
@@ -141,7 +141,7 @@ GitHub Actions runs on push/PR to `main`:
 jobs:
   lint:     # pnpm lint && pnpm format:check
   test:     # pnpm test:coverage
-  sanity:   # pnpm sanity-check
+  sanity:   # pnpm database:sanity
 ```
 
 All jobs run in parallel. The database (`data/mozaic.db`) must be committed for sanity checks to pass.
