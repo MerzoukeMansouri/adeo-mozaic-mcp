@@ -23,75 +23,64 @@ pnpm start   # Starts the MCP server
 
 ## What's Indexed
 
-| Type | Count | Description |
-|------|-------|-------------|
-| **Design Tokens** | 586 | Colors, typography, spacing, shadows, borders, screens, grid |
-| **Vue Components** | 52 | Props, slots, events, examples |
-| **React Components** | 39 | Props, callbacks, examples |
-| **CSS Utilities** | 6 | Flexy, Container, Margin, Padding, Ratio, Scroll (500+ classes) |
-| **Documentation** | 247 | MDX pages with full-text search |
+| Type                 | Count | Description                                                     |
+| -------------------- | ----- | --------------------------------------------------------------- |
+| **Design Tokens**    | 586   | Colors, typography, spacing, shadows, borders, screens, grid    |
+| **Vue Components**   | 52    | Props, slots, events, examples                                  |
+| **React Components** | 39    | Props, callbacks, examples                                      |
+| **CSS Utilities**    | 6     | Flexy, Container, Margin, Padding, Ratio, Scroll (500+ classes) |
+| **Documentation**    | 247   | MDX pages with full-text search                                 |
 
 ## MCP Tools
 
 ### Component Tools
 
-| Tool | Description |
-|------|-------------|
-| `get_component_info` | Get Vue/React component details (props, slots, events, examples) |
-| `list_components` | List framework components by category |
-| `generate_vue_component` | Generate Vue component code |
-| `generate_react_component` | Generate React component code |
+| Tool                       | Description                                                      |
+| -------------------------- | ---------------------------------------------------------------- |
+| `get_component_info`       | Get Vue/React component details (props, slots, events, examples) |
+| `list_components`          | List framework components by category                            |
+| `generate_vue_component`   | Generate Vue component code                                      |
+| `generate_react_component` | Generate React component code                                    |
 
 ### CSS Utility Tools
 
-| Tool | Description |
-|------|-------------|
-| `get_css_utility` | Get CSS utility classes and examples (Flexy, Margin, etc.) |
+| Tool                 | Description                                                |
+| -------------------- | ---------------------------------------------------------- |
+| `get_css_utility`    | Get CSS utility classes and examples (Flexy, Margin, etc.) |
 | `list_css_utilities` | List available CSS utilities by category (layout, utility) |
 
 ### Other Tools
 
-| Tool | Description |
-|------|-------------|
-| `get_design_tokens` | Query tokens by category (color, spacing, typography, shadow, border, screen, grid) |
-| `search_documentation` | Full-text search across all docs |
+| Tool                   | Description                                                                         |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| `get_design_tokens`    | Query tokens by category (color, spacing, typography, shadow, border, screen, grid) |
+| `search_documentation` | Full-text search across all docs                                                    |
 
 ## Token Categories
 
-| Category | Count | Examples |
-|----------|-------|----------|
-| color | 482 | `--color-primary-01-100`, `--color-button-solid-*` |
-| typography | 60 | `--font-size-*`, `--line-height-*` |
-| spacing | 19 | `$mu025` to `$mu1000` (Magic Unit system) |
-| screen | 12 | Breakpoints: `s`, `m`, `l`, `xl`, `xxl` |
-| shadow | 3 | Box shadows with x, y, blur, spread, opacity |
-| border | 3 | Border widths |
-| radius | 3 | Border radius values |
-| grid | 4 | Gutters, magic-unit, rem values |
+| Category   | Count | Examples                                           |
+| ---------- | ----- | -------------------------------------------------- |
+| color      | 482   | `--color-primary-01-100`, `--color-button-solid-*` |
+| typography | 60    | `--font-size-*`, `--line-height-*`                 |
+| spacing    | 19    | `$mu025` to `$mu1000` (Magic Unit system)          |
+| screen     | 12    | Breakpoints: `s`, `m`, `l`, `xl`, `xxl`            |
+| shadow     | 3     | Box shadows with x, y, blur, spread, opacity       |
+| border     | 3     | Border widths                                      |
+| radius     | 3     | Border radius values                               |
+| grid       | 4     | Gutters, magic-unit, rem values                    |
 
 ## CSS Utilities
 
 CSS-only layout and utility classes (no Vue/React wrapper). Use `get_css_utility` tool to get full class lists and examples.
 
-| Utility | Category | Description |
-|---------|----------|-------------|
-| **Flexy** | layout | Flexbox 12-column grid with responsive classes |
-| **Container** | layout | Responsive container with max-width |
-| **Margin** | utility | Margin utilities using Magic Unit scale |
-| **Padding** | utility | Padding utilities using Magic Unit scale |
-| **Ratio** | utility | Aspect ratio utilities (16:9, 4:3, 1:1, etc.) |
-| **Scroll** | utility | Scroll prevention utility |
-
-Example CSS classes:
-```css
-.ml-flexy                        /* Flex container */
-.ml-flexy__col--6of12            /* 50% width column */
-.ml-flexy__col--4of12@from-m     /* 33% from medium breakpoint */
-.ml-container                    /* Centered container */
-.mu-m-100                        /* 16px margin all sides */
-.mu-p-200                        /* 32px padding all sides */
-.mu-ratio--16x9                  /* 16:9 aspect ratio */
-```
+| Utility       | Category | Description                                    |
+| ------------- | -------- | ---------------------------------------------- |
+| **Flexy**     | layout   | Flexbox 12-column grid with responsive classes |
+| **Container** | layout   | Responsive container with max-width            |
+| **Margin**    | utility  | Margin utilities using Magic Unit scale        |
+| **Padding**   | utility  | Padding utilities using Magic Unit scale       |
+| **Ratio**     | utility  | Aspect ratio utilities (16:9, 4:3, 1:1, etc.)  |
+| **Scroll**    | utility  | Scroll prevention utility                      |
 
 ## Architecture
 
@@ -121,13 +110,13 @@ Example CSS classes:
 
 ## Scripts
 
-| Script | Description |
-|--------|-------------|
-| `pnpm build` | Compile TypeScript and build database |
-| `pnpm build:docs` | Generate documentation diagrams |
-| `pnpm start` | Start the MCP server |
-| `pnpm dev` | Development mode with watch |
-| `pnpm clean` | Remove dist and database |
+| Script            | Description                           |
+| ----------------- | ------------------------------------- |
+| `pnpm build`      | Compile TypeScript and build database |
+| `pnpm build:docs` | Generate documentation diagrams       |
+| `pnpm start`      | Start the MCP server                  |
+| `pnpm dev`        | Development mode with watch           |
+| `pnpm clean`      | Remove dist and database              |
 
 ## Documentation
 
