@@ -11,8 +11,10 @@
 | **Components** | 91 |
 | Vue Components | 52 |
 | React Components | 39 |
+| HTML/CSS Components | 0 |
 | Vue Examples | 238 |
 | React Examples | 60 |
+| HTML Examples | 0 |
 | **Documentation** | 247 |
 
 ### Token Categories

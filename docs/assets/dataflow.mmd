@@ -23,6 +23,7 @@ flowchart LR
         P2[vue-parser.ts]
         P3[react-parser.ts]
         P4[docs-parser.ts]
+        P5[scss-parser.ts]
     end
 
     subgraph Data["Extracted Data"]
@@ -30,6 +31,7 @@ flowchart LR
         D2[Vue Components<br/>props, slots, events, examples]
         D3[React Components<br/>props, callbacks, examples]
         D4[Documentation<br/>MDX content, frontmatter]
+        D5[CSS-only Components<br/>layouts, utilities, classes]
     end
 
     subgraph DB["SQLite Database"]
@@ -52,8 +54,10 @@ flowchart LR
     T1 --> T1P & T1F
 
     R1 --> P4 --> D4 --> T7 --> T8
+    R1 --> P5 --> D5 --> T2
     R2 --> P2 --> D2 --> T2
     R3 --> P3 --> D3 --> T2
 
     D2 --> T3 & T4 & T5 & T6
     D3 --> T3 & T5 & T6
+    D5 --> T6
