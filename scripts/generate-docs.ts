@@ -625,66 +625,6 @@ function generateDocMd(stats: DbStats | null): string {
   return doc;
 }
 
-function generateRootReadme(stats: DbStats | null): string {
-  let readme = `# Mozaic MCP Server
-
-MCP (Model Context Protocol) server for the Mozaic Design System by ADEO. Provides Claude Desktop with access to design tokens, components, and documentation.
-
-## Features
-
-- **Design Tokens**: Colors, typography, spacing, shadows
-- **Components**: Vue 3 and React component info with props, slots, events, examples
-- **Documentation**: Full-text search across Mozaic docs
-- **Code Generation**: Generate Vue/React component code snippets
-
-## Quick Start
-
-\`\`\`bash
-pnpm install
-pnpm build:index  # Clone repos & build database
-pnpm build        # Compile TypeScript
-pnpm start        # Start MCP server
-\`\`\`
-
-## Architecture
-
-`;
-
-  if (stats) {
-    readme += `### Statistics Summary
-<a href="./docs/doc.md">
-  <img src="./docs/assets/stats-summary.svg" width="100%" alt="Statistics Summary">
-</a>
-
-`;
-  }
-
-  readme += `### Data Flow
-<a href="./docs/doc.md">
-  <img src="./docs/assets/dataflow.svg" width="100%" alt="Data Flow">
-</a>
-
-[View full documentation](./docs/doc.md)
-
-## MCP Tools
-
-| Tool | Description |
-|------|-------------|
-| \`get_design_tokens\` | Get design tokens (colors, typography, spacing) |
-| \`get_component_info\` | Get component details (props, slots, events, examples) |
-| \`list_components\` | List available components by category |
-| \`generate_vue_component\` | Generate Vue component code |
-| \`generate_react_component\` | Generate React component code |
-| \`search_documentation\` | Full-text search Mozaic docs |
-
-## License
-
-MIT
-`;
-
-  return readme;
-}
-
 async function main(): Promise<void> {
   console.log("Generating Mermaid diagrams...\n");
 
@@ -738,15 +678,10 @@ async function main(): Promise<void> {
   // Generate SVG images from mermaid files
   await generateImages(diagrams);
 
-  // Generate doc.md for docs folder
+  // Generate doc.md only (README.md is maintained separately)
   const docMd = generateDocMd(stats);
   writeFileSync(join(DOC_DIR, "doc.md"), docMd);
   console.log("  - doc.md");
-
-  // Generate root README.md
-  const rootReadme = generateRootReadme(stats);
-  writeFileSync(join(PROJECT_ROOT, "README.md"), rootReadme);
-  console.log("  - README.md (root)");
 
   console.log(`\nAll files saved to: ${DOC_DIR}/`);
 }
