@@ -154,6 +154,7 @@ flowchart LR
         TP4[border-parser]
         TP5[screen-parser]
         TP6[typography-parser]
+        TP7[grid-parser]
     end
 
     subgraph OtherParsers["Other Parsers"]
@@ -163,7 +164,7 @@ flowchart LR
     end
 
     subgraph Data["Extracted Data"]
-        D1[Design Tokens<br/>colors, spacing, typography,<br/>shadows, borders, screens]
+        D1[Design Tokens<br/>colors, spacing, typography,<br/>shadows, borders, screens, grid]
         D2[Vue Components<br/>props, slots, events, examples]
         D3[React Components<br/>props, callbacks, examples]
         D4[Documentation<br/>MDX content, frontmatter]

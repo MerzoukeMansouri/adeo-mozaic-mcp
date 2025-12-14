@@ -10,10 +10,11 @@ An MCP (Model Context Protocol) server that exposes the **Mozaic Design System**
 
 ## Features
 
-- **Design Tokens** (580+): Colors, typography, spacing (Magic Unit), shadows, borders, screens
+- **Design Tokens** (586+): Colors, typography, spacing (Magic Unit), shadows, borders, screens, grid
   - Organized by category and subcategory for precise queries
   - Multiple value formats (raw, computed, CSS/SCSS variables)
   - Composite token properties (shadow x, y, blur, spread, opacity)
+  - Grid system tokens (gutters, magic-unit, rem values)
 - **Components** (90+): Vue 3 and React component info with props, slots, events, examples
 - **Documentation** (240+): Full-text search across Mozaic docs
 - **Code Generation**: Generate Vue/React component code snippets
@@ -65,6 +66,7 @@ pnpm start        # Start MCP server
 | border | 3 | Border widths |
 | radius | 3 | Border radius values |
 | shadow | 3 | Box shadows with composite properties |
+| grid | 4 | Grid gutters, magic-unit, and rem values |
 
 ## License
 

@@ -7,7 +7,8 @@ export type TokenCategory =
   | "border"
   | "radius"
   | "screen"
-  | "typography";
+  | "typography"
+  | "grid";
 
 export interface TokenProperty {
   property: string;

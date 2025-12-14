@@ -6,3 +6,4 @@ export { parseShadowTokens } from "./shadow-parser.js";
 export { parseBorderTokens } from "./border-parser.js";
 export { parseScreenTokens } from "./screen-parser.js";
 export { parseTypographyTokens } from "./typography-parser.js";
+export { parseGridTokens } from "./grid-parser.js";

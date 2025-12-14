@@ -6,7 +6,7 @@
 
 | Metric | Count |
 |--------|-------|
-| **Tokens** | 582 |
+| **Tokens** | 586 |
 | Token Properties (composite) | 15 |
 | **Components** | 91 |
 | Vue Components | 52 |
@@ -23,6 +23,7 @@
 | typography | 60 |
 | spacing | 19 |
 | screen | 12 |
+| grid | 4 |
 | border | 3 |
 | radius | 3 |
 | shadow | 3 |

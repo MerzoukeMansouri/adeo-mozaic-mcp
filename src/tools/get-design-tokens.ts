@@ -3,7 +3,7 @@ import { getTokensByCategory, type Token } from "../db/queries.js";
 import { mapCategoryToDbCategories } from "../parsers/tokens-parser.js";
 
 export interface GetDesignTokensInput {
-  category: "colors" | "typography" | "spacing" | "shadows" | "borders" | "screens" | "all";
+  category: "colors" | "typography" | "spacing" | "shadows" | "borders" | "screens" | "grid" | "all";
   format?: "json" | "scss" | "css" | "js";
 }
 
@@ -139,13 +139,13 @@ export function handleGetDesignTokens(
 export const getDesignTokensTool = {
   name: "get_design_tokens",
   description:
-    "Get design tokens (colors, typography, spacing, shadows, borders, screens) from Mozaic Design System. Tokens include CSS/SCSS variables and computed values.",
+    "Get design tokens (colors, typography, spacing, shadows, borders, screens, grid) from Mozaic Design System. Tokens include CSS/SCSS variables and computed values.",
   inputSchema: {
     type: "object" as const,
     properties: {
       category: {
         type: "string",
-        enum: ["colors", "typography", "spacing", "shadows", "borders", "screens", "all"],
+        enum: ["colors", "typography", "spacing", "shadows", "borders", "screens", "grid", "all"],
         description: "Token category to retrieve",
       },
       format: {

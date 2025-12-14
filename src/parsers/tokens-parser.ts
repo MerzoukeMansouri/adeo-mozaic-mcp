@@ -6,6 +6,7 @@ import { parseShadowTokens } from "./tokens/shadow-parser.js";
 import { parseBorderTokens } from "./tokens/border-parser.js";
 import { parseScreenTokens } from "./tokens/screen-parser.js";
 import { parseTypographyTokens } from "./tokens/typography-parser.js";
+import { parseGridTokens } from "./tokens/grid-parser.js";
 
 // Re-export Token type for backwards compatibility
 export type { Token } from "./tokens/types.js";
@@ -51,6 +52,11 @@ export async function parseTokens(tokensPath: string, stylesPath?: string): Prom
   allTokens.push(...typographyTokens);
   console.log(`    ✓ ${typographyTokens.length} typography tokens`);
 
+  console.log("  Parsing grid tokens...");
+  const gridTokens = await parseGridTokens(tokensPath);
+  allTokens.push(...gridTokens);
+  console.log(`    ✓ ${gridTokens.length} grid tokens`);
+
   return allTokens;
 }
 
@@ -62,6 +68,7 @@ export const TOKEN_CATEGORIES = {
   shadows: ["shadow"],
   borders: ["border", "radius"],
   screens: ["screen"],
+  grid: ["grid"],
 } as const;
 
 export function mapCategoryToDbCategories(category: string): string[] {
