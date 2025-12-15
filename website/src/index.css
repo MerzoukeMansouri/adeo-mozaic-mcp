@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Mozaic Design System CSS Variables */
+/* Mozaic Design System Integration */
 :root {
   /* Primary colors */
   --color-primary-01-400: #78BE20;
@@ -12,11 +12,18 @@
   --color-primary-02-800: #242938;
   --color-primary-02-900: #171B26;
 
-  /* Grey scale */
+  /* Grey scale (Mozaic Design System) */
   --color-grey-000: #FFFFFF;
   --color-grey-100: #E6E6E6;
+  --color-grey-200: #CCCCCC;
+  --color-grey-300: #B3B3B3;
+  --color-grey-400: #999999;
+  --color-grey-500: #808080;
+  --color-grey-600: #666666;
+  --color-grey-700: #4D4D4D;
   --color-grey-800: #333333;
   --color-grey-900: #191919;
+  --color-grey-999: #000000;
 }
 
 .dark {
@@ -130,4 +137,241 @@
 /* Mozaic Focus Ring */
 .focus-mozaic {
   @apply focus:outline-none focus:ring-2 focus:ring-primary-01-400 focus:ring-offset-2;
+}
+
+/* Override Mozaic styles for dark mode compatibility */
+.dark .mc-button--solid {
+  --mc-button-background: var(--color-primary-01-500);
+}
+
+/* Container with Mozaic-style max-width */
+.ml-container {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .ml-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ml-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Feature card hover effects */
+.feature-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Stats card gradient background */
+.stats-card {
+  background: linear-gradient(135deg, var(--color-grey-000) 0%, var(--color-grey-100) 100%);
+}
+
+.dark .stats-card {
+  background: linear-gradient(135deg, var(--color-grey-800) 0%, var(--color-grey-900) 100%);
+}
+
+/* Hero section gradient */
+.hero-gradient {
+  background: linear-gradient(180deg, rgba(235, 245, 222, 0.3) 0%, transparent 100%);
+}
+
+.dark .hero-gradient {
+  background: linear-gradient(180deg, rgba(70, 166, 16, 0.1) 0%, transparent 100%);
+}
+
+/* Code block styling */
+.code-block {
+  background: #171B26;
+  border: 1px solid #343B4C;
+  border-radius: 0.5rem;
+}
+
+/* Navigation link active state */
+.nav-link-active {
+  position: relative;
+}
+
+.nav-link-active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-primary-01-400);
+}
+
+/* Documentation Layout */
+.docs-layout {
+  display: flex;
+  min-height: calc(100vh - 200px);
+  gap: 2rem;
+}
+
+.docs-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 80px;
+  height: fit-content;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.docs-sidebar-content {
+  @apply bg-white dark:bg-primary-02-800 rounded-lg border border-grey-200 dark:border-primary-02-600 p-4;
+}
+
+.docs-main {
+  flex: 1;
+  min-width: 0;
+  max-width: 900px;
+}
+
+/* Document navigation */
+.docs-nav {
+  margin-bottom: 1.5rem;
+}
+
+.docs-nav-title {
+  @apply text-xs font-semibold uppercase tracking-wider text-grey-500 dark:text-grey-400 mb-2;
+}
+
+.docs-nav-list {
+  @apply space-y-1;
+}
+
+.docs-nav-link {
+  @apply block px-3 py-2 rounded-lg text-sm font-medium transition-colors;
+  @apply text-grey-700 dark:text-grey-300 hover:bg-grey-100 dark:hover:bg-primary-02-700;
+}
+
+.docs-nav-link.active {
+  @apply bg-primary-01-100 text-primary-01-700 dark:bg-primary-01-900/30 dark:text-primary-01-400;
+}
+
+/* Table of Contents */
+.docs-toc {
+  border-top: 1px solid var(--color-grey-200);
+  padding-top: 1rem;
+}
+
+.dark .docs-toc {
+  border-top-color: var(--color-primary-02-700);
+}
+
+.docs-toc-title {
+  @apply text-xs font-semibold uppercase tracking-wider text-grey-500 dark:text-grey-400 mb-2;
+}
+
+.docs-toc-list {
+  @apply space-y-1;
+}
+
+.docs-toc-item {
+  @apply text-sm;
+}
+
+.docs-toc-item.level-3 {
+  padding-left: 0.75rem;
+}
+
+.docs-toc-link {
+  @apply block py-1 text-grey-600 dark:text-grey-400 hover:text-primary-01-600 dark:hover:text-primary-01-400 transition-colors truncate;
+}
+
+.docs-toc-link.active {
+  @apply text-primary-01-600 dark:text-primary-01-400 font-medium;
+}
+
+/* Previous/Next navigation */
+.docs-pagination {
+  @apply flex justify-between gap-4 mt-12 pt-8 border-t border-grey-200 dark:border-primary-02-700;
+}
+
+.docs-pagination-link {
+  @apply flex flex-col p-4 rounded-lg border border-grey-200 dark:border-primary-02-600 transition-all;
+  @apply hover:border-primary-01-400 dark:hover:border-primary-01-500 hover:bg-grey-100/50 dark:hover:bg-primary-02-700/50;
+  flex: 1;
+  max-width: 50%;
+}
+
+.docs-pagination-link.prev {
+  align-items: flex-start;
+}
+
+.docs-pagination-link.next {
+  align-items: flex-end;
+  margin-left: auto;
+}
+
+.docs-pagination-label {
+  @apply text-xs text-grey-500 dark:text-grey-400 uppercase tracking-wider;
+}
+
+.docs-pagination-title {
+  @apply text-primary-01-600 dark:text-primary-01-400 font-medium;
+}
+
+/* Mobile sidebar */
+.docs-sidebar-toggle {
+  display: none;
+}
+
+.docs-backdrop {
+  @apply fixed inset-0 bg-black/50 z-40;
+}
+
+/* Responsive */
+@media (max-width: 1023px) {
+  .docs-layout {
+    flex-direction: column;
+  }
+
+  .docs-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    z-index: 50;
+    padding: 1rem;
+    background: var(--color-grey-000);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+
+  .dark .docs-sidebar {
+    background: var(--color-primary-02-800);
+  }
+
+  .docs-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .docs-sidebar-toggle {
+    display: flex;
+  }
+
+  .docs-main {
+    max-width: 100%;
+  }
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSqlite } from "../hooks/useSqlite";
+import { Button, Flag, Loader } from "@mozaic-ds/react";
 
 type ToolName =
   | "get_design_tokens"
@@ -347,10 +348,10 @@ function Playground() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-mu300">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-01-500 mb-mu100"></div>
-        <p className="text-grey-600 dark:text-grey-400 text-mozaic-05">Loading database...</p>
-        <p className="text-mozaic-03 text-grey-500 dark:text-grey-500 mt-mu050">
+      <div className="flex flex-col items-center justify-center py-20">
+        <Loader size="l" />
+        <p className="text-grey-600 dark:text-grey-400 text-lg mt-6">Loading database...</p>
+        <p className="text-sm text-grey-500 dark:text-grey-500 mt-2">
           Downloading SQLite database and initializing WebAssembly
         </p>
       </div>
@@ -359,12 +360,12 @@ function Playground() {
 
   if (error) {
     return (
-      <div className="bg-danger-100 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 rounded-mozaic-lg p-mu150">
-        <h2 className="text-mozaic-06 font-semibold text-danger-700 dark:text-danger-400 mb-mu050">
+      <div className="bg-secondary-red-100 dark:bg-secondary-red-900/20 border border-secondary-red-300 dark:border-secondary-red-800 rounded-xl p-6">
+        <h2 className="text-xl font-semibold text-secondary-red-700 dark:text-secondary-red-400 mb-2">
           Failed to Load Database
         </h2>
-        <p className="text-danger-600 dark:text-danger-300">{error}</p>
-        <p className="text-mozaic-03 text-danger-500 dark:text-danger-400 mt-mu050">
+        <p className="text-secondary-red-600 dark:text-secondary-red-300">{error}</p>
+        <p className="text-sm text-secondary-red-500 dark:text-secondary-red-400 mt-2">
           Make sure the database file is available at /mozaic.db
         </p>
       </div>
@@ -372,25 +373,28 @@ function Playground() {
   }
 
   return (
-    <div className="space-y-mu200">
-      <section>
-        <h1 className="text-mozaic-09 font-bold text-grey-900 dark:text-grey-000 mb-mu050">
-          Test It!
-        </h1>
-        <p className="text-mozaic-05 text-grey-600 dark:text-grey-400">
-          Interactive playground to test MCP tools. The SQLite database runs
-          directly in your browser using WebAssembly.
-        </p>
+    <div className="space-y-8">
+      {/* Header */}
+      <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold text-grey-900 dark:text-grey-000 mb-2">
+            Test It!
+          </h1>
+          <p className="text-lg text-grey-600 dark:text-grey-400">
+            Interactive playground to test MCP tools. The SQLite database runs directly in your browser using WebAssembly.
+          </p>
+        </div>
+        <Flag variant="solid" theme="primary">Live Demo</Flag>
       </section>
 
-      <div className="grid lg:grid-cols-3 gap-mu150">
+      <div className="grid lg:grid-cols-3 gap-6">
         {/* Tool Selector */}
         <div className="lg:col-span-1">
-          <div className="card-mozaic">
-            <h2 className="font-semibold text-grey-900 dark:text-grey-000 mb-mu100 text-mozaic-05">
+          <div className="bg-white dark:bg-primary-02-800 rounded-xl border border-grey-200 dark:border-primary-02-600 p-5 sticky top-24">
+            <h2 className="font-semibold text-grey-900 dark:text-grey-000 mb-4 text-lg">
               Select Tool
             </h2>
-            <div className="space-y-mu025">
+            <div className="space-y-1">
               {tools.map((tool) => (
                 <button
                   key={tool.name}
@@ -399,13 +403,13 @@ function Playground() {
                     setFormValues({});
                     setResult(null);
                   }}
-                  className={`w-full text-left px-mu075 py-mu050 rounded-mozaic text-mozaic-04 transition-colors ${
+                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-all ${
                     selectedTool === tool.name
-                      ? "bg-primary-01-500 text-white"
+                      ? "bg-primary-01-500 text-white shadow-sm"
                       : "text-grey-700 dark:text-grey-300 hover:bg-grey-100 dark:hover:bg-primary-02-700"
                   }`}
                 >
-                  <code className="font-mono">{tool.name}</code>
+                  <code className="font-mono text-xs">{tool.name}</code>
                 </button>
               ))}
             </div>
@@ -413,29 +417,29 @@ function Playground() {
         </div>
 
         {/* Form & Results */}
-        <div className="lg:col-span-2 space-y-mu150">
+        <div className="lg:col-span-2 space-y-6">
           {/* Form */}
-          <div className="card-mozaic p-mu150">
-            <h2 className="font-semibold text-grey-900 dark:text-grey-000 mb-mu025 text-mozaic-06">
-              {currentTool.label}
-            </h2>
-            <p className="text-mozaic-04 text-grey-600 dark:text-grey-400 mb-mu100">
-              {currentTool.description}
-            </p>
+          <div className="bg-white dark:bg-primary-02-800 rounded-xl border border-grey-200 dark:border-primary-02-600 p-6">
+            <div className="mb-6">
+              <h2 className="font-semibold text-grey-900 dark:text-grey-000 text-xl mb-1">
+                {currentTool.label}
+              </h2>
+              <p className="text-sm text-grey-600 dark:text-grey-400">
+                {currentTool.description}
+              </p>
+            </div>
 
-            <div className="space-y-mu100">
+            <div className="space-y-4">
               {currentTool.fields.map((field) => (
                 <div key={field.name}>
-                  <label className="block text-mozaic-04 font-medium text-grey-700 dark:text-grey-300 mb-mu025">
+                  <label className="block text-sm font-medium text-grey-700 dark:text-grey-300 mb-2">
                     {field.label}
                   </label>
                   {field.type === "select" ? (
                     <select
                       value={formValues[field.name] ?? field.defaultValue ?? ""}
-                      onChange={(e) =>
-                        handleFieldChange(field.name, e.target.value)
-                      }
-                      className="w-full px-mu075 py-mu050 border border-grey-300 dark:border-primary-02-600 rounded-mozaic bg-white dark:bg-primary-02-800 text-grey-900 dark:text-grey-000 focus-mozaic"
+                      onChange={(e) => handleFieldChange(field.name, e.target.value)}
+                      className="w-full px-4 py-3 border border-grey-300 dark:border-primary-02-600 rounded-lg bg-white dark:bg-primary-02-700 text-grey-900 dark:text-grey-000 focus:ring-2 focus:ring-primary-01-400 focus:border-transparent transition-all"
                     >
                       {field.options?.map((opt) => (
                         <option key={opt.value} value={opt.value}>
@@ -447,70 +451,68 @@ function Playground() {
                     <input
                       type={field.type}
                       value={formValues[field.name] ?? field.defaultValue ?? ""}
-                      onChange={(e) =>
-                        handleFieldChange(field.name, e.target.value)
-                      }
+                      onChange={(e) => handleFieldChange(field.name, e.target.value)}
                       placeholder={field.placeholder}
-                      className="w-full px-mu075 py-mu050 border border-grey-300 dark:border-primary-02-600 rounded-mozaic bg-white dark:bg-primary-02-800 text-grey-900 dark:text-grey-000 focus-mozaic"
+                      className="w-full px-4 py-3 border border-grey-300 dark:border-primary-02-600 rounded-lg bg-white dark:bg-primary-02-700 text-grey-900 dark:text-grey-000 focus:ring-2 focus:ring-primary-01-400 focus:border-transparent transition-all"
                     />
                   )}
                 </div>
               ))}
             </div>
 
-            <button
-              onClick={handleRun}
-              disabled={!db}
-              className="mt-mu100 btn-mozaic-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Run Query
-            </button>
+            <div className="mt-6">
+              <Button onClick={handleRun} isDisabled={!db} variant="solid" theme="primary" size="m">
+                Run Query
+              </Button>
+            </div>
           </div>
 
           {/* Results */}
           {result && (
-            <div className="card-mozaic p-mu150">
-              <div className="flex justify-between items-center mb-mu100">
-                <h2 className="font-semibold text-grey-900 dark:text-grey-000 text-mozaic-05">
-                  Results ({result.values.length} rows)
-                </h2>
-                <button
-                  onClick={copyResult}
-                  className="text-mozaic-03 px-mu075 py-mu025 bg-grey-100 dark:bg-primary-02-700 text-grey-700 dark:text-grey-300 rounded-mozaic hover:bg-grey-200 dark:hover:bg-primary-02-600 transition-colors"
-                >
+            <div className="bg-white dark:bg-primary-02-800 rounded-xl border border-grey-200 dark:border-primary-02-600 p-6">
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-3">
+                  <h2 className="font-semibold text-grey-900 dark:text-grey-000 text-lg">
+                    Results
+                  </h2>
+                  <span className="px-2 py-1 bg-primary-01-100 dark:bg-primary-01-900/30 text-primary-01-700 dark:text-primary-01-400 rounded-md text-sm font-medium">
+                    {result.values.length} rows
+                  </span>
+                </div>
+                <Button onClick={copyResult} size="s" variant="bordered" theme="primary">
                   Copy JSON
-                </button>
+                </Button>
               </div>
 
               {/* SQL Query */}
-              <div className="mb-mu100">
-                <p className="text-mozaic-02 text-grey-500 dark:text-grey-400 mb-mu025">
-                  SQL Query:
+              <div className="mb-6">
+                <p className="text-xs text-grey-500 dark:text-grey-400 mb-2 uppercase tracking-wide font-medium">
+                  SQL Query
                 </p>
-                <pre className="bg-primary-02-900 text-grey-100 p-mu075 rounded-mozaic text-mozaic-03 overflow-x-auto">
+                <pre className="bg-primary-02-900 text-grey-100 p-4 rounded-lg text-sm overflow-x-auto font-mono">
                   {result.sql}
                 </pre>
               </div>
 
               {result.error ? (
-                <div className="bg-danger-100 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 rounded-mozaic p-mu100">
-                  <p className="text-danger-700 dark:text-danger-400">
+                <div className="bg-secondary-red-100 dark:bg-secondary-red-900/20 border border-secondary-red-300 dark:border-secondary-red-800 rounded-lg p-4">
+                  <p className="text-secondary-red-700 dark:text-secondary-red-400">
                     {result.error}
                   </p>
                 </div>
               ) : result.values.length === 0 ? (
-                <p className="text-grey-500 dark:text-grey-400">
-                  No results found
-                </p>
+                <div className="text-center py-8">
+                  <p className="text-grey-500 dark:text-grey-400">No results found</p>
+                </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-mozaic-04">
+                <div className="overflow-x-auto rounded-lg border border-grey-200 dark:border-primary-02-600">
+                  <table className="w-full text-sm">
                     <thead className="bg-grey-100 dark:bg-primary-02-700">
                       <tr>
                         {result.columns.map((col) => (
                           <th
                             key={col}
-                            className="px-mu075 py-mu050 text-left text-mozaic-02 font-medium text-grey-500 dark:text-grey-300 uppercase"
+                            className="px-4 py-3 text-left text-xs font-semibold text-grey-600 dark:text-grey-300 uppercase tracking-wider"
                           >
                             {col}
                           </th>
@@ -519,11 +521,11 @@ function Playground() {
                     </thead>
                     <tbody className="divide-y divide-grey-200 dark:divide-primary-02-600">
                       {result.values.map((row, i) => (
-                        <tr key={i} className="hover:bg-grey-50 dark:hover:bg-primary-02-800 transition-colors">
+                        <tr key={i} className="hover:bg-grey-50 dark:hover:bg-primary-02-700/50 transition-colors">
                           {row.map((cell, j) => (
                             <td
                               key={j}
-                              className="px-mu075 py-mu050 text-grey-700 dark:text-grey-300 max-w-xs truncate"
+                              className="px-4 py-3 text-grey-700 dark:text-grey-300 max-w-xs truncate"
                               title={String(cell)}
                             >
                               {String(cell).substring(0, 100)}

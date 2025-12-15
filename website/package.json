@@ -10,6 +10,9 @@
     "prebuild": "node scripts/copy-assets.js"
   },
   "dependencies": {
+    "@mozaic-ds/icons": "^2.2.2",
+    "@mozaic-ds/react": "^1.13.0",
+    "@mozaic-ds/styles": "^2.6.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-markdown": "^9.0.1",
