@@ -706,10 +706,10 @@ flowchart TB
     CD <-->|"stdio"| Server
     Tools --> Queries
 
-    DS --> P1 & P4 & P6
+    DS --> P1 & P4 & P5 & P6
     VUE --> P2
     REACT --> P3
-    P1 & P2 & P3 & P4 & P6 -.->|"build"| DB
+    P1 & P2 & P3 & P4 & P5 & P6 -.->|"build"| DB
 `;
 
   return diagram;
