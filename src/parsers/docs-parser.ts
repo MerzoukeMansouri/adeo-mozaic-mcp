@@ -218,6 +218,9 @@ function generateUrlPath(filePath: string, basePath: string): string {
   return urlPath;
 }
 
+// Minimum content length to include a doc (filters out empty index pages)
+const MIN_CONTENT_LENGTH = 100;
+
 export async function parseDocumentation(docsPath: string): Promise<Documentation[]> {
   const docs: Documentation[] = [];
 
@@ -226,7 +229,7 @@ export async function parseDocumentation(docsPath: string): Promise<Documentatio
   for (const file of mdxFiles) {
     const parsed = parseMdxFile(file, docsPath);
 
-    if (parsed) {
+    if (parsed && parsed.content.length >= MIN_CONTENT_LENGTH) {
       docs.push({
         title: parsed.title,
         path: generateUrlPath(file, docsPath),
@@ -276,6 +279,11 @@ export async function parseStorybookDocs(
       const urlPath = metaPath
         ? `${baseUrlPath}/${metaPath.replace(/\//g, "/")}`
         : `${baseUrlPath}/${fileName.replace(/\.mdx?$/, "").toLowerCase()}`;
+
+      // Skip docs with very short content
+      if (cleanedContent.length < MIN_CONTENT_LENGTH) {
+        continue;
+      }
 
       // Add framework-specific keywords
       const keywords = extractKeywords(cleanedContent, title);

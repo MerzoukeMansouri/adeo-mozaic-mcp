@@ -1,6 +1,6 @@
 # Mozaic MCP Server - Architecture Documentation
 
-> Auto-generated on 2025-12-14
+> Auto-generated on 2025-12-15
 >
 > For detailed development guide, database schema, and implementation specs, see [DEVELOPMENT.md](./DEVELOPMENT.md).
 
@@ -16,11 +16,11 @@
 | Vue Examples | 238 |
 | React Examples | 60 |
 | **CSS Utilities** | 6 |
-| Design System Docs | 247 |
+| Design System Docs | 220 |
 | Vue Storybook Docs | 58 |
-| React Storybook Docs | 4 |
+| React Storybook Docs | 3 |
 | CSS Utility Classes | 505 |
-| **Documentation** | 309 |
+| **Documentation** | 281 |
 
 ### Token Categories
 
