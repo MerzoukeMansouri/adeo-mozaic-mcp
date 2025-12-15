@@ -11,7 +11,9 @@ type ToolName =
   | "get_icon"
   | "get_css_utility"
   | "list_css_utilities"
-  | "get_install_info";
+  | "get_install_info"
+  | "generate_vue_component"
+  | "generate_react_component";
 
 interface ToolConfig {
   name: ToolName;
@@ -19,6 +21,14 @@ interface ToolConfig {
   description: string;
   fields: FieldConfig[];
   buildQuery: (values: Record<string, string>) => string;
+  isCodeGenerator?: boolean;
+  generateCode?: (values: Record<string, string>, componentData: ComponentData | null) => string;
+}
+
+interface ComponentData {
+  name: string;
+  slug: string;
+  props: Array<{ name: string; type: string; default_value: string | null; required: boolean }>;
 }
 
 interface FieldConfig {
@@ -301,6 +311,160 @@ const tools: ToolConfig[] = [
       return `SELECT name, slug, category, frameworks FROM components WHERE slug LIKE '%${comp}%' LIMIT 5`;
     },
   },
+  {
+    name: "generate_vue_component",
+    label: "Generate Vue Component",
+    description: "Generate ready-to-use Vue 3 code with Mozaic components",
+    isCodeGenerator: true,
+    fields: [
+      {
+        name: "component",
+        label: "Component",
+        type: "text",
+        placeholder: "button",
+        defaultValue: "button",
+      },
+      {
+        name: "props",
+        label: "Props (JSON)",
+        type: "text",
+        placeholder: '{"theme": "primary", "size": "m"}',
+        defaultValue: '{"theme": "primary"}',
+      },
+      {
+        name: "children",
+        label: "Slot Content",
+        type: "text",
+        placeholder: "Click me",
+        defaultValue: "Click me",
+      },
+    ],
+    buildQuery: (values) => {
+      const comp = values.component.toLowerCase();
+      return `
+        SELECT c.name, c.slug,
+               json_group_array(json_object(
+                 'name', p.name,
+                 'type', p.type,
+                 'default_value', p.default_value,
+                 'required', p.required
+               )) as props
+        FROM components c
+        LEFT JOIN component_props p ON p.component_id = c.id
+        WHERE c.slug LIKE '%${comp}%'
+        GROUP BY c.id
+        LIMIT 1
+      `;
+    },
+    generateCode: (values, componentData) => {
+      if (!componentData) return "// Component not found";
+
+      const componentName = componentData.name;
+      let propsObj: Record<string, unknown> = {};
+      try {
+        propsObj = JSON.parse(values.props || "{}");
+      } catch {
+        propsObj = {};
+      }
+
+      const propsStr = Object.entries(propsObj)
+        .map(([key, value]) => {
+          if (typeof value === "string") return `${key}="${value}"`;
+          if (typeof value === "boolean") return value ? key : `:${key}="false"`;
+          return `:${key}="${JSON.stringify(value)}"`;
+        })
+        .join(" ");
+
+      const children = values.children || "Content";
+
+      return `<script setup>
+import { ${componentName} } from '@mozaic-ds/vue-3';
+</script>
+
+<template>
+  <${componentName}${propsStr ? " " + propsStr : ""}>
+    ${children}
+  </${componentName}>
+</template>`;
+    },
+  },
+  {
+    name: "generate_react_component",
+    label: "Generate React Component",
+    description: "Generate ready-to-use React/TSX code with Mozaic components",
+    isCodeGenerator: true,
+    fields: [
+      {
+        name: "component",
+        label: "Component",
+        type: "text",
+        placeholder: "button",
+        defaultValue: "button",
+      },
+      {
+        name: "props",
+        label: "Props (JSON)",
+        type: "text",
+        placeholder: '{"theme": "primary", "size": "m"}',
+        defaultValue: '{"theme": "primary"}',
+      },
+      {
+        name: "children",
+        label: "Children Content",
+        type: "text",
+        placeholder: "Click me",
+        defaultValue: "Click me",
+      },
+    ],
+    buildQuery: (values) => {
+      const comp = values.component.toLowerCase();
+      return `
+        SELECT c.name, c.slug,
+               json_group_array(json_object(
+                 'name', p.name,
+                 'type', p.type,
+                 'default_value', p.default_value,
+                 'required', p.required
+               )) as props
+        FROM components c
+        LEFT JOIN component_props p ON p.component_id = c.id
+        WHERE c.slug LIKE '%${comp}%'
+        GROUP BY c.id
+        LIMIT 1
+      `;
+    },
+    generateCode: (values, componentData) => {
+      if (!componentData) return "// Component not found";
+
+      const componentName = componentData.name;
+      let propsObj: Record<string, unknown> = {};
+      try {
+        propsObj = JSON.parse(values.props || "{}");
+      } catch {
+        propsObj = {};
+      }
+
+      const propsStr = Object.entries(propsObj)
+        .map(([key, value]) => {
+          if (typeof value === "string") return `${key}="${value}"`;
+          if (typeof value === "boolean") return value ? key : `${key}={false}`;
+          return `${key}={${JSON.stringify(value)}}`;
+        })
+        .join(" ");
+
+      const children = values.children || "Content";
+
+      return `import { ${componentName} } from '@mozaic-ds/react';
+
+export default function MyComponent() {
+  return (
+    <${componentName}${propsStr ? " " + propsStr : ""}>
+      ${children}
+    </${componentName}>
+  );
+}`;
+    },
+  },
 ];
 
 function Playground() {
@@ -312,6 +476,7 @@ function Playground() {
     values: unknown[][];
     sql: string;
     error?: string;
+    generatedCode?: string;
   } | null>(null);
 
   const currentTool = tools.find((t) => t.name === selectedTool)!;
@@ -329,20 +494,61 @@ function Playground() {
     const sql = currentTool.buildQuery(values);
     const queryResult = executeQuery(sql);
 
-    setResult({
-      columns: queryResult.columns,
-      values: queryResult.values,
-      sql,
-      error: queryResult.error,
-    });
+    // Handle code generation
+    if (currentTool.isCodeGenerator && currentTool.generateCode) {
+      let componentData: ComponentData | null = null;
+
+      if (queryResult.values.length > 0) {
+        const row = queryResult.values[0];
+        const nameIdx = queryResult.columns.indexOf("name");
+        const slugIdx = queryResult.columns.indexOf("slug");
+        const propsIdx = queryResult.columns.indexOf("props");
+
+        let props: ComponentData["props"] = [];
+        if (propsIdx !== -1 && row[propsIdx]) {
+          try {
+            props = JSON.parse(String(row[propsIdx]));
+          } catch {
+            props = [];
+          }
+        }
+
+        componentData = {
+          name: String(row[nameIdx] || ""),
+          slug: String(row[slugIdx] || ""),
+          props,
+        };
+      }
+
+      const generatedCode = currentTool.generateCode(values, componentData);
+
+      setResult({
+        columns: queryResult.columns,
+        values: queryResult.values,
+        sql,
+        error: queryResult.error,
+        generatedCode,
+      });
+    } else {
+      setResult({
+        columns: queryResult.columns,
+        values: queryResult.values,
+        sql,
+        error: queryResult.error,
+      });
+    }
   };
 
   const copyResult = () => {
     if (result) {
-      const data = result.values.map((row) =>
-        Object.fromEntries(result.columns.map((col, i) => [col, row[i]]))
-      );
-      navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+      if (result.generatedCode) {
+        navigator.clipboard.writeText(result.generatedCode);
+      } else {
+        const data = result.values.map((row) =>
+          Object.fromEntries(result.columns.map((col, i) => [col, row[i]]))
+        );
+        navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+      }
     }
   };
 
@@ -473,26 +679,40 @@ function Playground() {
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-3">
                   <h2 className="font-semibold text-grey-900 dark:text-grey-000 text-lg">
-                    Results
+                    {result.generatedCode ? "Generated Code" : "Results"}
                   </h2>
-                  <span className="px-2 py-1 bg-primary-01-100 dark:bg-primary-01-900/30 text-primary-01-700 dark:text-primary-01-400 rounded-md text-sm font-medium">
-                    {result.values.length} rows
-                  </span>
+                  {!result.generatedCode && (
+                    <span className="px-2 py-1 bg-primary-01-100 dark:bg-primary-01-900/30 text-primary-01-700 dark:text-primary-01-400 rounded-md text-sm font-medium">
+                      {result.values.length} rows
+                    </span>
+                  )}
                 </div>
                 <Button onClick={copyResult} size="s" variant="bordered" theme="primary">
-                  Copy JSON
+                  {result.generatedCode ? "Copy Code" : "Copy JSON"}
                 </Button>
               </div>
 
-              {/* SQL Query */}
-              <div className="mb-6">
-                <p className="text-xs text-grey-500 dark:text-grey-400 mb-2 uppercase tracking-wide font-medium">
+              {/* Generated Code Display */}
+              {result.generatedCode && (
+                <div className="mb-6">
+                  <p className="text-xs text-grey-500 dark:text-grey-400 mb-2 uppercase tracking-wide font-medium">
+                    {currentTool.name === "generate_vue_component" ? "Vue 3 Component" : "React Component"}
+                  </p>
+                  <pre className="bg-primary-02-900 text-grey-100 p-4 rounded-lg text-sm overflow-x-auto font-mono whitespace-pre-wrap">
+                    <code>{result.generatedCode}</code>
+                  </pre>
+                </div>
+              )}
+
+              {/* SQL Query (collapsed for code generators) */}
+              <details className={result.generatedCode ? "mb-4" : "mb-6"} open={!result.generatedCode}>
+                <summary className="text-xs text-grey-500 dark:text-grey-400 mb-2 uppercase tracking-wide font-medium cursor-pointer hover:text-grey-700 dark:hover:text-grey-300">
                   SQL Query
-                </p>
-                <pre className="bg-primary-02-900 text-grey-100 p-4 rounded-lg text-sm overflow-x-auto font-mono">
+                </summary>
+                <pre className="bg-primary-02-900 text-grey-100 p-4 rounded-lg text-sm overflow-x-auto font-mono mt-2">
                   {result.sql}
                 </pre>
-              </div>
+              </details>
 
               {result.error ? (
                 <div className="bg-secondary-red-100 dark:bg-secondary-red-900/20 border border-secondary-red-300 dark:border-secondary-red-800 rounded-lg p-4">
@@ -500,11 +720,11 @@ function Playground() {
                     {result.error}
                   </p>
                 </div>
-              ) : result.values.length === 0 ? (
+              ) : !result.generatedCode && result.values.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-grey-500 dark:text-grey-400">No results found</p>
                 </div>
-              ) : (
+              ) : !result.generatedCode && (
                 <div className="overflow-x-auto rounded-lg border border-grey-200 dark:border-primary-02-600">
                   <table className="w-full text-sm">
                     <thead className="bg-grey-100 dark:bg-primary-02-700">
