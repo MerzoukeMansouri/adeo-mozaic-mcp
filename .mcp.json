@@ -2,8 +2,7 @@
   "mcpServers": {
     "mozaic": {
       "command": "node",
-      "args": ["dist/index.js"],
-      "cwd": "/Users/mansouri/Projects/adeo-side/mozaic-mcp-server"
+      "args": ["dist/index.js"]
     }
   }
 }
