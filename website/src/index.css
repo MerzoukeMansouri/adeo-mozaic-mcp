@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mozaic Design System CSS Variables */
+:root {
+  /* Primary colors */
+  --color-primary-01-400: #78BE20;
+  --color-primary-01-500: #46A610;
+  --color-primary-01-600: #188803;
+  --color-primary-02-700: #343B4C;
+  --color-primary-02-800: #242938;
+  --color-primary-02-900: #171B26;
+
+  /* Grey scale */
+  --color-grey-000: #FFFFFF;
+  --color-grey-100: #E6E6E6;
+  --color-grey-800: #333333;
+  --color-grey-900: #191919;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+/* Mozaic Button Styles */
+@layer components {
+  .btn-mozaic {
+    @apply px-mu100 py-mu050 rounded-mozaic font-semibold transition-all duration-200;
+  }
+
+  .btn-mozaic-primary {
+    @apply btn-mozaic bg-primary-01-400 text-white hover:bg-primary-01-500 active:bg-primary-01-600;
+  }
+
+  .btn-mozaic-secondary {
+    @apply btn-mozaic bg-primary-02-700 text-white hover:bg-primary-02-800 active:bg-primary-02-900;
+  }
+
+  .btn-mozaic-ghost {
+    @apply btn-mozaic bg-transparent text-primary-02-700 border border-primary-02-300 hover:bg-primary-02-100;
+  }
+}
+
+/* Markdown styles with Mozaic colors */
+.markdown-body {
+  @apply text-grey-800 dark:text-grey-100;
+}
+
+.markdown-body h1 {
+  @apply text-mozaic-09 font-bold mb-mu100 mt-mu200 pb-mu050 border-b border-grey-200 dark:border-primary-02-700;
+}
+
+.markdown-body h2 {
+  @apply text-mozaic-07 font-semibold mb-mu075 mt-mu150 pb-mu025 border-b border-grey-200 dark:border-primary-02-700;
+}
+
+.markdown-body h3 {
+  @apply text-mozaic-06 font-semibold mb-mu050 mt-mu100;
+}
+
+.markdown-body p {
+  @apply mb-mu100 leading-relaxed;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  @apply mb-mu100 pl-mu150;
+}
+
+.markdown-body li {
+  @apply mb-mu025;
+}
+
+.markdown-body ul li {
+  @apply list-disc;
+}
+
+.markdown-body ol li {
+  @apply list-decimal;
+}
+
+.markdown-body code {
+  @apply bg-grey-100 dark:bg-primary-02-800 px-mu025 py-0.5 rounded-mozaic text-mozaic-04 font-mono text-secondary-purple-600 dark:text-secondary-purple-300;
+}
+
+.markdown-body pre {
+  @apply bg-primary-02-900 p-mu100 rounded-mozaic-lg mb-mu100 overflow-x-auto;
+}
+
+.markdown-body pre code {
+  @apply bg-transparent p-0 text-grey-100;
+}
+
+.markdown-body table {
+  @apply w-full mb-mu100 border-collapse;
+}
+
+.markdown-body th,
+.markdown-body td {
+  @apply border border-grey-200 dark:border-primary-02-600 px-mu100 py-mu050 text-left;
+}
+
+.markdown-body th {
+  @apply bg-grey-100 dark:bg-primary-02-800 font-semibold;
+}
+
+.markdown-body blockquote {
+  @apply border-l-4 border-primary-01-400 pl-mu100 italic text-grey-600 dark:text-grey-400 my-mu100;
+}
+
+.markdown-body a {
+  @apply text-primary-01-500 hover:text-primary-01-600 hover:underline;
+}
+
+.markdown-body img {
+  @apply max-w-full h-auto my-mu100 rounded-mozaic-lg;
+}
+
+/* Syntax highlighting base */
+.hljs {
+  @apply bg-transparent;
+}
+
+/* Mozaic Card Style */
+.card-mozaic {
+  @apply bg-white dark:bg-primary-02-800 rounded-mozaic-lg border border-grey-200 dark:border-primary-02-600 p-mu100;
+}
+
+/* Mozaic Focus Ring */
+.focus-mozaic {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary-01-400 focus:ring-offset-2;
+}

@@ -1,0 +1,130 @@
+---
+title: Database Schema
+---
+erDiagram
+    tokens {
+        int id PK
+        string category
+        string subcategory
+        string name
+        string path UK
+        string css_variable
+        string scss_variable
+        string value_raw
+        float value_number
+        string value_unit
+        string value_computed
+        string description
+        string platform
+        string source_file
+    }
+
+    token_properties {
+        int id PK
+        int token_id FK
+        string property
+        string value
+        float value_number
+        string value_unit
+    }
+
+    tokens_fts {
+        string name
+        string path
+        string description
+    }
+
+    components {
+        int id PK
+        string name UK
+        string slug
+        string category
+        string description
+        string frameworks
+    }
+
+    component_props {
+        int id PK
+        int component_id FK
+        string name
+        string type
+        string default_value
+        bool required
+        string options
+        string description
+    }
+
+    component_slots {
+        int id PK
+        int component_id FK
+        string name
+        string description
+    }
+
+    component_events {
+        int id PK
+        int component_id FK
+        string name
+        string payload
+        string description
+    }
+
+    component_examples {
+        int id PK
+        int component_id FK
+        string framework
+        string title
+        string code
+    }
+
+    css_utilities {
+        int id PK
+        string name UK
+        string slug
+        string category
+        string description
+    }
+
+    css_utility_classes {
+        int id PK
+        int utility_id FK
+        string class_name
+    }
+
+    css_utility_examples {
+        int id PK
+        int utility_id FK
+        string title
+        string code
+    }
+
+    documentation {
+        int id PK
+        string title
+        string path UK
+        string content
+        string category
+        string keywords
+    }
+
+    docs_fts {
+        string title
+        string content
+        string keywords
+    }
+
+    icons {
+        int id PK
+        string name UK
+        string type
+        string svg
+        string keywords
+    }
+
+    tokens ||--o{ token_properties : has
+    components ||--o{ component_props : has
+    components ||--o{ component_slots : has
+    components ||--o{ component_events : has
+    components ||--o{ component_examples : has
+    css_utilities ||--o{ css_utility_classes : has
+    css_utilities ||--o{ css_utility_examples : has

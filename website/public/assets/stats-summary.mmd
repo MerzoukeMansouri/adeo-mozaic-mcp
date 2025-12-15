@@ -1,0 +1,51 @@
+---
+title: Database Statistics Summary
+---
+flowchart LR
+    subgraph Tokens["Tokens: 586"]
+        direction TB
+        T_color["color: 482"]
+        T_typography["typography: 60"]
+        T_spacing["spacing: 19"]
+        T_screen["screen: 12"]
+        T_grid["grid: 4"]
+        T_border["border: 3"]
+        T_radius["radius: 3"]
+        T_shadow["shadow: 3"]
+        T_Props["composite properties: 15"]
+    end
+
+    subgraph Components["Components: 91"]
+        direction TB
+        Vue["Vue: 52"]
+        React["React: 39"]
+    end
+
+    subgraph Icons["Icons: 1473"]
+        direction TB
+        Icon_navigation["navigation: 279"]
+        Icon_universe["universe: 184"]
+        Icon_payment["payment: 165"]
+        Icon_media["media: 127"]
+        Icon_logotypes["logotypes: 116"]
+    end
+
+    subgraph CssUtils["CSS Utilities: 6"]
+        direction TB
+        CssClasses["505 classes"]
+    end
+
+    subgraph Examples["Examples: 298"]
+        direction TB
+        VueEx["Vue: 238"]
+        ReactEx["React: 60"]
+    end
+
+    subgraph Docs["Documentation: 281"]
+        direction TB
+        DSDoc["Design System: 220"]
+        VueDoc["Vue Storybook: 58"]
+        ReactDoc["React Storybook: 3"]
+    end
+
+    Tokens --> Components --> Icons --> CssUtils --> Examples --> Docs

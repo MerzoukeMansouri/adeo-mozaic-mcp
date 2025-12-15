@@ -1,0 +1,26 @@
+---
+title: Request Flow
+---
+sequenceDiagram
+    participant User
+    participant Claude as Claude Desktop
+    participant MCP as MCP Server
+    participant DB as SQLite DB
+
+    User->>Claude: "Show me the Button component"
+    Claude->>MCP: get_component_info(component: "button")
+    MCP->>DB: SELECT * FROM components WHERE slug = 'button'
+    DB-->>MCP: Component data
+    MCP->>DB: SELECT * FROM component_props WHERE component_id = ?
+    DB-->>MCP: Props data
+    MCP->>DB: SELECT * FROM component_examples WHERE component_id = ?
+    DB-->>MCP: Examples data
+    MCP-->>Claude: Formatted component info
+    Claude-->>User: Button component documentation
+
+    User->>Claude: "Generate a Vue button with primary theme"
+    Claude->>MCP: generate_vue_component(component: "button", props: {theme: "primary"})
+    MCP->>DB: Get component info for validation
+    DB-->>MCP: Component data
+    MCP-->>Claude: Generated Vue code
+    Claude-->>User: Vue component code snippet

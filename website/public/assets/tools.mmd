@@ -1,0 +1,54 @@
+---
+title: MCP Tools
+---
+flowchart TB
+    subgraph TokenTools["Design Token Tools"]
+        GT[get_design_tokens]
+        GT -->|category| GTO1[colors]
+        GT -->|category| GTO2[typography]
+        GT -->|category| GTO3[spacing]
+        GT -->|category| GTO4[shadows]
+        GT -->|category| GTO5[borders]
+        GT -->|category| GTO6[screens]
+        GT -->|category| GTO7[grid]
+        GT -->|format| GTF1[json/scss/css/js]
+    end
+
+    subgraph ComponentTools["Component Tools"]
+        GC[get_component_info]
+        LC[list_components]
+        GVC[generate_vue_component]
+        GRC[generate_react_component]
+
+        GC -->|input| GCI[component name + framework]
+        LC -->|filter| LCF[category filter]
+        GVC -->|input| GVCI[component + props + children]
+        GRC -->|input| GRCI[component + props + children]
+    end
+
+    subgraph CssTools["CSS Utility Tools"]
+        GCU[get_css_utility]
+        LCU[list_css_utilities]
+
+        GCU -->|input| GCUI[utility name]
+        LCU -->|filter| LCUF[layout / utility]
+    end
+
+    subgraph DocTools["Documentation Tools"]
+        SD[search_documentation]
+        SD -->|FTS5| SDR[Full-text search]
+    end
+
+    subgraph IconTools["Icon Tools"]
+        GI[get_icon]
+        SI[search_icons]
+
+        GI -->|input| GII[icon name]
+        SI -->|filter| SIF[type / keyword search]
+    end
+
+    subgraph InstallTools["Installation Tools"]
+        GIN[get_install_info]
+
+        GIN -->|input| GINI[component + framework + pkg manager]
+    end

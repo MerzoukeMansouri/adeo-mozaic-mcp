@@ -1,0 +1,78 @@
+---
+title: Project Structure
+---
+flowchart TB
+    subgraph Root["mozaic-mcp-server/"]
+        direction TB
+
+        subgraph Scripts["scripts/"]
+            BI[build-index.ts]
+            GD[generate-docs.ts]
+        end
+
+        subgraph Src["src/"]
+            direction TB
+            Index[index.ts<br/>MCP Server Entry]
+
+            subgraph DbDir["db/"]
+                Schema[schema.ts]
+                Queries[queries.ts]
+            end
+
+            subgraph ParsersDir["parsers/"]
+                TP[tokens-parser.ts]
+                VP[vue-parser.ts]
+                RP[react-parser.ts]
+                DP[docs-parser.ts]
+                SP[scss-parser.ts]
+                IP[icon-parser.ts]
+
+                subgraph TokensDir["tokens/"]
+                    TTypes[types.ts]
+                    TColor[color-parser.ts]
+                    TSpacing[spacing-parser.ts]
+                    TShadow[shadow-parser.ts]
+                    TBorder[border-parser.ts]
+                    TScreen[screen-parser.ts]
+                    TTypo[typography-parser.ts]
+                    TGrid[grid-parser.ts]
+                end
+            end
+
+            subgraph ToolsDir["tools/"]
+                T1[get-design-tokens.ts]
+                T2[get-component-info.ts]
+                T3[list-components.ts]
+                T4[generate-vue-component.ts]
+                T5[generate-react-component.ts]
+                T6[search-documentation.ts]
+                T7[get-css-utility.ts]
+                T8[list-css-utilities.ts]
+                T9[get-icon.ts]
+                T10[search-icons.ts]
+                T11[get-install-info.ts]
+            end
+        end
+
+        subgraph DataDir["data/"]
+            DB[(mozaic.db)]
+        end
+
+        subgraph ReposDir["repos/"]
+            R1[mozaic-design-system/]
+            R2[mozaic-vue/]
+            R3[mozaic-react/]
+        end
+
+        subgraph DocDir["docs/"]
+            MD[doc.md + assets/]
+        end
+    end
+
+    Index --> ToolsDir
+    ToolsDir --> DbDir
+    DbDir --> DataDir
+    BI --> ParsersDir
+    TP --> TokensDir
+    ParsersDir --> DataDir
+    BI --> ReposDir
