@@ -46,3 +46,9 @@ flowchart TB
         GI -->|input| GII[icon name]
         SI -->|filter| SIF[type / keyword search]
     end
+
+    subgraph InstallTools["Installation Tools"]
+        GIN[get_install_info]
+
+        GIN -->|input| GINI[component + framework + pkg manager]
+    end

@@ -7,6 +7,7 @@ import { handleSearchDocumentation } from "../tools/search-documentation.js";
 import { handleListComponents } from "../tools/list-components.js";
 import { handleGetCssUtility } from "../tools/get-css-utility.js";
 import { handleListCssUtilities } from "../tools/list-css-utilities.js";
+import { handleGetInstallInfo } from "../tools/get-install-info.js";
 
 describe("MCP Tools Integration Tests", () => {
   let db: Database.Database;
@@ -215,6 +216,73 @@ describe("MCP Tools Integration Tests", () => {
 
       expect(data.length).toBe(2);
       expect(data.every((u: { category: string }) => u.category === "layout")).toBe(true);
+    });
+  });
+
+  describe("get_install_info", () => {
+    it("returns Vue install info for button", () => {
+      const result = handleGetInstallInfo(db, { component: "button" });
+      const data = JSON.parse(result.content[0].text);
+
+      expect(data.component).toBe("MButton");
+      expect(data.framework).toBe("vue");
+      expect(data.package).toBe("@mozaic-ds/vue-3");
+      expect(data.installCommand).toBe("npm install @mozaic-ds/vue-3");
+      expect(data.imports.component).toContain("MButton");
+      expect(data.imports.styles).toContain("@mozaic-ds/styles");
+    });
+
+    it("returns React install info", () => {
+      const result = handleGetInstallInfo(db, { component: "button", framework: "react" });
+      const data = JSON.parse(result.content[0].text);
+
+      expect(data.framework).toBe("react");
+      expect(data.package).toBe("@mozaic-ds/react");
+      expect(data.peerDependencies).toContain("react@^17 || ^18");
+    });
+
+    it("supports yarn package manager", () => {
+      const result = handleGetInstallInfo(db, {
+        component: "button",
+        packageManager: "yarn",
+      });
+      const data = JSON.parse(result.content[0].text);
+
+      expect(data.installCommand).toBe("yarn add @mozaic-ds/vue-3");
+      expect(data.relatedPackages.styles.installCommand).toContain("yarn add");
+    });
+
+    it("supports pnpm package manager", () => {
+      const result = handleGetInstallInfo(db, {
+        component: "button",
+        packageManager: "pnpm",
+      });
+      const data = JSON.parse(result.content[0].text);
+
+      expect(data.installCommand).toBe("pnpm add @mozaic-ds/vue-3");
+    });
+
+    it("includes quick start code", () => {
+      const result = handleGetInstallInfo(db, { component: "modal" });
+      const data = JSON.parse(result.content[0].text);
+
+      expect(data.quickStart).toBeDefined();
+      expect(data.quickStart.setup).toContain("@mozaic-ds/styles");
+      expect(data.quickStart.usage).toContain("MModal");
+    });
+
+    it("returns error for unknown component", () => {
+      const result = handleGetInstallInfo(db, { component: "nonexistent" });
+      const data = JSON.parse(result.content[0].text);
+
+      expect(data.error).toContain("not found");
+    });
+
+    it("returns error for empty component name", () => {
+      const result = handleGetInstallInfo(db, { component: "" });
+      const data = JSON.parse(result.content[0].text);
+
+      expect(data.error).toContain("Please provide a component name");
     });
   });
 });

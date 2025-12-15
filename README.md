@@ -63,6 +63,12 @@ Documentation sources:
 | `search_icons` | Search icons by name, type (navigation, media, social), or size (16-64px)   |
 | `get_icon`     | Get icon details with SVG markup and ready-to-use React/Vue code            |
 
+### Installation Tools
+
+| Tool               | Description                                                                         |
+| ------------------ | ----------------------------------------------------------------------------------- |
+| `get_install_info` | Get installation commands, imports, and quick start code for a component *(beta)*   |
+
 ### Other Tools
 
 | Tool                   | Description                                                                         |

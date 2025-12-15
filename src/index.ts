@@ -41,6 +41,7 @@ import {
 } from "./tools/search-documentation.js";
 import { handleSearchIcons, type SearchIconsInput } from "./tools/search-icons.js";
 import { handleGetIcon, type GetIconInput } from "./tools/get-icon.js";
+import { handleGetInstallInfo, type GetInstallInfoInput } from "./tools/get-install-info.js";
 
 // Get database path
 const __filename = fileURLToPath(import.meta.url);
@@ -317,6 +318,32 @@ server.registerTool(
     if (!db) db = initializeDatabase();
     const result = handleGetIcon(db, args as GetIconInput);
     log("Tool result: get_icon", { contentLength: result.content.length });
+    return result;
+  }
+);
+
+server.registerTool(
+  "get_install_info",
+  {
+    description:
+      "Get installation commands and import statements for a Mozaic component. Returns package name, install command (npm/yarn/pnpm), import statements, peer dependencies, and quick start code.",
+    inputSchema: {
+      component: z.string().describe('Component name (e.g., "button", "modal", "text-input")'),
+      framework: z
+        .enum(["vue", "react"])
+        .default("vue")
+        .describe("Target framework: vue (@mozaic-ds/vue-3) or react (@mozaic-ds/react)"),
+      packageManager: z
+        .enum(["npm", "yarn", "pnpm"])
+        .default("npm")
+        .describe("Package manager for install commands"),
+    },
+  },
+  async (args) => {
+    log("Tool called: get_install_info", args);
+    if (!db) db = initializeDatabase();
+    const result = handleGetInstallInfo(db, args as GetInstallInfoInput);
+    log("Tool result: get_install_info", { contentLength: result.content.length });
     return result;
   }
 );

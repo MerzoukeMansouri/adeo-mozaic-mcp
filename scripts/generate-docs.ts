@@ -161,6 +161,7 @@ flowchart TB
             T8[list_css_utilities]
             T9[get_icon]
             T10[search_icons]
+            T11[get_install_info]
         end
 
         Server --> Tools
@@ -448,6 +449,12 @@ flowchart TB
         GI -->|input| GII[icon name]
         SI -->|filter| SIF[type / keyword search]
     end
+
+    subgraph InstallTools["Installation Tools"]
+        GIN[get_install_info]
+
+        GIN -->|input| GINI[component + framework + pkg manager]
+    end
 `;
 }
 
@@ -534,6 +541,7 @@ flowchart TB
                 T8[list-css-utilities.ts]
                 T9[get-icon.ts]
                 T10[search-icons.ts]
+                T11[get-install-info.ts]
             end
         end
 
@@ -656,6 +664,7 @@ flowchart TB
             T8[list_css_utilities]
             T9[get_icon]
             T10[search_icons]
+            T11[get_install_info]
         end
 
         Server --> Tools
