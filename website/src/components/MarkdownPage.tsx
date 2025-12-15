@@ -18,7 +18,11 @@ function MarkdownPage({ url, title }: MarkdownPageProps) {
     setLoading(true);
     setError(null);
 
-    fetch(url)
+    // Prepend base URL for GitHub Pages compatibility
+    const baseUrl = import.meta.env.BASE_URL || "/";
+    const fullUrl = url.startsWith("/") ? `${baseUrl}${url.slice(1)}` : url;
+
+    fetch(fullUrl)
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
         return res.text();
