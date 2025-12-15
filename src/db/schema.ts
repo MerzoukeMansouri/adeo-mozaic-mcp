@@ -206,6 +206,48 @@ CREATE TRIGGER IF NOT EXISTS docs_au AFTER UPDATE ON documentation BEGIN
   INSERT INTO docs_fts(rowid, title, content, keywords)
   VALUES (new.id, new.title, new.content, new.keywords);
 END;
+
+-- Icons
+CREATE TABLE IF NOT EXISTS icons (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE,           -- 'ArrowArrowBottom16'
+  icon_name TEXT NOT NULL,             -- 'ArrowArrowBottom' (without size)
+  type TEXT NOT NULL,                  -- 'navigation', 'media', 'action', etc.
+  size INTEGER NOT NULL,               -- 16, 24, 32, 48, 64
+  view_box TEXT NOT NULL,              -- '0 0 16 16'
+  paths TEXT NOT NULL                  -- JSON array of SVG paths
+);
+
+CREATE INDEX IF NOT EXISTS idx_icons_type ON icons(type);
+CREATE INDEX IF NOT EXISTS idx_icons_size ON icons(size);
+CREATE INDEX IF NOT EXISTS idx_icons_name ON icons(icon_name);
+
+-- Full-text search for icons
+CREATE VIRTUAL TABLE IF NOT EXISTS icons_fts USING fts5(
+  name,
+  icon_name,
+  type,
+  content=icons,
+  content_rowid=id
+);
+
+-- Triggers to keep icons FTS index in sync
+CREATE TRIGGER IF NOT EXISTS icons_ai AFTER INSERT ON icons BEGIN
+  INSERT INTO icons_fts(rowid, name, icon_name, type)
+  VALUES (new.id, new.name, new.icon_name, new.type);
+END;
+
+CREATE TRIGGER IF NOT EXISTS icons_ad AFTER DELETE ON icons BEGIN
+  INSERT INTO icons_fts(icons_fts, rowid, name, icon_name, type)
+  VALUES('delete', old.id, old.name, old.icon_name, old.type);
+END;
+
+CREATE TRIGGER IF NOT EXISTS icons_au AFTER UPDATE ON icons BEGIN
+  INSERT INTO icons_fts(icons_fts, rowid, name, icon_name, type)
+  VALUES('delete', old.id, old.name, old.icon_name, old.type);
+  INSERT INTO icons_fts(rowid, name, icon_name, type)
+  VALUES (new.id, new.name, new.icon_name, new.type);
+END;
 `;
 
 export function initSchema(db: Database.Database): void {

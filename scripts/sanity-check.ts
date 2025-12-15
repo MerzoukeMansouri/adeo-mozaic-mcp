@@ -61,6 +61,7 @@ const EXPECTED = {
   },
   cssUtilities: { total: 6, classes: 450, flexy: 150, margin: 80, padding: 80 },
   documentation: { total: 230 },
+  icons: { total: 1400, uniqueNames: 300, types: 5 },
 };
 
 // ============================================================================
@@ -392,6 +393,73 @@ function checkDocumentation(db: Database.Database): void {
   }
 }
 
+function checkIcons(db: Database.Database): void {
+  section("\uD83C\uDFAF", "ICONS");
+
+  const total = (db.prepare("SELECT COUNT(*) as n FROM icons").get() as { n: number }).n;
+  if (total >= EXPECTED.icons.total) {
+    pass(`${total} icons indexed`);
+  } else {
+    fail(`Icon count: expected \u2265${EXPECTED.icons.total}, got ${total}`);
+  }
+
+  const uniqueNames = (
+    db.prepare("SELECT COUNT(DISTINCT icon_name) as n FROM icons").get() as { n: number }
+  ).n;
+  if (uniqueNames >= EXPECTED.icons.uniqueNames) {
+    pass(`${uniqueNames} unique icon names`);
+  } else {
+    fail(`Unique icons: expected \u2265${EXPECTED.icons.uniqueNames}, got ${uniqueNames}`);
+  }
+
+  const types = db
+    .prepare("SELECT type, COUNT(*) as n FROM icons GROUP BY type ORDER BY n DESC")
+    .all() as Array<{ type: string; n: number }>;
+  if (types.length >= EXPECTED.icons.types) {
+    pass(`${types.length} icon types: ${types.map((t) => `${t.type}(${t.n})`).join(", ")}`);
+  } else {
+    fail(`Icon types: expected \u2265${EXPECTED.icons.types}, got ${types.length}`);
+  }
+
+  const sizes = db
+    .prepare("SELECT size, COUNT(*) as n FROM icons GROUP BY size ORDER BY size")
+    .all() as Array<{ size: number; n: number }>;
+  const expectedSizes = [16, 24, 32, 48, 64];
+  const missingSizes = expectedSizes.filter((s) => !sizes.some((sz) => sz.size === s));
+  if (missingSizes.length === 0) {
+    pass(`All sizes present: ${sizes.map((s) => `${s.size}px(${s.n})`).join(", ")}`);
+  } else {
+    warn(`Missing sizes: ${missingSizes.join(", ")}`);
+  }
+
+  const emptyPaths = (
+    db.prepare("SELECT COUNT(*) as n FROM icons WHERE paths IS NULL OR paths = ''").get() as {
+      n: number;
+    }
+  ).n;
+  if (emptyPaths === 0) {
+    pass("All icons have path data");
+  } else {
+    fail(`${emptyPaths} icons missing path data`);
+  }
+
+  // Test icon FTS
+  try {
+    const iconFts = (
+      db.prepare("SELECT COUNT(*) as n FROM icons_fts WHERE icons_fts MATCH 'Arrow*'").get() as {
+        n: number;
+      }
+    ).n;
+    if (iconFts > 0) {
+      pass(`Icon FTS: "Arrow*" \u2192 ${iconFts} results`);
+    } else {
+      fail('Icon FTS: "Arrow*" returned 0 results');
+    }
+  } catch (e) {
+    fail(`Icon FTS error: ${e}`);
+  }
+}
+
 function checkFts(db: Database.Database): void {
   section("\uD83D\uDD0D", "FULL-TEXT SEARCH");
 
@@ -516,6 +584,7 @@ function main(): void {
     checkComponents(db);
     checkCssUtilities(db);
     checkDocumentation(db);
+    checkIcons(db);
     checkFts(db);
     checkFkIntegrity(db);
 

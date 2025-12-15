@@ -39,6 +39,8 @@ import {
   handleSearchDocumentation,
   type SearchDocumentationInput,
 } from "./tools/search-documentation.js";
+import { handleSearchIcons, type SearchIconsInput } from "./tools/search-icons.js";
+import { handleGetIcon, type GetIconInput } from "./tools/get-icon.js";
 
 // Get database path
 const __filename = fileURLToPath(import.meta.url);
@@ -265,6 +267,56 @@ server.registerTool(
     if (!db) db = initializeDatabase();
     const result = handleListCssUtilities(db, args as ListCssUtilitiesInput);
     log("Tool result: list_css_utilities", { contentLength: result.content.length });
+    return result;
+  }
+);
+
+server.registerTool(
+  "search_icons",
+  {
+    description:
+      "Search Mozaic Design System icons by name or type. Returns icon names, types (navigation, media, social, payment), and available sizes (16, 24, 32, 48, 64). Use get_icon for detailed SVG/code output.",
+    inputSchema: {
+      query: z
+        .string()
+        .describe('Search query for icon name (e.g., "arrow", "cart", "user", "check")'),
+      type: z
+        .string()
+        .optional()
+        .describe('Filter by icon type/category (e.g., "navigation", "media", "social")'),
+      size: z.number().optional().describe("Filter by icon size in pixels (16, 24, 32, 48, or 64)"),
+      limit: z.number().default(20).describe("Maximum number of results"),
+    },
+  },
+  async (args) => {
+    log("Tool called: search_icons", args);
+    if (!db) db = initializeDatabase();
+    const result = handleSearchIcons(db, args as SearchIconsInput);
+    log("Tool result: search_icons", { contentLength: result.content.length });
+    return result;
+  }
+);
+
+server.registerTool(
+  "get_icon",
+  {
+    description:
+      "Get a specific Mozaic icon by name with SVG markup and ready-to-use code for React/Vue. Use search_icons first to find icon names.",
+    inputSchema: {
+      name: z.string().describe('The icon name (e.g., "ArrowArrowBottom16", "Cart24", "User32")'),
+      format: z
+        .enum(["svg", "react", "vue", "all"])
+        .default("all")
+        .describe(
+          "Output format: svg (raw SVG), react (import code), vue (component code), or all"
+        ),
+    },
+  },
+  async (args) => {
+    log("Tool called: get_icon", args);
+    if (!db) db = initializeDatabase();
+    const result = handleGetIcon(db, args as GetIconInput);
+    log("Tool result: get_icon", { contentLength: result.content.length });
     return result;
   }
 );

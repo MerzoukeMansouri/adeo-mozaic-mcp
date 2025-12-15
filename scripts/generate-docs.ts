@@ -27,6 +27,8 @@ interface DbStats {
   vueDocs: number;
   reactDocs: number;
   designSystemDocs: number;
+  icons: number;
+  iconTypes: Array<{ type: string; count: number }>;
   categories: Array<{ category: string; count: number }>;
   tokenCategories: Array<{ category: string; count: number }>;
   tokenSubcategories: Array<{ category: string; subcategory: string; count: number }>;
@@ -105,6 +107,12 @@ function getDbStats(): DbStats | null {
     )
     .get() as { count: number };
 
+  const icons = db.prepare("SELECT COUNT(*) as count FROM icons").get() as { count: number };
+
+  const iconTypes = db
+    .prepare("SELECT type, COUNT(*) as count FROM icons GROUP BY type ORDER BY count DESC")
+    .all() as Array<{ type: string; count: number }>;
+
   db.close();
 
   return {
@@ -120,6 +128,8 @@ function getDbStats(): DbStats | null {
     vueDocs: vueDocs.count,
     reactDocs: reactDocs.count,
     designSystemDocs: designSystemDocs.count,
+    icons: icons.count,
+    iconTypes,
     categories,
     tokenCategories,
     tokenSubcategories,
@@ -562,6 +572,14 @@ ${stats.tokenCategories.map((c) => `        T_${c.category.replace(/[^a-zA-Z]/g,
         React["React: ${stats.reactComponents}"]
     end
 
+    subgraph Icons["Icons: ${stats.icons}"]
+        direction TB
+${stats.iconTypes
+  .slice(0, 5)
+  .map((t) => `        Icon_${t.type.replace(/[^a-zA-Z]/g, "")}["${t.type}: ${t.count}"]`)
+  .join("\n")}
+    end
+
     subgraph CssUtils["CSS Utilities: ${stats.cssUtilities}"]
         direction TB
         CssClasses["${stats.cssUtilityClasses} classes"]
@@ -580,7 +598,7 @@ ${stats.tokenCategories.map((c) => `        T_${c.category.replace(/[^a-zA-Z]/g,
         ReactDoc["React Storybook: ${stats.reactDocs}"]
     end
 
-    Tokens --> Components --> CssUtils --> Examples --> Docs
+    Tokens --> Components --> Icons --> CssUtils --> Examples --> Docs
 `;
 }
 
@@ -648,8 +666,9 @@ flowchart TB
         S2["Components: ${stats.components}"]
         S3["Vue: ${stats.vueComponents} + ${stats.vueExamples} examples"]
         S4["React: ${stats.reactComponents} + ${stats.reactExamples} examples"]
-        S5["CSS Utilities: ${stats.cssUtilities} (${stats.cssUtilityClasses} classes)"]
-        S6["Documentation: ${stats.documentation} pages"]
+        S5["Icons: ${stats.icons}"]
+        S6["CSS Utilities: ${stats.cssUtilities} (${stats.cssUtilityClasses} classes)"]
+        S7["Documentation: ${stats.documentation} pages"]
     end
 `;
   }
@@ -765,18 +784,25 @@ function generateDocMd(stats: DbStats | null): string {
 | React Components | ${stats.reactComponents} |
 | Vue Examples | ${stats.vueExamples} |
 | React Examples | ${stats.reactExamples} |
+| **Icons** | ${stats.icons} |
 | **CSS Utilities** | ${stats.cssUtilities} |
+| CSS Utility Classes | ${stats.cssUtilityClasses} |
+| **Documentation** | ${stats.documentation} |
 | Design System Docs | ${stats.designSystemDocs} |
 | Vue Storybook Docs | ${stats.vueDocs} |
 | React Storybook Docs | ${stats.reactDocs} |
-| CSS Utility Classes | ${stats.cssUtilityClasses} |
-| **Documentation** | ${stats.documentation} |
 
 ### Token Categories
 
 | Category | Count |
 |----------|-------|
 ${stats.tokenCategories.map((c) => `| ${c.category} | ${c.count} |`).join("\n")}
+
+### Icon Types
+
+| Type | Count |
+|------|-------|
+${stats.iconTypes.map((t) => `| ${t.type} | ${t.count} |`).join("\n")}
 
 `;
   }

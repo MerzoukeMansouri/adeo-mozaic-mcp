@@ -15,12 +15,13 @@
 | React Components | 39 |
 | Vue Examples | 238 |
 | React Examples | 60 |
+| **Icons** | 1473 |
 | **CSS Utilities** | 6 |
+| CSS Utility Classes | 505 |
+| **Documentation** | 281 |
 | Design System Docs | 220 |
 | Vue Storybook Docs | 58 |
 | React Storybook Docs | 3 |
-| CSS Utility Classes | 505 |
-| **Documentation** | 281 |
 
 ### Token Categories
 
@@ -34,6 +35,26 @@
 | border | 3 |
 | radius | 3 |
 | shadow | 3 |
+
+### Icon Types
+
+| Type | Count |
+|------|-------|
+| navigation | 279 |
+| universe | 184 |
+| payment | 165 |
+| media | 127 |
+| logotypes | 116 |
+| service | 104 |
+| product | 96 |
+| various | 96 |
+| social | 89 |
+| instruction | 68 |
+| user | 68 |
+| store | 49 |
+| device | 16 |
+| project | 12 |
+| promise | 4 |
 
 ## Diagrams
 

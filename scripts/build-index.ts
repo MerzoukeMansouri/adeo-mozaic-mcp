@@ -11,9 +11,11 @@ import {
   insertComponents,
   insertCssUtilities,
   insertDocs,
+  insertIcons,
   insertTokens,
 } from "../src/db/queries.js";
 import { parseDocumentation, parseStorybookDocs } from "../src/parsers/docs-parser.js";
+import { parseIcons } from "../src/parsers/icons-parser.js";
 import { parseReactComponents } from "../src/parsers/react-parser.js";
 import { parseCssUtilities } from "../src/parsers/scss-parser.js";
 import { parseTokens } from "../src/parsers/tokens-parser.js";
@@ -249,6 +251,32 @@ async function indexStorybookDocs(db: ReturnType<typeof initDatabase>): Promise<
   return totalDocs;
 }
 
+async function indexIcons(db: ReturnType<typeof initDatabase>): Promise<number> {
+  console.log("🎯 Indexing icons...");
+
+  const iconsPath = join(REPOS.designSystem.path, "packages", "icons", "js", "icons.js");
+
+  if (!existsSync(iconsPath)) {
+    console.log("   ⚠ Icons file not found, skipping icons");
+    return 0;
+  }
+
+  const icons = await parseIcons(iconsPath);
+
+  if (icons.length === 0) {
+    console.log("   ⚠ No icons parsed");
+    return 0;
+  }
+
+  insertIcons(db, icons);
+
+  // Count unique icon names (without size suffix)
+  const uniqueIconNames = new Set(icons.map((i) => i.iconName));
+  console.log(`   ✓ Indexed ${icons.length} icons (${uniqueIconNames.size} unique)`);
+
+  return icons.length;
+}
+
 function printHeader(): void {
   console.log("");
   console.log("╔══════════════════════════════════════════════════════════╗");
@@ -298,6 +326,7 @@ async function main(): Promise<void> {
   await indexCssUtilities(db);
   await indexDocumentation(db);
   await indexStorybookDocs(db);
+  await indexIcons(db);
 
   // Print stats
   console.log("\n📊 Database Statistics:");
@@ -306,6 +335,7 @@ async function main(): Promise<void> {
   console.log(`   • Components: ${stats.components}`);
   console.log(`   • CSS Utilities: ${stats.cssUtilities}`);
   console.log(`   • Documentation: ${stats.documentation}`);
+  console.log(`   • Icons: ${stats.icons}`);
 
   db.close();
 

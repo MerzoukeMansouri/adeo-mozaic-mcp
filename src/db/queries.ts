@@ -88,6 +88,15 @@ export interface CssUtility {
   examples: CssUtilityExample[];
 }
 
+export interface Icon {
+  name: string;
+  iconName: string;
+  type: string;
+  size: number;
+  viewBox: string;
+  paths: string;
+}
+
 // Database initialization
 export function initDatabase(dbPath: string): Database.Database {
   const db = new Database(dbPath);
@@ -668,6 +677,131 @@ export function listCssUtilities(
   }>;
 }
 
+// Icon operations
+export function insertIcons(db: Database.Database, icons: Icon[]): void {
+  const stmt = db.prepare(`
+    INSERT INTO icons (name, icon_name, type, size, view_box, paths)
+    VALUES (@name, @iconName, @type, @size, @viewBox, @paths)
+  `);
+
+  const insertMany = db.transaction((items: Icon[]) => {
+    for (const item of items) {
+      stmt.run({
+        name: item.name,
+        iconName: item.iconName,
+        type: item.type,
+        size: item.size,
+        viewBox: item.viewBox,
+        paths: item.paths,
+      });
+    }
+  });
+
+  insertMany(icons);
+}
+
+interface IconRow {
+  id: number;
+  name: string;
+  icon_name: string;
+  type: string;
+  size: number;
+  view_box: string;
+  paths: string;
+}
+
+function rowToIcon(row: IconRow): Icon {
+  return {
+    name: row.name,
+    iconName: row.icon_name,
+    type: row.type,
+    size: row.size,
+    viewBox: row.view_box,
+    paths: row.paths,
+  };
+}
+
+export function searchIcons(
+  db: Database.Database,
+  query: string,
+  options?: { type?: string; size?: number; limit?: number }
+): Icon[] {
+  const limit = options?.limit ?? 20;
+
+  let sql = `
+    SELECT i.*
+    FROM icons_fts
+    JOIN icons i ON icons_fts.rowid = i.id
+    WHERE icons_fts MATCH ?
+  `;
+
+  const params: (string | number)[] = [query];
+
+  if (options?.type) {
+    sql += " AND i.type = ?";
+    params.push(options.type);
+  }
+
+  if (options?.size) {
+    sql += " AND i.size = ?";
+    params.push(options.size);
+  }
+
+  sql += " ORDER BY rank LIMIT ?";
+  params.push(limit);
+
+  const rows = db.prepare(sql).all(...params) as IconRow[];
+  return rows.map(rowToIcon);
+}
+
+export function getIconByName(db: Database.Database, name: string): Icon | null {
+  const row = db.prepare("SELECT * FROM icons WHERE name = ? COLLATE NOCASE").get(name) as
+    | IconRow
+    | undefined;
+
+  if (!row) return null;
+  return rowToIcon(row);
+}
+
+export function getIconsByType(db: Database.Database, type: string, limit: number = 50): Icon[] {
+  const rows = db
+    .prepare("SELECT * FROM icons WHERE type = ? ORDER BY icon_name, size LIMIT ?")
+    .all(type, limit) as IconRow[];
+
+  return rows.map(rowToIcon);
+}
+
+export function listIconTypes(db: Database.Database): Array<{ type: string; count: number }> {
+  return db
+    .prepare("SELECT type, COUNT(*) as count FROM icons GROUP BY type ORDER BY count DESC")
+    .all() as Array<{ type: string; count: number }>;
+}
+
+export function listIcons(
+  db: Database.Database,
+  options?: { type?: string; size?: number; limit?: number }
+): Icon[] {
+  const limit = options?.limit ?? 100;
+  let sql = "SELECT * FROM icons WHERE 1=1";
+  const params: (string | number)[] = [];
+
+  if (options?.type) {
+    sql += " AND type = ?";
+    params.push(options.type);
+  }
+
+  if (options?.size) {
+    sql += " AND size = ?";
+    params.push(options.size);
+  }
+
+  sql += " ORDER BY icon_name, size LIMIT ?";
+  params.push(limit);
+
+  const rows = db.prepare(sql).all(...params) as IconRow[];
+  return rows.map(rowToIcon);
+}
+
 // Utility functions
 export function clearDatabase(db: Database.Database): void {
   db.exec(`
@@ -683,6 +817,7 @@ export function clearDatabase(db: Database.Database): void {
     DELETE FROM css_utility_examples;
     DELETE FROM css_utilities;
     DELETE FROM documentation;
+    DELETE FROM icons;
   `);
 }
 
@@ -691,6 +826,7 @@ export function getDatabaseStats(db: Database.Database): {
   components: number;
   cssUtilities: number;
   documentation: number;
+  icons: number;
 } {
   const tokens = db.prepare("SELECT COUNT(*) as count FROM tokens").get() as { count: number };
   const components = db.prepare("SELECT COUNT(*) as count FROM components").get() as {
@@ -702,11 +838,13 @@ export function getDatabaseStats(db: Database.Database): {
   const documentation = db.prepare("SELECT COUNT(*) as count FROM documentation").get() as {
     count: number;
   };
+  const icons = db.prepare("SELECT COUNT(*) as count FROM icons").get() as { count: number };
 
   return {
     tokens: tokens.count,
     components: components.count,
     cssUtilities: cssUtilities.count,
     documentation: documentation.count,
+    icons: icons.count,
   };
 }

@@ -10,6 +10,7 @@ This server indexes the entire Mozaic Design System and makes it queryable throu
 
 - Look up design tokens (colors, spacing, typography, etc.)
 - Get component documentation with props, slots, events, and examples
+- Search and retrieve icons with SVG/React/Vue code
 - Search documentation pages
 - Generate component code snippets
 
@@ -28,6 +29,7 @@ pnpm start   # Starts the MCP server
 | **Design Tokens**    | 586   | Colors, typography, spacing, shadows, borders, screens, grid    |
 | **Vue Components**   | 52    | Props, slots, events, examples                                  |
 | **React Components** | 39    | Props, callbacks, examples                                      |
+| **Icons**            | 1,473 | SVG icons in 15 categories (354 unique, 5 sizes each)           |
 | **CSS Utilities**    | 6     | Flexy, Container, Margin, Padding, Ratio, Scroll (500+ classes) |
 | **Documentation**    | 281   | MDX pages with full-text search                                 |
 
@@ -53,6 +55,13 @@ Documentation sources:
 | -------------------- | ---------------------------------------------------------- |
 | `get_css_utility`    | Get CSS utility classes and examples (Flexy, Margin, etc.) |
 | `list_css_utilities` | List available CSS utilities by category (layout, utility) |
+
+### Icon Tools
+
+| Tool           | Description                                                                 |
+| -------------- | --------------------------------------------------------------------------- |
+| `search_icons` | Search icons by name, type (navigation, media, social), or size (16-64px)   |
+| `get_icon`     | Get icon details with SVG markup and ready-to-use React/Vue code            |
 
 ### Other Tools
 
@@ -102,7 +111,7 @@ CSS-only layout and utility classes (no Vue/React wrapper). Use `get_css_utility
 │                            │                                │
 │  ┌─────────────────────────▼───────────────────────────┐   │
 │  │                 SQLite Database                     │   │
-│  │  tokens | components | css_utilities | documentation│   │
+│  │  tokens | components | icons | css_utilities | docs │   │
 │  └─────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
                           ▲
