@@ -87,7 +87,7 @@ function Home() {
             Try It Now
           </Link>
           <a
-            href="https://github.com/anthropics/mozaic-mcp-server"
+            href="https://github.com/MerzoukeMansouri/adeo-mozaic-mcp"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-mozaic-secondary px-mu150 py-mu075 text-mozaic-05"
@@ -127,8 +127,8 @@ function Home() {
         <div className="bg-primary-02-900 rounded-mozaic-lg p-mu150 overflow-x-auto border border-primary-02-700">
           <pre className="text-grey-100 text-mozaic-04">
             <code>{`# Clone and build
-git clone https://github.com/anthropics/mozaic-mcp-server
-cd mozaic-mcp-server
+git clone https://github.com/MerzoukeMansouri/adeo-mozaic-mcp
+cd adeo-mozaic-mcp
 pnpm install
 pnpm build
 

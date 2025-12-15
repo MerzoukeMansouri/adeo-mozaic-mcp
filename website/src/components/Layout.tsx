@@ -96,7 +96,7 @@ function Layout() {
 
               {/* GitHub link */}
               <a
-                href="https://github.com/anthropics/mozaic-mcp-server"
+                href="https://github.com/MerzoukeMansouri/adeo-mozaic-mcp"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-mu050 rounded-mozaic text-primary-02-300 hover:text-grey-000 hover:bg-primary-02-700 transition-colors"

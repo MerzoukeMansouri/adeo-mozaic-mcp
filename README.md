@@ -2,7 +2,7 @@
 
 An MCP (Model Context Protocol) server that exposes the **Mozaic Design System** by ADEO to Claude and other AI assistants.
 
-**[View Documentation](https://anthropics.github.io/mozaic-mcp-server/)** | **[Try the Playground](https://anthropics.github.io/mozaic-mcp-server/#/playground)**
+**[View Documentation](https://merzoukemansouri.github.io/adeo-mozaic-mcp/)** | **[Try the Playground](https://merzoukemansouri.github.io/adeo-mozaic-mcp/playground)**
 
 > **Note**: This project is under active development. Contributions and feedback are welcome!
 
