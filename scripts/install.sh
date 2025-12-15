@@ -24,7 +24,7 @@ fi
 # Check if database exists
 if [ ! -f "$PROJECT_DIR/data/mozaic.db" ]; then
     echo "⚠️  Warning: Database not found at data/mozaic.db"
-    echo "   Run 'pnpm build:index' to build the database"
+    echo "   Run 'pnpm build' to build the database"
     echo ""
 fi
 

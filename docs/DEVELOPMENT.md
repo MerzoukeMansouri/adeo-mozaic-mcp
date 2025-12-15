@@ -1079,7 +1079,7 @@ Database not found at /path/to/data/mozaic.db
 Run the database build script:
 
 ```bash
-pnpm build:index
+pnpm build
 ```
 
 #### MCP Server Not Connecting

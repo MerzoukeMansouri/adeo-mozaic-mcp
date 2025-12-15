@@ -3,7 +3,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import Database from "better-sqlite3";
-import { existsSync, appendFileSync } from "fs";
+import { appendFileSync, existsSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { z } from "zod";
@@ -22,23 +22,23 @@ function log(message: string, data?: unknown) {
 }
 
 // Import tool handlers
-import { handleGetDesignTokens, type GetDesignTokensInput } from "./tools/get-design-tokens.js";
-import { handleGetComponentInfo, type GetComponentInfoInput } from "./tools/get-component-info.js";
-import { handleListComponents, type ListComponentsInput } from "./tools/list-components.js";
-import {
-  handleGenerateVueComponent,
-  type GenerateVueComponentInput,
-} from "./tools/generate-vue-component.js";
 import {
   handleGenerateReactComponent,
   type GenerateReactComponentInput,
 } from "./tools/generate-react-component.js";
 import {
+  handleGenerateVueComponent,
+  type GenerateVueComponentInput,
+} from "./tools/generate-vue-component.js";
+import { handleGetComponentInfo, type GetComponentInfoInput } from "./tools/get-component-info.js";
+import { handleGetCssUtility, type GetCssUtilityInput } from "./tools/get-css-utility.js";
+import { handleGetDesignTokens, type GetDesignTokensInput } from "./tools/get-design-tokens.js";
+import { handleListComponents, type ListComponentsInput } from "./tools/list-components.js";
+import { handleListCssUtilities, type ListCssUtilitiesInput } from "./tools/list-css-utilities.js";
+import {
   handleSearchDocumentation,
   type SearchDocumentationInput,
 } from "./tools/search-documentation.js";
-import { handleGetCssUtility, type GetCssUtilityInput } from "./tools/get-css-utility.js";
-import { handleListCssUtilities, type ListCssUtilitiesInput } from "./tools/list-css-utilities.js";
 
 // Get database path
 const __filename = fileURLToPath(import.meta.url);
@@ -51,7 +51,7 @@ let db: Database.Database;
 function initializeDatabase(): Database.Database {
   log("Initializing database", { path: dbPath });
   if (!existsSync(dbPath)) {
-    const error = `Database not found at ${dbPath}. Run 'npm run build:index' to build the database first.`;
+    const error = `Database not found at ${dbPath}. Run 'npm run build' to build the database first.`;
     log("Database error", { error });
     throw new Error(error);
   }

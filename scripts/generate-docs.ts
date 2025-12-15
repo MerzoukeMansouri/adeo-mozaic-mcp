@@ -1,10 +1,10 @@
 #!/usr/bin/env tsx
 
-import { existsSync, mkdirSync, writeFileSync } from "fs";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
 import Database from "better-sqlite3";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { dirname, join } from "path";
 import puppeteer from "puppeteer";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -35,7 +35,7 @@ interface DbStats {
 
 function getDbStats(): DbStats | null {
   if (!existsSync(DB_PATH)) {
-    console.log("Database not found. Run 'pnpm build:index' first.");
+    console.log("Database not found. Run 'pnpm build' first.");
     return null;
   }
 
@@ -169,9 +169,9 @@ flowchart TB
     Tools --> Queries
     Queries --> DB
 
-    DS -.->|build:index| DB
-    VUE -.->|build:index| DB
-    REACT -.->|build:index| DB
+    DS -.->|build| DB
+    VUE -.->|build| DB
+    REACT -.->|build| DB
 `;
 }
 
@@ -662,7 +662,7 @@ flowchart TB
     DS --> P1 & P4
     VUE --> P2
     REACT --> P3
-    P1 & P2 & P3 & P4 -.->|"build:index"| DB
+    P1 & P2 & P3 & P4 -.->|"build"| DB
 `;
 
   return diagram;
