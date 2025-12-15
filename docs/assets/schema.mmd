@@ -113,6 +113,14 @@ erDiagram
         string keywords
     }
 
+    icons {
+        int id PK
+        string name UK
+        string type
+        string svg
+        string keywords
+    }
+
     tokens ||--o{ token_properties : has
     components ||--o{ component_props : has
     components ||--o{ component_slots : has

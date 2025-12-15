@@ -159,6 +159,8 @@ flowchart TB
             T6[search_documentation]
             T7[get_css_utility]
             T8[list_css_utilities]
+            T9[get_icon]
+            T10[search_icons]
         end
 
         Server --> Tools
@@ -212,6 +214,7 @@ flowchart LR
         P3[react-parser.ts]
         P4[docs-parser.ts]
         P5[scss-parser.ts]
+        P6[icon-parser.ts]
     end
 
     subgraph Data["Extracted Data"]
@@ -222,6 +225,7 @@ flowchart LR
         D3[React Components<br/>props, callbacks, examples]
         D4[Documentation<br/>MDX content, frontmatter]
         D5[CSS Utilities<br/>Flexy, Margin, Padding, etc.]
+        D6[Icons<br/>SVG icons with metadata]
     end
 
     subgraph DB["SQLite Database"]
@@ -238,6 +242,7 @@ flowchart LR
         CU[(css_utilities)]
         CUC[(css_utility_classes)]
         CUE[(css_utility_examples)]
+        IC[(icons)]
     end
 
     R1 --> TP
@@ -256,6 +261,7 @@ flowchart LR
 
     D2 --> T3 & T4 & T5 & T6
     D3 --> T3 & T5 & T6
+    R1 --> P6 --> D6 --> IC
 `;
 }
 
@@ -375,6 +381,14 @@ erDiagram
         string keywords
     }
 
+    icons {
+        int id PK
+        string name UK
+        string type
+        string svg
+        string keywords
+    }
+
     tokens ||--o{ token_properties : has
     components ||--o{ component_props : has
     components ||--o{ component_slots : has
@@ -425,6 +439,14 @@ flowchart TB
     subgraph DocTools["Documentation Tools"]
         SD[search_documentation]
         SD -->|FTS5| SDR[Full-text search]
+    end
+
+    subgraph IconTools["Icon Tools"]
+        GI[get_icon]
+        SI[search_icons]
+
+        GI -->|input| GII[icon name]
+        SI -->|filter| SIF[type / keyword search]
     end
 `;
 }
@@ -487,6 +509,7 @@ flowchart TB
                 RP[react-parser.ts]
                 DP[docs-parser.ts]
                 SP[scss-parser.ts]
+                IP[icon-parser.ts]
 
                 subgraph TokensDir["tokens/"]
                     TTypes[types.ts]
@@ -509,6 +532,8 @@ flowchart TB
                 T6[search-documentation.ts]
                 T7[get-css-utility.ts]
                 T8[list-css-utilities.ts]
+                T9[get-icon.ts]
+                T10[search-icons.ts]
             end
         end
 
@@ -629,6 +654,8 @@ flowchart TB
             T6[search_documentation]
             T7[get_css_utility]
             T8[list_css_utilities]
+            T9[get_icon]
+            T10[search_icons]
         end
 
         Server --> Tools
@@ -648,6 +675,7 @@ flowchart TB
         P3[react-parser]
         P4[docs-parser]
         P5[scss-parser]
+        P6[icon-parser]
     end
 
     subgraph Sources["Source Repositories (ADEO)"]
@@ -678,10 +706,10 @@ flowchart TB
     CD <-->|"stdio"| Server
     Tools --> Queries
 
-    DS --> P1 & P4
+    DS --> P1 & P4 & P6
     VUE --> P2
     REACT --> P3
-    P1 & P2 & P3 & P4 -.->|"build"| DB
+    P1 & P2 & P3 & P4 & P6 -.->|"build"| DB
 `;
 
   return diagram;

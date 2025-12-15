@@ -38,3 +38,11 @@ flowchart TB
         SD[search_documentation]
         SD -->|FTS5| SDR[Full-text search]
     end
+
+    subgraph IconTools["Icon Tools"]
+        GI[get_icon]
+        SI[search_icons]
+
+        GI -->|input| GII[icon name]
+        SI -->|filter| SIF[type / keyword search]
+    end

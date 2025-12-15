@@ -22,6 +22,8 @@ flowchart TB
             T6[search_documentation]
             T7[get_css_utility]
             T8[list_css_utilities]
+            T9[get_icon]
+            T10[search_icons]
         end
 
         Server --> Tools
@@ -41,6 +43,7 @@ flowchart TB
         P3[react-parser]
         P4[docs-parser]
         P5[scss-parser]
+        P6[icon-parser]
     end
 
     subgraph Sources["Source Repositories (ADEO)"]
@@ -65,7 +68,7 @@ flowchart TB
     CD <-->|"stdio"| Server
     Tools --> Queries
 
-    DS --> P1 & P4
+    DS --> P1 & P4 & P6
     VUE --> P2
     REACT --> P3
-    P1 & P2 & P3 & P4 -.->|"build"| DB
+    P1 & P2 & P3 & P4 & P6 -.->|"build"| DB
