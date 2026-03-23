@@ -1,0 +1,79 @@
+name: Publish to NPM
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 1.0.0, 1.0.0-beta.1)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Verify skills directory exists
+        run: |
+          if [ ! -d "skills" ]; then
+            echo "❌ Error: skills/ directory not found"
+            exit 1
+          fi
+          echo "✅ Skills directory found"
+          ls -la skills/
+
+      - name: Verify bin/install-skills.js exists
+        run: |
+          if [ ! -f "bin/install-skills.js" ]; then
+            echo "❌ Error: bin/install-skills.js not found"
+            exit 1
+          fi
+          echo "✅ bin/install-skills.js found"
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Update version (if manual trigger)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          npm version ${{ inputs.version }} --no-git-tag-version
+          echo "Updated version to ${{ inputs.version }}"
+
+      - name: Publish to NPM
+        run: pnpm publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Verify publication
+        run: |
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "✅ Published ${PACKAGE_NAME}@${PACKAGE_VERSION}"
+          echo ""
+          echo "Users can now install skills with:"
+          echo "  npx ${PACKAGE_NAME} install"

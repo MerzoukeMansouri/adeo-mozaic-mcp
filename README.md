@@ -16,13 +16,58 @@ This server indexes the entire Mozaic Design System and makes it queryable throu
 - Search documentation pages
 - Generate component code snippets
 
+## Claude Code Skills
+
+In addition to the MCP server, this repository includes **5 Claude Code skills** that provide interactive, guided workflows for working with Mozaic:
+
+- **`mozaic-vue-builder`** - Interactive Vue 3 component generator
+- **`mozaic-react-builder`** - Interactive React/TSX component generator
+- **`mozaic-design-tokens`** - Design tokens and styling expert
+- **`mozaic-css-utilities`** - CSS utilities and layout systems expert
+- **`mozaic-icons`** - Icon search and integration
+
+**Quick Install:**
+```bash
+npx mozaic-mcp-server install
+```
+
+**Complete Setup:**
+```bash
+# 1. Install skills
+npx mozaic-mcp-server install
+
+# 2. Configure MCP server in Claude Code settings:
+#    Command: npx mozaic-mcp-server
+#    (or point to local installation)
+```
+
+**Learn more:** [SKILLS.md](./SKILLS.md)
+
 ## Quick Start
+
+### MCP Server
 
 ```bash
 pnpm install
 pnpm build   # Compiles TypeScript & builds the database
 pnpm start   # Starts the MCP server
 ```
+
+### Claude Code Skills (Optional)
+
+**Install with npx** (recommended):
+```bash
+npx mozaic-mcp-server install     # Install all 5 skills
+npx mozaic-mcp-server uninstall   # Uninstall skills
+```
+
+**Or use local scripts**:
+```bash
+./scripts/install-skills.sh    # Install all 5 skills
+./scripts/uninstall-skills.sh  # Uninstall skills
+```
+
+See [SKILLS.md](./SKILLS.md) for detailed skill documentation.
 
 ## What's Indexed
 

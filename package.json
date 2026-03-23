@@ -5,8 +5,19 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "mozaic-mcp-server": "dist/index.js"
+    "mozaic-mcp-server": "dist/index.js",
+    "mozaic-skills": "bin/install-skills.js"
   },
+  "files": [
+    "dist",
+    "data",
+    "skills",
+    "bin",
+    "README.md",
+    "SKILLS.md",
+    "INSTALLATION.md",
+    "LICENSE"
+  ],
   "scripts": {
     "compile": "tsc",
     "build": "tsc && tsx scripts/build-index.ts",
@@ -27,7 +38,9 @@
     "prepare": "husky",
     "prebuild": "rm -rf dist",
     "install-mcp": "./scripts/install.sh",
-    "uninstall-mcp": "./scripts/uninstall.sh"
+    "uninstall-mcp": "./scripts/uninstall.sh",
+    "install-skills": "./scripts/install-skills.sh",
+    "uninstall-skills": "./scripts/uninstall-skills.sh"
   },
   "keywords": [
     "mcp",
