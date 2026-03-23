@@ -1,18 +1,38 @@
 # Installation Guide
 
-Simple, self-contained installation for Mozaic Design System Skills in Claude Code.
+This package provides **two installation modes**: Skills (recommended) and MCP Server.
 
-## Quick Install
+## Quick Install (Skills Mode - Recommended)
 
-**One command to install everything:**
+**Install skills for Claude Code:**
+
+```bash
+npx mozaic-mcp-server install-skills
+```
+
+That's it! Skills are now available in Claude Code.
+
+## Alternative Install (MCP Server Mode)
+
+**Install as MCP server for Claude Desktop:**
+
+```bash
+npx mozaic-mcp-server install-mcp
+```
+
+This adds the MCP server to Claude Desktop config. Restart Claude Desktop after installation.
+
+## View All Commands
+
+**Show help menu:**
 
 ```bash
 npx mozaic-mcp-server install
 ```
 
-That's it! Skills are now available in Claude Code.
-
 ## What Gets Installed
+
+### Skills Mode (`install-skills`)
 
 The installer:
 1. Copies 5 skills to `~/.claude/skills/`
@@ -29,6 +49,15 @@ The installer:
 **Database location:** `~/.claude/mozaic.db` (8.3 MB)
 
 **Total size:** ~15 MB
+
+### MCP Server Mode (`install-mcp`)
+
+The installer:
+1. Adds MCP server configuration to `~/.claude/config.json`
+2. Enables 11 MCP tools in Claude Desktop
+3. Requires Claude Desktop restart
+
+**Database location:** Uses the package's built-in database (not copied)
 
 ## Verify Installation
 
@@ -55,23 +84,40 @@ Skills will activate automatically in Claude Code based on context.
 
 ## Uninstallation
 
-Remove all skills and database:
+### Remove Skills
 
 ```bash
-npx mozaic-mcp-server uninstall
+npx mozaic-mcp-server uninstall-skills
 ```
 
 This removes:
 - All 5 skills from `~/.claude/skills/`
 - Database from `~/.claude/mozaic.db`
 
+### Remove MCP Server
+
+```bash
+npx mozaic-mcp-server uninstall-mcp
+```
+
+This removes:
+- MCP server configuration from `~/.claude/config.json`
+- Requires Claude Desktop restart
+
 ## How It Works
 
-1. **Installation**: `npx mozaic-mcp-server install` runs the installer
+### Skills Mode
+1. **Installation**: `npx mozaic-mcp-server install-skills` runs the installer
 2. **Skills**: Each skill contains a `skill.md` file and `scripts/` folder
 3. **Scripts**: Bash scripts query the SQLite database and return JSON
 4. **Database**: `~/.claude/mozaic.db` contains all Mozaic data (tokens, components, icons)
 5. **No Server**: Everything runs locally - no MCP server configuration needed
+
+### MCP Server Mode
+1. **Installation**: `npx mozaic-mcp-server install-mcp` updates Claude Desktop config
+2. **Server**: Runs as MCP server when Claude Desktop starts
+3. **Tools**: Provides 11 MCP tools for component info, tokens, icons, etc.
+4. **Database**: Uses package's built-in database
 
 ## Architecture
 
@@ -142,7 +188,7 @@ If skills report database errors:
 ls -lh ~/.claude/mozaic.db
 
 # If missing, reinstall
-npx mozaic-mcp-server install
+npx mozaic-mcp-server install-skills
 ```
 
 ### Shell Scripts Not Executable
@@ -160,8 +206,8 @@ If the database is corrupted:
 
 ```bash
 # Uninstall and reinstall
-npx mozaic-mcp-server uninstall
-npx mozaic-mcp-server install
+npx mozaic-mcp-server uninstall-skills
+npx mozaic-mcp-server install-skills
 ```
 
 ## Requirements
@@ -173,20 +219,28 @@ npx mozaic-mcp-server install
 
 ## Upgrading
 
+### Upgrade Skills
+
 To upgrade to the latest version:
 
 ```bash
 # Uninstall old version
-npx mozaic-mcp-server uninstall
+npx mozaic-mcp-server uninstall-skills
 
 # Clear npm cache (optional)
 npx clear-npx-cache
 
 # Install new version
-npx mozaic-mcp-server install
+npx mozaic-mcp-server install-skills
 ```
 
+### Upgrade MCP Server
+
+MCP server updates automatically when you restart Claude Desktop (it uses the latest npx version).
+
 ## Manual Installation
+
+### Manual Skills Installation
 
 If you prefer manual installation:
 
@@ -202,20 +256,41 @@ If you prefer manual installation:
    pnpm compile
    ```
 
-3. Copy skills:
+3. Run the installer:
    ```bash
-   cp -r skills/* ~/.claude/skills/
+   node bin/install-skills.js install-skills
    ```
 
-4. Copy database:
-   ```bash
-   cp data/mozaic.db ~/.claude/mozaic.db
+Alternatively, copy files manually:
+
+```bash
+# Copy skills
+cp -r skills/* ~/.claude/skills/
+
+# Copy database
+cp data/mozaic.db ~/.claude/mozaic.db
+
+# Make scripts executable
+find ~/.claude/skills/mozaic-*/scripts -name "*.sh" -exec chmod +x {} \;
+```
+
+### Manual MCP Server Installation
+
+1. Follow steps 1-2 above to build the project
+
+2. Add to `~/.claude/config.json`:
+   ```json
+   {
+     "mcpServers": {
+       "mozaic": {
+         "command": "node",
+         "args": ["/path/to/adeo-mozaic-mcp/dist/index.js"]
+       }
+     }
+   }
    ```
 
-5. Make scripts executable:
-   ```bash
-   find ~/.claude/skills/mozaic-*/scripts -name "*.sh" -exec chmod +x {} \;
-   ```
+3. Restart Claude Desktop
 
 ## Next Steps
 

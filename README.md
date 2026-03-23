@@ -28,33 +28,52 @@ This package includes **5 self-contained Claude Code skills** with interactive, 
 
 ## Installation
 
-**One command to install everything:**
+**Quick start - Install skills (recommended):**
+```bash
+npx mozaic-mcp-server install-skills
+```
+
+This installs all 5 skills to `~/.claude/skills/` and the database to `~/.claude/mozaic.db`. Skills work immediately in Claude Code - no configuration needed!
+
+**Alternative - Install as MCP server:**
+```bash
+npx mozaic-mcp-server install-mcp
+```
+
+This adds the MCP server configuration to Claude Desktop settings. Requires Claude Desktop restart.
+
+**View all commands:**
 ```bash
 npx mozaic-mcp-server install
 ```
 
-This will:
-1. Install all 5 skills to `~/.claude/skills/`
-2. Copy the Mozaic database to `~/.claude/mozaic.db`
-3. Make skills immediately available in Claude Code
-
-**That's it!** No MCP server configuration needed. Skills work out of the box.
-
 **Uninstall:**
 ```bash
-npx mozaic-mcp-server uninstall
+# Remove skills
+npx mozaic-mcp-server uninstall-skills
+
+# Remove MCP server config
+npx mozaic-mcp-server uninstall-mcp
 ```
 
 **Learn more:** [SKILLS.md](./SKILLS.md) | [INSTALLATION.md](./INSTALLATION.md)
 
 ## How It Works
 
-1. **Installation**: `npx mozaic-mcp-server install` copies skills and database to your system
+This package provides **two ways** to access Mozaic Design System in Claude:
+
+### Skills Mode (Recommended)
+1. **Installation**: `npx mozaic-mcp-server install-skills` copies skills and database to your system
 2. **Database**: Skills query a local SQLite database (`~/.claude/mozaic.db`) containing all Mozaic data
 3. **Shell Scripts**: Each skill uses bash scripts to query the database and return results
 4. **No Server Needed**: Everything runs locally - no MCP server configuration required
 
-**Database Location:** `~/.claude/mozaic.db`
+### MCP Server Mode
+1. **Installation**: `npx mozaic-mcp-server install-mcp` adds server to Claude Desktop config
+2. **Server**: Runs as MCP server providing 11 tools (see MCP Tools section below)
+3. **Configuration**: Requires Claude Desktop restart after installation
+
+**Database Location:** `~/.claude/mozaic.db` (shared by both modes)
 
 See [SKILLS.md](./SKILLS.md) for detailed skill documentation and usage examples.
 
@@ -74,7 +93,9 @@ Documentation sources:
 - Vue Storybook docs (58 pages) - Getting Started, Usage guides
 - React Storybook docs (3 pages) - Getting Started, Usage guides
 
-## MCP Tools
+## MCP Tools (MCP Server Mode)
+
+Available when using `install-mcp` mode in Claude Desktop:
 
 ### Component Tools
 

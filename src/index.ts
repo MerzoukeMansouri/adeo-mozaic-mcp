@@ -1,8 +1,17 @@
 #!/usr/bin/env node
 
-// Handle install/uninstall commands before importing MCP server
+// Handle CLI commands before importing MCP server
 const args = process.argv.slice(2);
-if (args.includes("install") || args.includes("uninstall")) {
+const command = args[0];
+
+if (command === "install" && args.length === 1) {
+  // Show help menu
+  showHelpMenu();
+  process.exit(0);
+}
+
+if (command === "install-skills" || command === "uninstall-skills") {
+  // Delegate to skills installer
   const { execSync } = await import("child_process");
   const { fileURLToPath } = await import("url");
   const { dirname, join } = await import("path");
@@ -11,12 +20,146 @@ if (args.includes("install") || args.includes("uninstall")) {
   const installerPath = join(__dirname, "..", "bin", "install-skills.js");
 
   try {
-    execSync(`node "${installerPath}" ${args.join(" ")}`, {
+    execSync(`node "${installerPath}" ${command}`, {
       stdio: "inherit",
       cwd: process.cwd(),
     });
     process.exit(0);
   } catch {
+    process.exit(1);
+  }
+}
+
+if (command === "install-mcp") {
+  await installMcpConfig();
+  process.exit(0);
+}
+
+if (command === "uninstall-mcp") {
+  await uninstallMcpConfig();
+  process.exit(0);
+}
+
+function showHelpMenu() {
+  console.log(`
+╭─────────────────────────────────────────────────────────────────╮
+│                                                                 │
+│  Mozaic Design System MCP Server & Skills                      │
+│  Self-contained Claude Code skills for Mozaic Design System    │
+│                                                                 │
+╰─────────────────────────────────────────────────────────────────╯
+
+Usage:
+  npx mozaic-mcp-server [command]
+
+Commands:
+  (no args)           Start MCP server for use in Claude Desktop
+  install             Show this help menu
+  install-skills      Install Claude Code skills and database
+  uninstall-skills    Remove Claude Code skills and database
+  install-mcp         Add MCP server to Claude Desktop config
+  uninstall-mcp       Remove MCP server from Claude Desktop config
+
+Examples:
+  # Install skills (recommended for most users)
+  npx mozaic-mcp-server install-skills
+
+  # Install MCP server for Claude Desktop
+  npx mozaic-mcp-server install-mcp
+
+  # Start MCP server manually (for testing)
+  npx mozaic-mcp-server
+
+Documentation:
+  Skills Guide:   https://github.com/MerzoukeMansouri/adeo-mozaic-mcp#skills
+  MCP Guide:      https://github.com/MerzoukeMansouri/adeo-mozaic-mcp#mcp-server
+  `);
+}
+
+async function installMcpConfig() {
+  const { homedir } = await import("os");
+  const { readFileSync, writeFileSync, existsSync, mkdirSync } = await import("fs");
+  const { join } = await import("path");
+  const { fileURLToPath } = await import("url");
+  const { dirname } = await import("path");
+
+  const configPath = join(homedir(), ".claude", "config.json");
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const serverPath = join(__dirname, "index.js");
+
+  console.log("📦 Installing MCP server to Claude Desktop config...\n");
+
+  // Ensure .claude directory exists
+  const claudeDir = join(homedir(), ".claude");
+  if (!existsSync(claudeDir)) {
+    mkdirSync(claudeDir, { recursive: true });
+  }
+
+  // Read existing config or create new one
+  let config: { mcpServers: Record<string, unknown> } = { mcpServers: {} };
+  if (existsSync(configPath)) {
+    try {
+      const configContent = readFileSync(configPath, "utf-8");
+      config = JSON.parse(configContent);
+      if (!config.mcpServers) {
+        config.mcpServers = {};
+      }
+    } catch {
+      console.error("⚠️  Failed to parse existing config, creating new one");
+      config = { mcpServers: {} };
+    }
+  }
+
+  // Add Mozaic MCP server configuration
+  config.mcpServers.mozaic = {
+    command: "node",
+    args: [serverPath],
+  };
+
+  // Write updated config
+  try {
+    writeFileSync(configPath, JSON.stringify(config, null, 2) + "\n");
+    console.log("✅ MCP server installed successfully!\n");
+    console.log("Configuration added to:", configPath);
+    console.log("\n📝 Next steps:");
+    console.log("   1. Restart Claude Desktop");
+    console.log("   2. Look for the 🔌 icon to verify MCP server is connected");
+    console.log("   3. Use Mozaic tools in your conversations\n");
+  } catch (error) {
+    console.error("❌ Failed to write config:", error);
+    process.exit(1);
+  }
+}
+
+async function uninstallMcpConfig() {
+  const { homedir } = await import("os");
+  const { readFileSync, writeFileSync, existsSync } = await import("fs");
+  const { join } = await import("path");
+
+  const configPath = join(homedir(), ".claude", "config.json");
+
+  console.log("🗑️  Removing MCP server from Claude Desktop config...\n");
+
+  if (!existsSync(configPath)) {
+    console.log("⚠️  No Claude Desktop config found");
+    return;
+  }
+
+  try {
+    const configContent = readFileSync(configPath, "utf-8");
+    const config = JSON.parse(configContent);
+
+    if (config.mcpServers && config.mcpServers.mozaic) {
+      delete config.mcpServers.mozaic;
+      writeFileSync(configPath, JSON.stringify(config, null, 2) + "\n");
+      console.log("✅ MCP server removed successfully!\n");
+      console.log("   Restart Claude Desktop for changes to take effect\n");
+    } else {
+      console.log("ℹ️  Mozaic MCP server not found in config\n");
+    }
+  } catch (error) {
+    console.error("❌ Failed to update config:", error);
     process.exit(1);
   }
 }

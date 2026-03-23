@@ -272,10 +272,13 @@ Install the latest skills directly from npm:
 
 ```bash
 # Install skills
-npx mozaic-mcp-server install
+npx mozaic-mcp-server install-skills
 
 # Uninstall skills
-npx mozaic-mcp-server uninstall
+npx mozaic-mcp-server uninstall-skills
+
+# View all commands
+npx mozaic-mcp-server install
 ```
 
 This method:
