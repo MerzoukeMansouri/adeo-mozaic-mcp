@@ -1,3 +1,10 @@
+## [2.0.7](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.6...v2.0.7) (2026-03-23)
+
+
+### Documentation
+
+* add npm downloads badge ([3284fa1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/3284fa1fbf125532d06c4ceb9bab797fa9e01411))
+
 ## [2.0.6](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.5...v2.0.6) (2026-03-23)
 
 
