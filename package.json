@@ -1,6 +1,6 @@
 {
   "name": "mozaic-mcp-server",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "MCP server for Mozaic Design System by ADEO",
   "type": "module",
   "main": "dist/index.js",

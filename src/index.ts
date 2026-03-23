@@ -1,5 +1,26 @@
 #!/usr/bin/env node
 
+// Handle install/uninstall commands before importing MCP server
+const args = process.argv.slice(2);
+if (args.includes("install") || args.includes("uninstall")) {
+  const { execSync } = await import("child_process");
+  const { fileURLToPath } = await import("url");
+  const { dirname, join } = await import("path");
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const installerPath = join(__dirname, "..", "bin", "install-skills.js");
+
+  try {
+    execSync(`node "${installerPath}" ${args.join(" ")}`, {
+      stdio: "inherit",
+      cwd: process.cwd(),
+    });
+    process.exit(0);
+  } catch {
+    process.exit(1);
+  }
+}
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import Database from "better-sqlite3";
