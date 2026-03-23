@@ -153,35 +153,55 @@ function Skills() {
         </h2>
 
         <div className="bg-grey-50 dark:bg-grey-800 rounded-xl p-8 border border-grey-200 dark:border-grey-700">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary-01-100 dark:bg-primary-01-900/30 flex items-center justify-center">
-                <Zap className="w-8 h-8 text-primary-01-600 dark:text-primary-01-400" />
+          {/* Visual Diagram */}
+          <div className="flex flex-col items-center gap-6 max-w-md mx-auto">
+            {/* Skills Layer */}
+            <div className="w-full">
+              <div className="bg-gradient-to-r from-primary-01-500 to-primary-01-600 rounded-xl p-6 text-center shadow-lg">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <Zap className="w-8 h-8 text-white" />
+                  <h3 className="text-2xl font-bold text-white">Skills</h3>
+                </div>
+                <p className="text-white/90 text-sm">
+                  Interactive workflows + Shell scripts
+                </p>
               </div>
-              <h3 className="font-semibold text-grey-900 dark:text-grey-000 mb-2">Skills</h3>
-              <p className="text-sm text-grey-600 dark:text-grey-300">
-                Provide workflows and procedural knowledge
-              </p>
             </div>
 
-            <div className="flex items-center justify-center">
-              <div className="text-2xl text-grey-400">→</div>
+            {/* Arrow */}
+            <div className="flex flex-col items-center">
+              <div className="w-1 h-16 bg-primary-01-300 dark:bg-primary-01-600"></div>
+              <div className="text-primary-01-500 dark:text-primary-01-400 text-2xl font-bold">↓</div>
+              <div className="text-sm text-grey-600 dark:text-grey-400 font-mono bg-grey-100 dark:bg-grey-700 px-3 py-1 rounded">
+                sqlite3 queries
+              </div>
+              <div className="w-1 h-16 bg-primary-01-300 dark:bg-primary-01-600"></div>
             </div>
 
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-secondary-blue-100 dark:bg-secondary-blue-900/30 flex items-center justify-center">
-                <Terminal className="w-8 h-8 text-secondary-blue-600 dark:text-secondary-blue-400" />
+            {/* Database Layer */}
+            <div className="w-full">
+              <div className="bg-gradient-to-r from-secondary-green-500 to-secondary-green-600 rounded-xl p-6 text-center shadow-lg">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <Box className="w-8 h-8 text-white" />
+                  <h3 className="text-2xl font-bold text-white">SQLite Database</h3>
+                </div>
+                <p className="text-white/90 text-sm mb-3">
+                  ~/.claude/mozaic.db
+                </p>
+                <div className="grid grid-cols-2 gap-2 text-xs text-white/80">
+                  <div>Components</div>
+                  <div>Design Tokens</div>
+                  <div>Icons</div>
+                  <div>CSS Utilities</div>
+                </div>
               </div>
-              <h3 className="font-semibold text-grey-900 dark:text-grey-000 mb-2">MCP Server</h3>
-              <p className="text-sm text-grey-600 dark:text-grey-300">
-                Provides data access and tools
-              </p>
             </div>
           </div>
 
-          <div className="mt-6 p-4 bg-primary-01-50 dark:bg-primary-01-900/10 rounded-lg">
-            <p className="text-sm text-grey-700 dark:text-grey-300 text-center">
-              <strong>Best Practice:</strong> MCP provides the "what" (data access), Skills provide the "how" (workflows)
+          {/* Key Point */}
+          <div className="mt-8 p-4 bg-primary-01-50 dark:bg-primary-01-900/10 rounded-lg border-l-4 border-primary-01-500">
+            <p className="text-sm text-grey-700 dark:text-grey-300">
+              <strong className="text-primary-01-600 dark:text-primary-01-400">Direct Access:</strong> Skills use shell scripts to query the SQLite database directly via sqlite3 commands, providing guided workflows for building with Mozaic Design System.
             </p>
           </div>
         </div>
