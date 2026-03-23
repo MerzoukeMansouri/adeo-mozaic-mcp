@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-import { Button } from "@mozaic-ds/react";
 import { Code, Terminal, Zap, Palette, Box, Image } from "lucide-react";
 
 const skills = [
