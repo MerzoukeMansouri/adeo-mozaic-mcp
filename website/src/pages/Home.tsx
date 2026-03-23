@@ -8,6 +8,7 @@ const stats = [
   { label: "CSS Utilities", value: "6", gradient: "from-secondary-blue-600 to-secondary-blue-700" },
   { label: "Documentation", value: "281", gradient: "from-primary-01-600 to-primary-01-700" },
   { label: "MCP Tools", value: "11", gradient: "from-secondary-purple-600 to-secondary-purple-700" },
+  { label: "Claude Skills", value: "5", gradient: "from-secondary-green-500 to-secondary-green-600" },
 ];
 
 const tools = [

@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Docs from "./pages/Docs";
 import Sources from "./pages/Sources";
 import Playground from "./pages/Playground";
+import Skills from "./pages/Skills";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="docs" element={<Docs />} />
         <Route path="docs/:slug" element={<Docs />} />
         <Route path="sources" element={<Sources />} />
+        <Route path="skills" element={<Skills />} />
         <Route path="playground" element={<Playground />} />
       </Route>
     </Routes>
