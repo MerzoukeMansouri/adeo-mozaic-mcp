@@ -1,3 +1,10 @@
+## [2.0.5](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.4...v2.0.5) (2026-03-23)
+
+
+### Chores
+
+* remove mozaic component skills ([052f85a](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/052f85aeb1314c8eb7155e52db5e121b4a74169e))
+
 ## [2.0.4](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.3...v2.0.4) (2026-03-23)
 
 
