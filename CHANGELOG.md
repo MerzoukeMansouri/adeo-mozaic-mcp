@@ -1,3 +1,10 @@
+## [2.0.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.1...v2.0.2) (2026-03-23)
+
+
+### Bug Fixes
+
+* use GH_PAT to trigger publish workflow automatically ([e41ca75](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/e41ca754495143ebf3f528a86f100bfd7eca213f))
+
 ## [2.0.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.0...v2.0.1) (2026-03-23)
 
 
