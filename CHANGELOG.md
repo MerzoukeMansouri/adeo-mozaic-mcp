@@ -1,3 +1,15 @@
+## [2.0.4](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.3...v2.0.4) (2026-03-23)
+
+
+### Bug Fixes
+
+* trigger automatic publish workflow test ([1f4faeb](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/1f4faebf718b2fe35ddb3d46c5100c042caced50))
+
+
+### Chores
+
+* update deprecated dependencies ([5ba5b95](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/5ba5b957d7f7c2add0c1e22dfc7cc737313d1f04))
+
 ## [2.0.3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.2...v2.0.3) (2026-03-23)
 
 
