@@ -306,8 +306,21 @@ cp -r skills/* ~/.claude/skills/
 
 ### MCP Server Configuration
 
-Ensure the Mozaic MCP server is configured in Claude Code settings:
+**IMPORTANT**: Skills require the Mozaic MCP server to be running. Configure it in Claude Code settings:
 
+**Option 1: Using npx (Recommended)**
+```json
+{
+  "mcpServers": {
+    "mozaic": {
+      "command": "npx",
+      "args": ["mozaic-mcp-server"]
+    }
+  }
+}
+```
+
+**Option 2: Local development**
 ```json
 {
   "mcpServers": {
@@ -318,6 +331,8 @@ Ensure the Mozaic MCP server is configured in Claude Code settings:
   }
 }
 ```
+
+Without the MCP server configured, skills cannot access the Mozaic database (components, tokens, icons, etc.).
 
 ---
 

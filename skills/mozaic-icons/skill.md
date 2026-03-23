@@ -8,6 +8,29 @@ version: 1.0.0
 
 An expert assistant for discovering and integrating Mozaic Design System icons. Search through the icon library, preview different sizes, and generate ready-to-use code for Vue or React applications.
 
+## ⚠️ Prerequisites
+
+**This skill requires the Mozaic MCP server to be configured.**
+
+Without the MCP server, this skill cannot:
+- Access the Mozaic icons database (1,473 icons)
+- Search icons by name, type, or size
+- Generate icon code for Vue or React
+
+**Setup**:
+```json
+{
+  "mcpServers": {
+    "mozaic": {
+      "command": "npx",
+      "args": ["mozaic-mcp-server"]
+    }
+  }
+}
+```
+
+See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/main/INSTALLATION.md) for complete setup.
+
 ## What This Skill Does
 
 1. **Search Icons**: Find icons by keyword or description

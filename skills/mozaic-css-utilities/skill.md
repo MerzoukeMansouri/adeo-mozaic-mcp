@@ -8,6 +8,29 @@ version: 1.0.0
 
 An expert assistant for working with Mozaic CSS-only utility classes. These utilities work without any framework (no Vue or React needed) and provide powerful layout and spacing capabilities through simple CSS classes.
 
+## ⚠️ Prerequisites
+
+**This skill requires the Mozaic MCP server to be configured.**
+
+Without the MCP server, this skill cannot:
+- Access the Mozaic CSS utilities database
+- Retrieve Flexy grid classes, spacing utilities, etc.
+- Search documentation for CSS patterns
+
+**Setup**:
+```json
+{
+  "mcpServers": {
+    "mozaic": {
+      "command": "npx",
+      "args": ["mozaic-mcp-server"]
+    }
+  }
+}
+```
+
+See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/main/INSTALLATION.md) for complete setup.
+
 ## What This Skill Does
 
 1. **Browse Utilities**: Discover available CSS utilities (Flexy, Container, Margin, Padding, etc.)

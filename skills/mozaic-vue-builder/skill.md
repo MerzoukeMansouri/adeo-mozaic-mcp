@@ -8,6 +8,29 @@ version: 1.0.0
 
 An interactive assistant for building Vue 3 applications with the Mozaic Design System by ADEO. This skill helps you discover components, understand their props, generate ready-to-use code, and set up installation properly.
 
+## ⚠️ Prerequisites
+
+**This skill requires the Mozaic MCP server to be configured.**
+
+Without the MCP server, this skill cannot:
+- Access the Mozaic component database
+- Retrieve component props, slots, and events
+- Generate accurate code examples
+
+**Setup**:
+```json
+{
+  "mcpServers": {
+    "mozaic": {
+      "command": "npx",
+      "args": ["mozaic-mcp-server"]
+    }
+  }
+}
+```
+
+See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/main/INSTALLATION.md) for complete setup.
+
 ## What This Skill Does
 
 1. **Discover Components**: Browse Mozaic Vue components by category (forms, navigation, feedback, etc.)

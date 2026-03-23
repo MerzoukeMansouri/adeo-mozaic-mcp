@@ -95,7 +95,12 @@ If you only want the skills (without MCP server):
 npx mozaic-mcp-server install
 ```
 
-**Note**: Skills will reference MCP tools, but won't function without the MCP server configured.
+**⚠️ Important**: Skills **require** the MCP server to function. Without the MCP server configured:
+- Skills cannot access the Mozaic database
+- No component data, design tokens, or icons will be available
+- Skills will reference MCP tools that don't exist
+
+To use skills, you **must** also configure the MCP server (see Step 2 above).
 
 ## MCP Server Only
 

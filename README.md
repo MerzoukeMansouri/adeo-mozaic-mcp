@@ -32,14 +32,27 @@ npx mozaic-mcp-server install
 ```
 
 **Complete Setup:**
-```bash
-# 1. Install skills
-npx mozaic-mcp-server install
 
-# 2. Configure MCP server in Claude Code settings:
-#    Command: npx mozaic-mcp-server
-#    (or point to local installation)
+**Step 1: Install Skills**
+```bash
+npx mozaic-mcp-server install
 ```
+
+**Step 2: Configure MCP Server**
+
+Add to your Claude Code settings (`~/.claude/config.json`):
+```json
+{
+  "mcpServers": {
+    "mozaic": {
+      "command": "npx",
+      "args": ["mozaic-mcp-server"]
+    }
+  }
+}
+```
+
+> **Important**: Skills require the MCP server to access the Mozaic database. Without the MCP server configured, skills cannot retrieve component data, tokens, or icons.
 
 **Learn more:** [SKILLS.md](./SKILLS.md)
 

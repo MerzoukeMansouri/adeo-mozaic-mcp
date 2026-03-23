@@ -8,6 +8,29 @@ version: 1.0.0
 
 An expert assistant for working with Mozaic Design System tokens and styling. This skill helps you discover and use design tokens for colors, typography, spacing, shadows, borders, responsive breakpoints, and grid systems across your projects.
 
+## ⚠️ Prerequisites
+
+**This skill requires the Mozaic MCP server to be configured.**
+
+Without the MCP server, this skill cannot:
+- Access the Mozaic design tokens database
+- Retrieve colors, typography, spacing, shadows, etc.
+- Search Mozaic documentation
+
+**Setup**:
+```json
+{
+  "mcpServers": {
+    "mozaic": {
+      "command": "npx",
+      "args": ["mozaic-mcp-server"]
+    }
+  }
+}
+```
+
+See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/main/INSTALLATION.md) for complete setup.
+
 ## What This Skill Does
 
 1. **Browse Design Tokens**: Access tokens by category (colors, typography, spacing, etc.)
