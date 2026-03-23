@@ -1,35 +1,14 @@
 ---
 name: mozaic-vue-builder
 description: Interactive Vue 3 component generator with Mozaic Design System. Helps discover, configure, and generate production-ready Vue components with proper imports and installation guidance.
-version: 1.0.0
+version: 2.0.0
+allowed-tools:
+  - Bash
 ---
 
 # Mozaic Vue Builder
 
 An interactive assistant for building Vue 3 applications with the Mozaic Design System by ADEO. This skill helps you discover components, understand their props, generate ready-to-use code, and set up installation properly.
-
-## ⚠️ Prerequisites
-
-**This skill requires the Mozaic MCP server to be configured.**
-
-Without the MCP server, this skill cannot:
-- Access the Mozaic component database
-- Retrieve component props, slots, and events
-- Generate accurate code examples
-
-**Setup**:
-```json
-{
-  "mcpServers": {
-    "mozaic": {
-      "command": "npx",
-      "args": ["mozaic-mcp-server"]
-    }
-  }
-}
-```
-
-See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/main/INSTALLATION.md) for complete setup.
 
 ## What This Skill Does
 
@@ -39,13 +18,15 @@ See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/m
 4. **Installation Guidance**: Provide package manager commands and setup instructions
 5. **Props Configuration**: Help configure component props with type safety
 
-## MCP Tools Used
+## Shell Scripts Used
 
-This skill uses the Mozaic MCP server tools:
-- `mcp__mozaic__list_components` - Browse available components by category
-- `mcp__mozaic__get_component_info` - Get detailed component information (props, slots, events)
-- `mcp__mozaic__generate_vue_component` - Generate Vue 3 component code
-- `mcp__mozaic__get_install_info` - Get installation commands and imports
+This skill uses shell scripts to query the local Mozaic database:
+- `list-components.sh` - Browse available Vue components by category
+- `get-component.sh` - Get detailed component information (props, slots, events)
+- `generate-component.sh` - Generate Vue 3 component code
+- `get-install-info.sh` - Get installation commands and imports
+
+Database location: `~/.claude/mozaic.db`
 
 ## When to Use This Skill
 
@@ -75,7 +56,7 @@ Common options:
 
 ### Step 2: Browse Available Components
 
-Based on your answer, I'll use `mcp__mozaic__list_components` to show relevant components.
+Based on your answer, I'll use the `list-components.sh` script to show relevant components.
 
 **Example**:
 ```
@@ -90,7 +71,7 @@ For forms, Mozaic offers:
 
 ### Step 3: Component Details
 
-I'll use `mcp__mozaic__get_component_info` to show:
+I'll use the `get-component.sh` script to show:
 - Available props with types and defaults
 - Slots for customization
 - Events you can listen to
@@ -164,7 +145,7 @@ You can:
 
 ### Step 6: Generate Final Code
 
-I'll use `mcp__mozaic__generate_vue_component` to create complete code:
+I'll use the `generate-component.sh` script to create complete code:
 
 ```vue
 <script setup>
@@ -226,7 +207,7 @@ form {
 
 ### Step 7: Installation Guidance
 
-I'll use `mcp__mozaic__get_install_info` to provide:
+I'll use the `get-install-info.sh` script to provide:
 
 **Package Manager Choice**:
 - npm
@@ -433,8 +414,9 @@ pnpm add -D @types/node
 ### Issue: Props not working
 
 **Solution**: Check prop names and types
-```javascript
-// Use mcp__mozaic__get_component_info to verify props
+```bash
+# Use get-component.sh to verify props
+./scripts/get-component.sh TextInput
 ```
 
 ### Issue: Styling conflicts
@@ -482,7 +464,7 @@ What fields do you need?
 **Skill**:
 Perfect! Here's a registration form with extended fields:
 
-[Uses `mcp__mozaic__list_components` and `mcp__mozaic__get_component_info`]
+[Uses `list-components.sh` and `get-component.sh` scripts]
 
 **Proposed Components**:
 1. TextInput (Name)
@@ -493,7 +475,7 @@ Perfect! Here's a registration form with extended fields:
 6. Checkbox (Terms agreement)
 7. Button (Submit - theme="primary")
 
-[Uses `mcp__mozaic__generate_vue_component`]
+[Uses `generate-component.sh` script]
 
 Here's your complete registration form... [Generated code]
 
@@ -505,7 +487,7 @@ Would you like me to:
 **User**: "Add installation instructions"
 
 **Skill**:
-[Uses `mcp__mozaic__get_install_info`]
+[Uses `get-install-info.sh` script]
 
 Here's how to install and set up...
 

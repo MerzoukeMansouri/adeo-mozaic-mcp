@@ -1,24 +1,24 @@
 # Mozaic Design System Skills
 
-This document describes the Claude Code skills created for the Mozaic Design System. These skills work in conjunction with the Mozaic MCP server to provide interactive, guided workflows for building applications with Mozaic.
+Self-contained Claude Code skills for working with the Mozaic Design System. No MCP server configuration required - everything runs locally with bash scripts and a SQLite database.
 
 ## Overview
 
-**5 Claude Skills** that use the **Mozaic MCP Server** (11 tools) to provide procedural knowledge and workflows.
+**5 Self-Contained Skills** that use **local shell scripts** (~15 scripts total) to query a SQLite database.
 
-**Architecture Pattern**: Skills provide the "how" (workflows), MCP provides the "what" (data access)
+**Architecture Pattern**: Skills provide workflows + data access through bash scripts → local database
 
 ## Skills Summary
 
-| Skill | Type | Description | MCP Tools Used |
-|-------|------|-------------|----------------|
-| `mozaic-vue-builder` | Framework | Interactive Vue 3 component generator | 4 tools |
-| `mozaic-react-builder` | Framework | Interactive React/TSX component generator | 4 tools |
-| `mozaic-design-tokens` | Agnostic | Design tokens and styling expert | 2 tools |
-| `mozaic-css-utilities` | Agnostic | CSS utility classes and layouts | 3 tools |
-| `mozaic-icons` | Both | Icon search and integration | 2 tools |
+| Skill | Type | Description | Shell Scripts |
+|-------|------|-------------|---------------|
+| `mozaic-vue-builder` | Framework | Interactive Vue 3 component generator | 4 scripts |
+| `mozaic-react-builder` | Framework | Interactive React/TSX component generator | 4 scripts |
+| `mozaic-design-tokens` | Agnostic | Design tokens and styling expert | 2 scripts |
+| `mozaic-css-utilities` | Agnostic | CSS utility classes and layouts | 2 scripts |
+| `mozaic-icons` | Both | Icon search and integration | 2 scripts |
 
-**Total**: 5 skills covering all 11 MCP tools
+**Total**: 5 skills with 14 shell scripts querying `~/.claude/mozaic.db`
 
 ---
 
@@ -29,11 +29,11 @@ This document describes the Claude Code skills created for the Mozaic Design Sys
 ### Purpose
 Interactive assistant for building Vue 3 applications with Mozaic Design System.
 
-### MCP Tools
-- `mcp__mozaic__list_components`
-- `mcp__mozaic__get_component_info` (framework: vue)
-- `mcp__mozaic__generate_vue_component`
-- `mcp__mozaic__get_install_info` (framework: vue)
+### Shell Scripts
+- `list-components.sh` - Browse Vue components by category
+- `get-component.sh` - Get component props, slots, events
+- `generate-component.sh` - Generate Vue 3 SFC code
+- `get-install-info.sh` - Get installation commands
 
 ### Key Features
 - Browse components by category (forms, navigation, feedback, layout, etc.)
@@ -63,11 +63,11 @@ Skill: Proposes TextInput + Button combinations → Generates Vue code
 ### Purpose
 Interactive assistant for building React applications with Mozaic Design System and full TypeScript support.
 
-### MCP Tools
-- `mcp__mozaic__list_components`
-- `mcp__mozaic__get_component_info` (framework: react)
-- `mcp__mozaic__generate_react_component`
-- `mcp__mozaic__get_install_info` (framework: react)
+### Shell Scripts
+- `list-components.sh` - Browse React components by category
+- `get-component.sh` - Get component props, events, TypeScript types
+- `generate-component.sh` - Generate React/TSX code
+- `get-install-info.sh` - Get installation commands with TypeScript config
 
 ### Key Features
 - Browse React components by category
@@ -97,9 +97,9 @@ Skill: Proposes components with TypeScript interfaces → Generates typed React 
 ### Purpose
 Expert for working with Mozaic design tokens (colors, typography, spacing, shadows, borders, breakpoints, grid).
 
-### MCP Tools
-- `mcp__mozaic__get_design_tokens`
-- `mcp__mozaic__search_documentation`
+### Shell Scripts
+- `get-tokens.sh` - Get tokens by category and format (JSON, SCSS, CSS, JS)
+- `search-docs.sh` - Search Mozaic documentation
 
 ### Key Features
 - Browse tokens by category
@@ -139,10 +139,9 @@ Skill: Returns colors in requested format (SCSS/CSS/JS) with usage examples
 ### Purpose
 Expert for Mozaic CSS-only utility classes (no framework needed).
 
-### MCP Tools
-- `mcp__mozaic__list_css_utilities`
-- `mcp__mozaic__get_css_utility`
-- `mcp__mozaic__search_documentation`
+### Shell Scripts
+- `list-utilities.sh` - Browse CSS utilities by category
+- `get-utility.sh` - Get utility classes, examples, documentation
 
 ### Key Features
 - Flexy grid system (flexbox-based)
@@ -183,8 +182,9 @@ Skill: Returns Flexy grid HTML with responsive breakpoints
 Icon search and integration for Vue & React applications.
 
 ### MCP Tools
-- `mcp__mozaic__search_icons`
-- `mcp__mozaic__get_icon`
+### Shell Scripts
+- `search-icons.sh` - Search icons by name, type, or size
+- `get-icon.sh` - Get icon SVG and framework code (Vue/React)
 
 ### Key Features
 - Search icons by keyword
@@ -218,27 +218,29 @@ Skill: Shows cart icons → User selects size/framework → Generates code
 
 ---
 
-## How Skills Use MCP Tools
+## How Skills Work
 
-### Best Practice Pattern
+### Architecture
 
-Skills **do not duplicate** database logic. Instead, they:
-1. Use MCP tools via fully qualified names (e.g., `mcp__mozaic__list_components`)
-2. Provide procedural workflows and guidance
-3. Teach **how** to use the tools effectively
-4. Offer interactive, guided experiences
+Skills are **self-contained** and use bash scripts to query the local database:
+
+1. Each skill has a `skill.md` file (instructions) and `scripts/` folder (bash scripts)
+2. Scripts query `~/.claude/mozaic.db` (SQLite database)
+3. Scripts return JSON data for processing
+4. Skills provide guided workflows and interactive experiences
+5. No MCP server or external services needed
 
 ### Example: mozaic-vue-builder Workflow
 
 ```
 1. User: "I need a form"
-2. Skill uses mcp__mozaic__list_components → Shows form components
+2. Skill runs `list-components.sh form` → Shows form components
 3. User selects components
-4. Skill uses mcp__mozaic__get_component_info → Gets props/details
+4. Skill runs `get-component.sh TextInput` → Gets props/details
 5. Skill proposes 2-3 combinations
 6. User refines selection
-7. Skill uses mcp__mozaic__generate_vue_component → Generates code
-8. Skill uses mcp__mozaic__get_install_info → Installation commands
+7. Skill runs `generate-component.sh TextInput` → Generates Vue code
+8. Skill runs `get-install-info.sh TextInput` → Installation commands
 ```
 
 ---

@@ -1,35 +1,14 @@
 ---
 name: mozaic-css-utilities
 description: Mozaic CSS utility classes and layout systems expert. Master Flexy grid, Container, Margin, Padding, Ratio, and Scroll utilities for responsive layouts without writing custom CSS.
-version: 1.0.0
+version: 2.0.0
+allowed-tools:
+  - Bash
 ---
 
 # Mozaic CSS Utilities
 
 An expert assistant for working with Mozaic CSS-only utility classes. These utilities work without any framework (no Vue or React needed) and provide powerful layout and spacing capabilities through simple CSS classes.
-
-## ⚠️ Prerequisites
-
-**This skill requires the Mozaic MCP server to be configured.**
-
-Without the MCP server, this skill cannot:
-- Access the Mozaic CSS utilities database
-- Retrieve Flexy grid classes, spacing utilities, etc.
-- Search documentation for CSS patterns
-
-**Setup**:
-```json
-{
-  "mcpServers": {
-    "mozaic": {
-      "command": "npx",
-      "args": ["mozaic-mcp-server"]
-    }
-  }
-}
-```
-
-See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/main/INSTALLATION.md) for complete setup.
 
 ## What This Skill Does
 
@@ -40,12 +19,13 @@ See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/m
 5. **Aspect Ratios**: Maintain element ratios with Ratio utility
 6. **Scroll Behavior**: Control scrolling with Scroll utility
 
-## MCP Tools Used
+## Shell Scripts Used
 
-This skill uses the Mozaic MCP server tools:
-- `mcp__mozaic__list_css_utilities` - Browse utilities by category
-- `mcp__mozaic__get_css_utility` - Get detailed utility class documentation
-- `mcp__mozaic__search_documentation` - Search for utility usage examples
+This skill uses shell scripts to query the local Mozaic database:
+- `list-utilities.sh` - Browse CSS utilities by category (layout, utility, all)
+- `get-utility.sh` - Get detailed utility class documentation with examples
+
+Database location: `~/.claude/mozaic.db`
 
 ## When to Use This Skill
 
@@ -90,7 +70,7 @@ Options:
 
 ### Step 2: Get Utility Details
 
-I'll use `mcp__mozaic__list_css_utilities` and `mcp__mozaic__get_css_utility` to show:
+I'll use the `list-utilities.sh` and `get-utility.sh` scripts to show:
 - Available CSS classes
 - Responsive modifiers
 - Usage examples
@@ -622,7 +602,7 @@ Do you want:
 **Skill**:
 Perfect! Here's your responsive product grid:
 
-[Uses `mcp__mozaic__get_css_utility` for Flexy]
+[Uses `get-utility.sh flexy` script]
 
 ```html
 <div class="container">

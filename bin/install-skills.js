@@ -11,6 +11,8 @@ const __dirname = dirname(__filename);
 
 const SKILLS_DEST = join(homedir(), '.claude', 'skills');
 const SKILLS_SOURCE = join(__dirname, '..', 'skills');
+const DB_SOURCE = join(__dirname, '..', 'data', 'mozaic.db');
+const DB_DEST = join(homedir(), '.claude', 'mozaic.db');
 
 const SKILLS = [
   'mozaic-vue-builder',
@@ -74,14 +76,41 @@ async function installSkills() {
     process.exit(1);
   }
 
+  // Check if database source exists
+  if (!existsSync(DB_SOURCE)) {
+    log('❌ Error: Database not found', 'red');
+    log(`   Expected at: ${DB_SOURCE}`, 'red');
+    process.exit(1);
+  }
+
   log(`Installing skills from: ${SKILLS_SOURCE}`, 'blue');
   log(`Installing skills to:   ${SKILLS_DEST}`, 'blue');
+  log(`Installing database to: ${DB_DEST}`, 'blue');
   console.log('');
 
   // Create destination directory if needed
+  const claudeDir = join(homedir(), '.claude');
+  if (!existsSync(claudeDir)) {
+    log('📁 Creating .claude directory...', 'yellow');
+    mkdirSync(claudeDir, { recursive: true });
+  }
+
   if (!existsSync(SKILLS_DEST)) {
     log('📁 Creating skills directory...', 'yellow');
     mkdirSync(SKILLS_DEST, { recursive: true });
+  }
+
+  // Install database
+  try {
+    if (existsSync(DB_DEST)) {
+      log('🔄 Updating database...', 'yellow');
+    } else {
+      log('💾 Installing database...', 'green');
+    }
+    cpSync(DB_SOURCE, DB_DEST);
+  } catch (error) {
+    log(`❌ Failed to install database: ${error.message}`, 'red');
+    process.exit(1);
   }
 
   let installed = 0;
@@ -114,6 +143,12 @@ async function installSkills() {
   }
 
   printFooter(installed);
+
+  console.log('');
+  log('📊 Database Info:', 'bright');
+  log(`  Location: ${DB_DEST}`, 'cyan');
+  log('  Contains: Components, Icons, Design Tokens, CSS Utilities', 'cyan');
+  console.log('');
 }
 
 // Handle command line arguments
@@ -152,12 +187,23 @@ if (command === 'uninstall') {
     }
   }
 
+  // Remove database
+  if (existsSync(DB_DEST)) {
+    try {
+      log('🗑️  Removing database...', 'yellow');
+      rmSync(DB_DEST, { force: true });
+    } catch (error) {
+      log(`❌ Failed to remove database: ${error.message}`, 'red');
+    }
+  }
+
   console.log('');
   log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'cyan');
   log('  Uninstallation Complete!', 'bright');
   log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'cyan');
   console.log('');
   log(`✅ Removed ${removed} skills successfully`, 'green');
+  log('✅ Removed database', 'green');
   console.log('');
 } else {
   // Default: install

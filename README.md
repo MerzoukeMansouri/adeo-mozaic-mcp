@@ -1,6 +1,6 @@
-# Mozaic MCP Server
+# Mozaic Design System Skills for Claude Code
 
-An MCP (Model Context Protocol) server that exposes the **Mozaic Design System** by ADEO to Claude and other AI assistants.
+Self-contained Claude Code skills that provide instant access to the **Mozaic Design System** by ADEO. No MCP server configuration required!
 
 **[View Documentation](https://merzoukemansouri.github.io/adeo-mozaic-mcp/)** | **[Try the Playground](https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/playground)**
 
@@ -8,79 +8,55 @@ An MCP (Model Context Protocol) server that exposes the **Mozaic Design System**
 
 ## What It Does
 
-This server indexes the entire Mozaic Design System and makes it queryable through MCP tools. AI assistants can:
+Five interactive skills that help you work with the Mozaic Design System directly in Claude Code. Each skill queries a local SQLite database to provide:
 
-- Look up design tokens (colors, spacing, typography, etc.)
-- Get component documentation with props, slots, events, and examples
-- Search and retrieve icons with SVG/React/Vue code
-- Search documentation pages
-- Generate component code snippets
+- Design tokens (colors, spacing, typography, etc.)
+- Component documentation with props, slots, events, and examples
+- Icon search with SVG/React/Vue code
+- CSS utility classes and layout systems
+- Code generation for Vue 3 and React/TSX
 
-## Claude Code Skills
+## Available Skills
 
-In addition to the MCP server, this repository includes **5 Claude Code skills** that provide interactive, guided workflows for working with Mozaic:
+This package includes **5 self-contained Claude Code skills** with interactive, guided workflows:
 
 - **`mozaic-vue-builder`** - Interactive Vue 3 component generator
-- **`mozaic-react-builder`** - Interactive React/TSX component generator
-- **`mozaic-design-tokens`** - Design tokens and styling expert
-- **`mozaic-css-utilities`** - CSS utilities and layout systems expert
-- **`mozaic-icons`** - Icon search and integration
+- **`mozaic-react-builder`** - Interactive React/TSX component generator with TypeScript
+- **`mozaic-design-tokens`** - Design tokens and styling expert (JSON, SCSS, CSS, JS formats)
+- **`mozaic-css-utilities`** - CSS utilities and layout systems expert (Flexy, Margin, Padding, etc.)
+- **`mozaic-icons`** - Icon search and integration (1,473 icons, Vue & React)
 
-**Quick Install:**
+## Installation
+
+**One command to install everything:**
 ```bash
 npx mozaic-mcp-server install
 ```
 
-**Complete Setup:**
+This will:
+1. Install all 5 skills to `~/.claude/skills/`
+2. Copy the Mozaic database to `~/.claude/mozaic.db`
+3. Make skills immediately available in Claude Code
 
-**Step 1: Install Skills**
+**That's it!** No MCP server configuration needed. Skills work out of the box.
+
+**Uninstall:**
 ```bash
-npx mozaic-mcp-server install
+npx mozaic-mcp-server uninstall
 ```
 
-**Step 2: Configure MCP Server**
+**Learn more:** [SKILLS.md](./SKILLS.md) | [INSTALLATION.md](./INSTALLATION.md)
 
-Add to your Claude Code settings (`~/.claude/config.json`):
-```json
-{
-  "mcpServers": {
-    "mozaic": {
-      "command": "npx",
-      "args": ["mozaic-mcp-server"]
-    }
-  }
-}
-```
+## How It Works
 
-> **Important**: Skills require the MCP server to access the Mozaic database. Without the MCP server configured, skills cannot retrieve component data, tokens, or icons.
+1. **Installation**: `npx mozaic-mcp-server install` copies skills and database to your system
+2. **Database**: Skills query a local SQLite database (`~/.claude/mozaic.db`) containing all Mozaic data
+3. **Shell Scripts**: Each skill uses bash scripts to query the database and return results
+4. **No Server Needed**: Everything runs locally - no MCP server configuration required
 
-**Learn more:** [SKILLS.md](./SKILLS.md)
+**Database Location:** `~/.claude/mozaic.db`
 
-## Quick Start
-
-### MCP Server
-
-```bash
-pnpm install
-pnpm build   # Compiles TypeScript & builds the database
-pnpm start   # Starts the MCP server
-```
-
-### Claude Code Skills (Optional)
-
-**Install with npx** (recommended):
-```bash
-npx mozaic-mcp-server install     # Install all 5 skills
-npx mozaic-mcp-server uninstall   # Uninstall skills
-```
-
-**Or use local scripts**:
-```bash
-./scripts/install-skills.sh    # Install all 5 skills
-./scripts/uninstall-skills.sh  # Uninstall skills
-```
-
-See [SKILLS.md](./SKILLS.md) for detailed skill documentation.
+See [SKILLS.md](./SKILLS.md) for detailed skill documentation and usage examples.
 
 ## What's Indexed
 

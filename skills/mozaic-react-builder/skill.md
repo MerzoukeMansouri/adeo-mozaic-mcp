@@ -1,35 +1,14 @@
 ---
 name: mozaic-react-builder
 description: Interactive React/TSX component generator with Mozaic Design System. Helps discover, configure, and generate production-ready React components with TypeScript support, proper imports, and installation guidance.
-version: 1.0.0
+version: 2.0.0
+allowed-tools:
+  - Bash
 ---
 
 # Mozaic React Builder
 
 An interactive assistant for building React applications with the Mozaic Design System by ADEO. This skill helps you discover components, understand their props, generate ready-to-use TypeScript/JSX code, and set up installation properly.
-
-## ⚠️ Prerequisites
-
-**This skill requires the Mozaic MCP server to be configured.**
-
-Without the MCP server, this skill cannot:
-- Access the Mozaic component database
-- Retrieve component props, events, and TypeScript types
-- Generate accurate code examples
-
-**Setup**:
-```json
-{
-  "mcpServers": {
-    "mozaic": {
-      "command": "npx",
-      "args": ["mozaic-mcp-server"]
-    }
-  }
-}
-```
-
-See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/main/INSTALLATION.md) for complete setup.
 
 ## What This Skill Does
 
@@ -39,13 +18,15 @@ See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/m
 4. **Installation Guidance**: Provide package manager commands and setup instructions
 5. **Props Configuration**: Help configure component props with full type safety
 
-## MCP Tools Used
+## Shell Scripts Used
 
-This skill uses the Mozaic MCP server tools:
-- `mcp__mozaic__list_components` - Browse available components by category
-- `mcp__mozaic__get_component_info` - Get detailed component information (props, events, types)
-- `mcp__mozaic__generate_react_component` - Generate React/TSX component code
-- `mcp__mozaic__get_install_info` - Get installation commands and imports
+This skill uses shell scripts to query the local Mozaic database:
+- `list-components.sh` - Browse available React components by category
+- `get-component.sh` - Get detailed component information (props, events, TypeScript types)
+- `generate-component.sh` - Generate React/TSX component code
+- `get-install-info.sh` - Get installation commands and imports
+
+Database location: `~/.claude/mozaic.db`
 
 ## When to Use This Skill
 
@@ -76,7 +57,7 @@ Common options:
 
 ### Step 2: Browse Available Components
 
-Based on your answer, I'll use `mcp__mozaic__list_components` to show relevant components.
+Based on your answer, I'll use the `list-components.sh` script to show relevant components.
 
 **Example**:
 ```
@@ -91,7 +72,7 @@ For forms, Mozaic offers:
 
 ### Step 3: Component Details
 
-I'll use `mcp__mozaic__get_component_info` to show:
+I'll use the `get-component.sh` script to show:
 - Available props with TypeScript types and defaults
 - Events and callbacks
 - Component examples
@@ -215,7 +196,7 @@ You can:
 
 ### Step 6: Generate Final Code
 
-I'll use `mcp__mozaic__generate_react_component` to create complete code:
+I'll use the `generate-component.sh` script to create complete code:
 
 ```tsx
 import { useState, FormEvent } from 'react';
@@ -299,7 +280,7 @@ export function LoginForm() {
 
 ### Step 7: Installation Guidance
 
-I'll use `mcp__mozaic__get_install_info` to provide:
+I'll use the `get-install-info.sh` script to provide:
 
 **Package Manager Choice**:
 - npm
@@ -567,9 +548,9 @@ function useFormState<T>(initialValues: T) {
 ### Issue: TypeScript errors with props
 
 **Solution**: Check prop types
-```tsx
-// Use mcp__mozaic__get_component_info to verify prop types
-// Ensure you're using the correct interface
+```bash
+# Use get-component.sh to verify prop types
+./scripts/get-component.sh TextInput
 ```
 
 ### Issue: Styles not applying
@@ -631,7 +612,7 @@ What fields do you need?
 **Skill**:
 Perfect! Here's a registration form with extended fields and TypeScript:
 
-[Uses `mcp__mozaic__list_components` and `mcp__mozaic__get_component_info`]
+[Uses `list-components.sh` and `get-component.sh` scripts]
 
 **Proposed Components**:
 1. TextInput (Name)
@@ -654,7 +635,7 @@ interface RegistrationData {
 }
 ```
 
-[Uses `mcp__mozaic__generate_react_component`]
+[Uses `generate-component.sh` script]
 
 Here's your complete registration form with TypeScript... [Generated code]
 
@@ -666,7 +647,7 @@ Would you like me to:
 **User**: "Add installation instructions"
 
 **Skill**:
-[Uses `mcp__mozaic__get_install_info`]
+[Uses `get-install-info.sh` script]
 
 Here's how to install and set up...
 

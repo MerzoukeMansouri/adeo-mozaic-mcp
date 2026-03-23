@@ -1,35 +1,14 @@
 ---
 name: mozaic-design-tokens
 description: Mozaic Design System tokens and styling expert. Access design tokens (colors, typography, spacing, shadows, borders, breakpoints, grid) in multiple formats (JSON, SCSS, CSS, JS) and search documentation for styling guidance.
-version: 1.0.0
+version: 2.0.0
+allowed-tools:
+  - Bash
 ---
 
 # Mozaic Design Tokens
 
 An expert assistant for working with Mozaic Design System tokens and styling. This skill helps you discover and use design tokens for colors, typography, spacing, shadows, borders, responsive breakpoints, and grid systems across your projects.
-
-## ⚠️ Prerequisites
-
-**This skill requires the Mozaic MCP server to be configured.**
-
-Without the MCP server, this skill cannot:
-- Access the Mozaic design tokens database
-- Retrieve colors, typography, spacing, shadows, etc.
-- Search Mozaic documentation
-
-**Setup**:
-```json
-{
-  "mcpServers": {
-    "mozaic": {
-      "command": "npx",
-      "args": ["mozaic-mcp-server"]
-    }
-  }
-}
-```
-
-See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/main/INSTALLATION.md) for complete setup.
 
 ## What This Skill Does
 
@@ -39,11 +18,13 @@ See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/m
 4. **Responsive Design**: Work with breakpoints and responsive patterns
 5. **Consistent Styling**: Ensure design system consistency across your app
 
-## MCP Tools Used
+## Shell Scripts Used
 
-This skill uses the Mozaic MCP server tools:
-- `mcp__mozaic__get_design_tokens` - Get design tokens by category and format
-- `mcp__mozaic__search_documentation` - Search Mozaic documentation for styling info
+This skill uses shell scripts to query the local Mozaic database:
+- `get-tokens.sh` - Get design tokens by category and format (JSON, SCSS, CSS, JS)
+- `search-docs.sh` - Search Mozaic documentation for styling guidance
+
+Database location: `~/.claude/mozaic.db`
 
 ## When to Use This Skill
 
@@ -128,7 +109,7 @@ Options:
 
 ### Step 3: Browse and Select
 
-I'll use `mcp__mozaic__get_design_tokens` to show available tokens.
+I'll use the `get-tokens.sh` script to show available tokens.
 
 **Example - Colors in SCSS format**:
 ```scss
@@ -178,7 +159,7 @@ I'll provide examples for your chosen format:
 **User**: "What are the brand colors?"
 
 **Workflow**:
-1. Use `mcp__mozaic__get_design_tokens` with category: "colors"
+1. Use `get-tokens.sh colors json` to retrieve color tokens
 2. Show brand color palette
 3. Provide usage examples
 4. Suggest semantic color alternatives
@@ -202,7 +183,7 @@ I'll provide examples for your chosen format:
 **User**: "What font sizes should I use?"
 
 **Workflow**:
-1. Use `mcp__mozaic__get_design_tokens` with category: "typography"
+1. Use `get-tokens.sh typography scss` to retrieve typography tokens
 2. Show type scale with line heights
 3. Provide semantic naming (heading, body, caption)
 4. Show usage examples
@@ -228,7 +209,7 @@ $line-height-relaxed: 1.75;
 **User**: "How do I use consistent spacing?"
 
 **Workflow**:
-1. Use `mcp__mozaic__get_design_tokens` with category: "spacing"
+1. Use `get-tokens.sh spacing css` to retrieve spacing tokens
 2. Explain magic unit system (4px base)
 3. Show spacing scale
 4. Provide component examples
@@ -257,7 +238,7 @@ $line-height-relaxed: 1.75;
 **User**: "What are the responsive breakpoints?"
 
 **Workflow**:
-1. Use `mcp__mozaic__get_design_tokens` with category: "screens"
+1. Use `get-tokens.sh screens scss` to retrieve breakpoint tokens
 2. Show breakpoint values
 3. Provide media query examples
 4. Suggest mobile-first approach
@@ -287,7 +268,7 @@ $screen-2xl: 1920px; // Wide desktop
 **User**: "How do I add elevation to a card?"
 
 **Workflow**:
-1. Use `mcp__mozaic__get_design_tokens` with category: "shadows"
+1. Use `get-tokens.sh shadows css` to retrieve shadow tokens
 2. Show elevation levels
 3. Explain when to use each level
 4. Provide component examples
@@ -319,7 +300,7 @@ $screen-2xl: 1920px; // Wide desktop
 **User**: "How does the grid system work?"
 
 **Workflow**:
-1. Use `mcp__mozaic__get_design_tokens` with category: "grid"
+1. Use `get-tokens.sh grid scss` to retrieve grid tokens
 2. Show grid configuration
 3. Explain gutter system
 4. Provide layout examples
@@ -531,7 +512,7 @@ export const tokens = {
 
 ## Documentation Search
 
-Use `mcp__mozaic__search_documentation` to find:
+Use the `search-docs.sh` script to find:
 - Color usage guidelines
 - Typography best practices
 - Spacing system rules
@@ -589,7 +570,7 @@ Perfect! What format do you prefer?
 **User**: "A - CSS"
 
 **Skill**:
-[Uses `mcp__mozaic__get_design_tokens` for colors, spacing, shadows]
+[Uses `get-tokens.sh` script for colors, spacing, shadows]
 
 Here are the tokens for your card component:
 

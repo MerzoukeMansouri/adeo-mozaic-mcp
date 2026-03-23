@@ -1,35 +1,14 @@
 ---
 name: mozaic-icons
 description: Mozaic icon search and integration for Vue & React. Search icons by name or type, view multiple sizes (16, 24, 32, 48, 64), and generate framework-specific code with proper imports.
-version: 1.0.0
+version: 2.0.0
+allowed-tools:
+  - Bash
 ---
 
 # Mozaic Icons
 
 An expert assistant for discovering and integrating Mozaic Design System icons. Search through the icon library, preview different sizes, and generate ready-to-use code for Vue or React applications.
-
-## ⚠️ Prerequisites
-
-**This skill requires the Mozaic MCP server to be configured.**
-
-Without the MCP server, this skill cannot:
-- Access the Mozaic icons database (1,473 icons)
-- Search icons by name, type, or size
-- Generate icon code for Vue or React
-
-**Setup**:
-```json
-{
-  "mcpServers": {
-    "mozaic": {
-      "command": "npx",
-      "args": ["mozaic-mcp-server"]
-    }
-  }
-}
-```
-
-See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/main/INSTALLATION.md) for complete setup.
 
 ## What This Skill Does
 
@@ -40,11 +19,13 @@ See [INSTALLATION.md](https://github.com/merzoukemansouri/adeo-mozaic-mcp/blob/m
 5. **Generate Code**: Create framework-specific code (Vue or React) with proper imports
 6. **Get SVG**: Access raw SVG markup for custom usage
 
-## MCP Tools Used
+## Shell Scripts Used
 
-This skill uses the Mozaic MCP server tools:
-- `mcp__mozaic__search_icons` - Search icons by name, type, or size
-- `mcp__mozaic__get_icon` - Get specific icon with SVG and framework code
+This skill uses shell scripts to query the local Mozaic database:
+- `search-icons.sh` - Search icons by name, type, or size (1,473 icons)
+- `get-icon.sh` - Get specific icon with SVG and framework code (Vue/React)
+
+Database location: `~/.claude/mozaic.db`
 
 ## When to Use This Skill
 
@@ -136,7 +117,7 @@ You can describe:
 
 ### Step 2: Search and Filter
 
-I'll use `mcp__mozaic__search_icons` with optional filters:
+I'll use the `search-icons.sh` script with optional filters:
 
 **Filters**:
 - By name/keyword
@@ -185,7 +166,7 @@ You choose:
 
 ### Step 5: Generate Code
 
-I'll use `mcp__mozaic__get_icon` to provide:
+I'll use the `get-icon.sh` script to provide:
 - Import statements
 - Component usage
 - Props and customization
@@ -586,7 +567,7 @@ This skill works well with:
 **Skill**:
 I'll help you find a shopping cart icon!
 
-[Uses `mcp__mozaic__search_icons` with query="cart"]
+[Uses `search-icons.sh cart` script]
 
 Found 3 shopping cart icons:
 
@@ -615,7 +596,7 @@ Perfect! Which framework?
 **User**: "B - React"
 
 **Skill**:
-[Uses `mcp__mozaic__get_icon` for Cart24 in React format]
+[Uses `get-icon.sh Cart24 react` script]
 
 Here's your shopping cart button with icon:
 
