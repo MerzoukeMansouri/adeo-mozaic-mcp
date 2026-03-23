@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.0...v2.0.1) (2026-03-23)
+
+
+### Chores
+
+* configure semantic-release github plugin ([16213e7](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/16213e7236a8c4916830261e65120db0ae722b84))
+
 ## [2.0.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v1.2.0...v2.0.0) (2026-03-23)
 
 
