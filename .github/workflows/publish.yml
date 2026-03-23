@@ -65,8 +65,13 @@ jobs:
       - name: Update version (if manual trigger)
         if: github.event_name == 'workflow_dispatch'
         run: |
-          npm version ${{ inputs.version }} --no-git-tag-version
-          echo "Updated version to ${{ inputs.version }}"
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          if [ "$CURRENT_VERSION" != "${{ inputs.version }}" ]; then
+            npm version ${{ inputs.version }} --no-git-tag-version
+            echo "Updated version to ${{ inputs.version }}"
+          else
+            echo "Version is already ${{ inputs.version }}, skipping version update"
+          fi
 
       - name: Publish to NPM (with Trusted Publishers)
         run: npm publish --provenance
