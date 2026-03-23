@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v1.1.2...v1.1.3) (2026-03-23)
+
+
+### Bug Fixes
+
+* ensure dist/index.js is executable after compilation ([a97d20c](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/a97d20cc8ecdfc846fa104d7e71b800530d24074))
+
 ## [1.1.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v1.1.1...v1.1.2) (2026-03-23)
 
 
