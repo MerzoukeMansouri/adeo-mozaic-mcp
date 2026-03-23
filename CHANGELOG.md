@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v1.1.1...v1.1.2) (2026-03-23)
+
+
+### Documentation
+
+* update website with new CLI command arguments ([3f9626e](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/3f9626e3770a1caf0f5710e59cfc96aaeb687c60))
+
 ## [1.1.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v1.1.0...v1.1.1) (2026-03-23)
 
 
