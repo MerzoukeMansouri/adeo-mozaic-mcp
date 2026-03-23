@@ -1,6 +1,7 @@
 # Mozaic MCP Server
 
 [![npm version](https://img.shields.io/npm/v/mozaic-mcp-server.svg)](https://www.npmjs.com/package/mozaic-mcp-server)
+[![npm downloads](https://img.shields.io/npm/dm/mozaic-mcp-server.svg)](https://www.npmjs.com/package/mozaic-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-online-blue.svg)](https://merzoukemansouri.github.io/adeo-mozaic-mcp/)
 
