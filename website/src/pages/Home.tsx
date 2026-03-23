@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { Button, Flag, Badge, Loader } from "@mozaic-ds/react";
-import { Code, ArrowRight } from "lucide-react";
+import { Button, Badge } from "@mozaic-ds/react";
+import { Code } from "lucide-react";
 
 const stats = [
   { label: "Design Tokens", value: "586", gradient: "from-secondary-blue-500 to-secondary-blue-600" },
@@ -48,15 +48,6 @@ const features = [
     color: "primary-01",
   },
 ];
-
-const categoryColors: Record<string, string> = {
-  tokens: "bg-secondary-blue-100 text-secondary-blue-700 dark:bg-secondary-blue-900/30 dark:text-secondary-blue-400",
-  components: "bg-primary-01-100 text-primary-01-700 dark:bg-primary-01-900/30 dark:text-primary-01-400",
-  docs: "bg-secondary-purple-100 text-secondary-purple-700 dark:bg-secondary-purple-900/30 dark:text-secondary-purple-400",
-  css: "bg-secondary-blue-100 text-secondary-blue-700 dark:bg-secondary-blue-900/30 dark:text-secondary-blue-400",
-  icons: "bg-secondary-purple-100 text-secondary-purple-700 dark:bg-secondary-purple-900/30 dark:text-secondary-purple-400",
-  install: "bg-grey-100 text-grey-700 dark:bg-grey-800 dark:text-grey-400",
-};
 
 function Home() {
   return (

@@ -20,6 +20,8 @@
     "LICENSE"
   ],
   "scripts": {
+    "compile": "tsc",
+    "postcompile": "chmod +x dist/index.js",
     "build": "tsc && tsx scripts/build-index.ts",
     "build:docs": "tsx scripts/generate-docs.ts",
     "prebuild": "rm -rf dist",
@@ -35,9 +37,12 @@
     "lint:fix": "eslint src scripts --fix",
     "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\"",
-    "install": "node bin/install.js",
-    "db:check": "tsx scripts/sanity-check.ts",
-    "db:rebuild": "pnpm rebuild better-sqlite3",
+    "database:sanity": "tsx scripts/sanity-check.ts",
+    "rebuild": "pnpm rebuild better-sqlite3",
+    "install-mcp": "./scripts/install.sh",
+    "uninstall-mcp": "./scripts/uninstall.sh",
+    "install-skills": "./scripts/install-skills.sh",
+    "uninstall-skills": "./scripts/uninstall-skills.sh",
     "prepare": "husky"
   },
   "keywords": [
