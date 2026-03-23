@@ -4,7 +4,7 @@
 # Categories: form, navigation, feedback, layout, data-display, action, all (default)
 
 CATEGORY="${1:-all}"
-DB_PATH="${HOME}/.claude/mozaic.db"
+DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.claude/mozaic.db}"
 
 # Check if database exists
 if [ ! -f "$DB_PATH" ]; then

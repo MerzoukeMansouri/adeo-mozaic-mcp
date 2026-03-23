@@ -4,7 +4,7 @@
 
 COMPONENT_NAME="$1"
 PROPS_JSON="${2:-{}}"
-DB_PATH="${HOME}/.claude/mozaic.db"
+DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.claude/mozaic.db}"
 
 if [ -z "$COMPONENT_NAME" ]; then
   echo "Error: Component name required"
@@ -18,28 +18,39 @@ if [ ! -f "$DB_PATH" ]; then
   exit 1
 fi
 
-# Get component template
-TEMPLATE=$(sqlite3 "$DB_PATH" <<EOF
-.mode list
-SELECT template FROM components
-WHERE name = '$COMPONENT_NAME'
-  AND frameworks LIKE '%react%'
-LIMIT 1;
-EOF
-)
+# Verify component exists
+COMPONENT_EXISTS=$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM components WHERE name = '$COMPONENT_NAME' AND frameworks LIKE '%react%'")
 
-if [ -z "$TEMPLATE" ]; then
-  echo "Error: Component '$COMPONENT_NAME' not found or has no template"
+if [ "$COMPONENT_EXISTS" = "0" ]; then
+  echo "Error: Component '$COMPONENT_NAME' not found"
   exit 1
 fi
 
-# For now, return the basic template
-# In a full implementation, this would merge props-json with the template
+# Build props string from examples (use first example as base)
+FIRST_EXAMPLE=$(sqlite3 "$DB_PATH" <<EOF
+.mode list
+SELECT code FROM component_examples
+WHERE component_id = (
+  SELECT id FROM components
+  WHERE name = '$COMPONENT_NAME'
+    AND frameworks LIKE '%react%'
+)
+ORDER BY id LIMIT 1;
+EOF
+)
+
+# Generate component code
+if [ -n "$FIRST_EXAMPLE" ]; then
+  CODE="<${COMPONENT_NAME}\n  ${FIRST_EXAMPLE}\n/>"
+else
+  CODE="<${COMPONENT_NAME} />"
+fi
+
 cat <<EOF
 {
   "component": "$COMPONENT_NAME",
   "framework": "react",
-  "code": $(echo "$TEMPLATE" | jq -Rs .),
+  "code": $(printf '%s' "$CODE" | jq -Rs .),
   "import": "import { ${COMPONENT_NAME} } from '@mozaic-ds/react'",
   "cssImport": "import '@mozaic-ds/react/dist/styles.css'"
 }

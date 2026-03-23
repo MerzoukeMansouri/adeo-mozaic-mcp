@@ -4,7 +4,7 @@
 # Categories: layout, utility, all (default)
 
 CATEGORY="${1:-all}"
-DB_PATH="${HOME}/.claude/mozaic.db"
+DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.claude/mozaic.db}"
 
 if [ ! -f "$DB_PATH" ]; then
   echo "Error: Database not found at $DB_PATH"

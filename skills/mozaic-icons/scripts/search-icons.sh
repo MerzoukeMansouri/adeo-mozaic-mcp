@@ -6,7 +6,7 @@ QUERY="$1"
 TYPE="$2"
 SIZE="$3"
 LIMIT="${4:-20}"
-DB_PATH="${HOME}/.claude/mozaic.db"
+DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.claude/mozaic.db}"
 
 if [ -z "$QUERY" ]; then
   echo "Error: Search query required"
@@ -20,26 +20,17 @@ if [ ! -f "$DB_PATH" ]; then
   exit 1
 fi
 
-# Build WHERE clause
 WHERE_CLAUSE="name LIKE '%$QUERY%'"
-
 if [ -n "$TYPE" ]; then
   WHERE_CLAUSE="$WHERE_CLAUSE AND type = '$TYPE'"
 fi
-
 if [ -n "$SIZE" ]; then
   WHERE_CLAUSE="$WHERE_CLAUSE AND size = $SIZE"
 fi
 
-# Search icons
-sqlite3 "$DB_PATH" <<EOF
+RESULT=$(sqlite3 "$DB_PATH" <<EOF
 .mode json
-SELECT
-  name,
-  icon_name,
-  type,
-  size,
-  view_box
+SELECT name, icon_name, type, size, view_box
 FROM icons
 WHERE $WHERE_CLAUSE
 ORDER BY
@@ -48,7 +39,9 @@ ORDER BY
     WHEN name LIKE '%$QUERY' THEN 2
     ELSE 3
   END,
-  type,
-  size
+  type, size
 LIMIT $LIMIT;
 EOF
+)
+
+echo "${RESULT:-[]}"

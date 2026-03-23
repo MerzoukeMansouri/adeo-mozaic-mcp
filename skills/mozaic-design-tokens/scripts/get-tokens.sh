@@ -6,7 +6,15 @@
 
 CATEGORY="$1"
 FORMAT="${2:-json}"
-DB_PATH="${HOME}/.claude/mozaic.db"
+DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.claude/mozaic.db}"
+
+# Normalize plural aliases to match DB category values
+case "$CATEGORY" in
+  colors)  CATEGORY="color" ;;
+  shadows) CATEGORY="shadow" ;;
+  borders) CATEGORY="border" ;;
+  screens) CATEGORY="screen" ;;
+esac
 
 if [ -z "$CATEGORY" ]; then
   echo "Error: Category required"

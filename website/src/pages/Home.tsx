@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { Button, Flag } from "@mozaic-ds/react";
+import { Button, Flag, Badge, Loader } from "@mozaic-ds/react";
+import { Code, ArrowRight } from "lucide-react";
 
 const stats = [
   { label: "Design Tokens", value: "586", gradient: "from-secondary-blue-500 to-secondary-blue-600" },
@@ -106,16 +107,20 @@ function Home() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {stats.map((stat) => (
+          {stats.map((stat, idx) => (
             <div
               key={stat.label}
-              className="stats-card rounded-xl border border-grey-200 dark:border-primary-02-600 p-6 text-center hover:border-primary-01-400 dark:hover:border-primary-01-500 transition-all feature-card"
+              className="stats-card rounded-xl border border-grey-200 dark:border-primary-02-600 p-6 text-center hover:border-primary-01-400 dark:hover:border-primary-01-500 transition-all feature-card animate-fade-in-up relative overflow-hidden"
+              style={{ animationDelay: `${idx * 0.1}s` }}
             >
-              <div className={`text-3xl md:text-4xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mb-2`}>
-                {stat.value}
-              </div>
-              <div className="text-sm text-grey-600 dark:text-grey-400 font-medium">
-                {stat.label}
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary-01-100 to-transparent dark:from-primary-01-900/20 rounded-full -mr-10 -mt-10"></div>
+              <div className="relative z-10">
+                <div className={`text-3xl md:text-4xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mb-2`}>
+                  {stat.value}
+                </div>
+                <div className="text-sm text-grey-600 dark:text-grey-400 font-medium">
+                  {stat.label}
+                </div>
               </div>
             </div>
           ))}
@@ -131,22 +136,68 @@ function Home() {
           <div className="flex-1 h-px bg-grey-200 dark:bg-primary-02-700"></div>
         </div>
 
-        <div className="code-block p-6 overflow-x-auto">
-          <pre className="text-grey-100 text-sm md:text-base font-mono">
-            <code>{`# Clone and build
-git clone https://github.com/MerzoukeMansouri/adeo-mozaic-mcp
-cd adeo-mozaic-mcp
-pnpm install
-pnpm build
+        <div className="bg-gradient-to-br from-primary-01-100 to-primary-01-50 dark:from-primary-01-900/30 dark:to-primary-02-800 rounded-xl p-6 border-2 border-primary-01-400 dark:border-primary-01-500 mb-6">
+          <h3 className="text-lg font-semibold text-grey-900 dark:text-grey-000 mb-3 flex items-center gap-2">
+            <span className="text-2xl">⚡</span>
+            Interactive Mode (Recommended)
+          </h3>
+          <div className="code-block-sm p-4 mb-3">
+            <pre className="text-grey-100 text-sm font-mono">
+              <code>npx mozaic-install</code>
+            </pre>
+          </div>
+          <p className="text-sm text-grey-600 dark:text-grey-400">
+            Select individual skills and MCP server with checkboxes. See what's installed and make changes interactively!
+          </p>
+        </div>
 
-# Start the MCP server
-pnpm start`}</code>
-          </pre>
+        <div className="grid md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-white dark:bg-primary-02-800 rounded-xl p-5 border border-grey-200 dark:border-primary-02-600">
+            <h3 className="text-base font-semibold text-grey-900 dark:text-grey-000 mb-3">
+              All Components
+            </h3>
+            <div className="code-block-sm p-3 mb-2">
+              <pre className="text-grey-100 text-xs font-mono">
+                <code>npx mozaic-install all</code>
+              </pre>
+            </div>
+            <p className="text-xs text-grey-600 dark:text-grey-400">
+              Quick install everything
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-primary-02-800 rounded-xl p-5 border border-grey-200 dark:border-primary-02-600">
+            <h3 className="text-base font-semibold text-grey-900 dark:text-grey-000 mb-3">
+              Skills Only
+            </h3>
+            <div className="code-block-sm p-3 mb-2">
+              <pre className="text-grey-100 text-xs font-mono">
+                <code>npx mozaic-install skills</code>
+              </pre>
+            </div>
+            <p className="text-xs text-grey-600 dark:text-grey-400">
+              For Claude Code
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-primary-02-800 rounded-xl p-5 border border-grey-200 dark:border-primary-02-600">
+            <h3 className="text-base font-semibold text-grey-900 dark:text-grey-000 mb-3">
+              MCP Only
+            </h3>
+            <div className="code-block-sm p-3 mb-2">
+              <pre className="text-grey-100 text-xs font-mono">
+                <code>npx mozaic-install mcp</code>
+              </pre>
+            </div>
+            <p className="text-xs text-grey-600 dark:text-grey-400">
+              For Claude Desktop
+            </p>
+          </div>
         </div>
 
         <div className="mt-4 p-4 bg-secondary-blue-100 dark:bg-secondary-blue-900/20 border border-secondary-blue-200 dark:border-secondary-blue-800 rounded-lg">
           <p className="text-sm text-secondary-blue-700 dark:text-secondary-blue-300">
-            <strong>Tip:</strong> Add the server to your Claude Desktop configuration to start using Mozaic documentation in your conversations.
+            <strong>💡 Tip:</strong> Use <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">mozaic-install list</code> to check status, or <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">--help</code> for all commands.
           </p>
         </div>
       </section>
@@ -157,7 +208,7 @@ pnpm start`}</code>
           <h2 className="text-2xl md:text-3xl font-bold text-grey-900 dark:text-grey-000">
             MCP Tools
           </h2>
-          <Flag variant="solid" theme="primary">{tools.length} tools</Flag>
+          <Badge theme="info">{tools.length} tools</Badge>
           <div className="flex-1 h-px bg-grey-200 dark:bg-primary-02-700"></div>
         </div>
 
@@ -165,19 +216,23 @@ pnpm start`}</code>
           {tools.map((tool) => (
             <div
               key={tool.name}
-              className="bg-white dark:bg-primary-02-800 rounded-xl border border-grey-200 dark:border-primary-02-600 p-5 hover:border-primary-01-400 dark:hover:border-primary-01-500 transition-all feature-card group"
+              className="bg-white dark:bg-primary-02-800 rounded-xl border border-grey-200 dark:border-primary-02-600 p-5 hover:border-primary-01-400 dark:hover:border-primary-01-500 transition-all feature-card group relative overflow-hidden"
             >
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <code className="text-primary-01-600 dark:text-primary-01-400 font-mono text-sm font-semibold group-hover:text-primary-01-700 dark:group-hover:text-primary-01-300 transition-colors">
-                  {tool.name}
-                </code>
-                <span className={`px-2 py-1 rounded-md text-xs font-medium ${categoryColors[tool.category]}`}>
-                  {tool.category}
-                </span>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary-01-100 dark:bg-primary-01-900/20 rounded-full -mr-16 -mt-16 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-2">
+                    <Code className="w-4 h-4 text-primary-01-500" />
+                    <code className="text-primary-01-600 dark:text-primary-01-400 font-mono text-sm font-semibold group-hover:text-primary-01-700 dark:group-hover:text-primary-01-300 transition-colors">
+                      {tool.name}
+                    </code>
+                  </div>
+                  <Badge theme="info">{tool.category}</Badge>
+                </div>
+                <p className="text-sm text-grey-600 dark:text-grey-400">
+                  {tool.desc}
+                </p>
               </div>
-              <p className="text-sm text-grey-600 dark:text-grey-400">
-                {tool.desc}
-              </p>
             </div>
           ))}
         </div>
@@ -193,19 +248,22 @@ pnpm start`}</code>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {features.map((feature) => (
+          {features.map((feature, idx) => (
             <div
               key={feature.title}
-              className={`bg-white dark:bg-primary-02-800 rounded-xl border-l-4 border border-grey-200 dark:border-primary-02-600 p-6 hover:border-primary-01-400 dark:hover:border-primary-01-500 transition-all feature-card ${
+              className={`bg-white dark:bg-primary-02-800 rounded-xl border border-grey-200 dark:border-primary-02-600 p-6 hover:border-primary-01-400 dark:hover:border-primary-01-500 transition-all feature-card border-accent ${
                 feature.color === "primary-01"
-                  ? "border-l-primary-01-500"
+                  ? "border-accent"
                   : feature.color === "secondary-blue"
-                  ? "border-l-secondary-blue-500"
-                  : "border-l-secondary-purple-500"
+                  ? "border-accent-blue"
+                  : "border-accent-purple"
               }`}
+              style={{ animationDelay: `${idx * 0.15}s` }}
             >
-              <h3 className="text-lg font-semibold text-grey-900 dark:text-grey-000 mb-2">
-                {feature.title}
+              <h3 className="text-lg font-semibold text-grey-900 dark:text-grey-000 mb-2 flex items-center gap-2">
+                <span className={feature.color === "primary-01" ? "gradient-text-primary" : feature.color === "secondary-blue" ? "gradient-text-blue" : "gradient-text-purple"}>
+                  {feature.title}
+                </span>
               </h3>
               <p className="text-sm text-grey-600 dark:text-grey-400 leading-relaxed">
                 {feature.desc}

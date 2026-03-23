@@ -28,32 +28,46 @@ This package includes **5 self-contained Claude Code skills** with interactive, 
 
 ## Installation
 
-**Quick start - Install skills (recommended):**
+**Interactive mode (recommended):**
 ```bash
-npx mozaic-mcp-server install-skills
+npx mozaic-install
+# or
+npx mozaic-install select
+```
+Select individual skills and MCP server with checkboxes!
+
+**Quick install commands:**
+```bash
+# Install everything (skills + MCP server)
+npx mozaic-install all
+
+# Or install just skills for Claude Code
+npx mozaic-install skills
+
+# Or install just MCP server for Claude Desktop
+npx mozaic-install mcp
 ```
 
-This installs all 5 skills to `~/.claude/skills/` and the database to `~/.claude/mozaic.db`. Skills work immediately in Claude Code - no configuration needed!
-
-**Alternative - Install as MCP server:**
+**Check what's installed:**
 ```bash
-npx mozaic-mcp-server install-mcp
-```
-
-This adds the MCP server configuration to Claude Desktop settings. Requires Claude Desktop restart.
-
-**View all commands:**
-```bash
-npx mozaic-mcp-server install
+npx mozaic-install list
 ```
 
 **Uninstall:**
 ```bash
-# Remove skills
-npx mozaic-mcp-server uninstall-skills
+# Remove everything
+npx mozaic-install remove all
 
-# Remove MCP server config
-npx mozaic-mcp-server uninstall-mcp
+# Remove just skills
+npx mozaic-install remove skills
+
+# Remove just MCP server
+npx mozaic-install remove mcp
+```
+
+**Help:**
+```bash
+npx mozaic-install --help
 ```
 
 **Learn more:** [SKILLS.md](./SKILLS.md) | [INSTALLATION.md](./INSTALLATION.md)

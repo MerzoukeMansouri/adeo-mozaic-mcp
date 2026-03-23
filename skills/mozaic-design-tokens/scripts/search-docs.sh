@@ -4,7 +4,7 @@
 
 QUERY="$1"
 LIMIT="${2:-5}"
-DB_PATH="${HOME}/.claude/mozaic.db"
+DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.claude/mozaic.db}"
 
 if [ -z "$QUERY" ]; then
   echo "Error: Search query required"
@@ -25,7 +25,7 @@ SELECT
   title,
   content,
   category,
-  url
+  path
 FROM documentation
 WHERE title LIKE '%$QUERY%'
    OR content LIKE '%$QUERY%'

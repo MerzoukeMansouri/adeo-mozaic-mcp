@@ -4,7 +4,7 @@
 
 UTILITY_NAME="$1"
 INCLUDE_CLASSES="${2:-true}"
-DB_PATH="${HOME}/.claude/mozaic.db"
+DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.claude/mozaic.db}"
 
 if [ -z "$UTILITY_NAME" ]; then
   echo "Error: Utility name required"
@@ -28,7 +28,7 @@ LIMIT 1;
 EOF
 )
 
-if [ "$UTILITY_INFO" = "[]" ]; then
+if [ -z "$UTILITY_INFO" ] || [ "$UTILITY_INFO" = "[]" ]; then
   echo "Error: Utility '$UTILITY_NAME' not found"
   exit 1
 fi
@@ -56,8 +56,7 @@ EXAMPLES=$(sqlite3 "$DB_PATH" <<EOF
 .mode json
 SELECT
   title,
-  code,
-  description
+  code
 FROM css_utility_examples
 WHERE utility_id = (
   SELECT id FROM css_utilities

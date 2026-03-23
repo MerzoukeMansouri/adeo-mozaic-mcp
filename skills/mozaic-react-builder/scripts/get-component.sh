@@ -3,7 +3,7 @@
 # Usage: ./get-component.sh <component-name>
 
 COMPONENT_NAME="$1"
-DB_PATH="${HOME}/.claude/mozaic.db"
+DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.claude/mozaic.db}"
 
 if [ -z "$COMPONENT_NAME" ]; then
   echo "Error: Component name required"
@@ -17,7 +17,6 @@ if [ ! -f "$DB_PATH" ]; then
   exit 1
 fi
 
-# Get component basic info
 COMPONENT_INFO=$(sqlite3 "$DB_PATH" <<EOF
 .mode json
 SELECT * FROM components
@@ -27,65 +26,47 @@ LIMIT 1;
 EOF
 )
 
-if [ "$COMPONENT_INFO" = "[]" ]; then
+if [ -z "$COMPONENT_INFO" ] || [ "$COMPONENT_INFO" = "[]" ]; then
   echo "Error: Component '$COMPONENT_NAME' not found"
   exit 1
 fi
 
-# Get component props
 PROPS=$(sqlite3 "$DB_PATH" <<EOF
 .mode json
-SELECT
-  name,
-  type,
-  default_value,
-  required,
-  description
+SELECT name, type, default_value, required, description
 FROM component_props
 WHERE component_id = (
-  SELECT id FROM components
-  WHERE name = '$COMPONENT_NAME'
-    AND frameworks LIKE '%react%'
+  SELECT id FROM components WHERE name = '$COMPONENT_NAME' AND frameworks LIKE '%react%'
 )
 ORDER BY required DESC, name;
 EOF
 )
+PROPS="${PROPS:-[]}"
 
-# Get component events
 EVENTS=$(sqlite3 "$DB_PATH" <<EOF
 .mode json
-SELECT
-  name,
-  payload,
-  description
+SELECT name, payload, description
 FROM component_events
 WHERE component_id = (
-  SELECT id FROM components
-  WHERE name = '$COMPONENT_NAME'
-    AND frameworks LIKE '%react%'
+  SELECT id FROM components WHERE name = '$COMPONENT_NAME' AND frameworks LIKE '%react%'
 )
 ORDER BY name;
 EOF
 )
+EVENTS="${EVENTS:-[]}"
 
-# Get component examples
 EXAMPLES=$(sqlite3 "$DB_PATH" <<EOF
 .mode json
-SELECT
-  title,
-  code,
-  description
+SELECT title, code, description
 FROM component_examples
 WHERE component_id = (
-  SELECT id FROM components
-  WHERE name = '$COMPONENT_NAME'
-    AND frameworks LIKE '%react%'
+  SELECT id FROM components WHERE name = '$COMPONENT_NAME' AND frameworks LIKE '%react%'
 )
 ORDER BY id;
 EOF
 )
+EXAMPLES="${EXAMPLES:-[]}"
 
-# Combine all information into a single JSON output
 cat <<EOF
 {
   "component": $COMPONENT_INFO,

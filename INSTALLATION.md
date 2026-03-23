@@ -2,32 +2,58 @@
 
 This package provides **two installation modes**: Skills (recommended) and MCP Server.
 
-## Quick Install (Skills Mode - Recommended)
-
-**Install skills for Claude Code:**
+## Interactive Mode (Easiest!)
 
 ```bash
-npx mozaic-mcp-server install-skills
+npx mozaic-install
 ```
 
-That's it! Skills are now available in Claude Code.
+This launches an **interactive checkbox interface** where you can:
+- ✅ Select which skills to install (or deselect to uninstall)
+- ✅ Toggle MCP server on/off
+- ✅ See what's currently installed
+- ✅ Make changes and apply them all at once
 
-## Alternative Install (MCP Server Mode)
+Perfect for first-time installation or managing individual components!
 
-**Install as MCP server for Claude Desktop:**
+## CLI Commands
+
+For quick operations without prompts:
+
+### Install Commands
 
 ```bash
-npx mozaic-mcp-server install-mcp
+# Install everything (skills + MCP server)
+npx mozaic-install all
+
+# Install only Claude Code skills
+npx mozaic-install skills
+
+# Install only MCP server for Claude Desktop
+npx mozaic-install mcp
 ```
 
-This adds the MCP server to Claude Desktop config. Restart Claude Desktop after installation.
-
-## View All Commands
-
-**Show help menu:**
+### Status & Help
 
 ```bash
-npx mozaic-mcp-server install
+# Check what's installed
+npx mozaic-install list
+
+# Show all available commands
+npx mozaic-install --help
+```
+
+### Remove Commands
+
+```bash
+# Remove everything
+npx mozaic-install remove all
+
+# Remove only skills
+npx mozaic-install remove skills
+
+# Remove only MCP server
+npx mozaic-install remove mcp
 ```
 
 ## What Gets Installed
@@ -84,7 +110,15 @@ Skills will activate automatically in Claude Code based on context.
 
 ## Uninstallation
 
-### Remove Skills
+### Interactive Uninstall (Recommended)
+
+```bash
+npx mozaic-install
+```
+
+Use the same interactive installer to **deselect** components you want to remove. It shows what's currently installed - just uncheck items to uninstall them!
+
+### Manual Uninstall - Remove Skills
 
 ```bash
 npx mozaic-mcp-server uninstall-skills
@@ -94,7 +128,7 @@ This removes:
 - All 5 skills from `~/.claude/skills/`
 - Database from `~/.claude/mozaic.db`
 
-### Remove MCP Server
+### Manual Uninstall - Remove MCP Server
 
 ```bash
 npx mozaic-mcp-server uninstall-mcp

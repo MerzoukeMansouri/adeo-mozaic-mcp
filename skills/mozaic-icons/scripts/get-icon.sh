@@ -5,7 +5,7 @@
 
 ICON_NAME="$1"
 FORMAT="${2:-all}"
-DB_PATH="${HOME}/.claude/mozaic.db"
+DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.claude/mozaic.db}"
 
 if [ -z "$ICON_NAME" ]; then
   echo "Error: Icon name required"
@@ -35,7 +35,7 @@ LIMIT 1;
 EOF
 )
 
-if [ "$ICON_INFO" = "[]" ]; then
+if [ -z "$ICON_INFO" ] || [ "$ICON_INFO" = "[]" ]; then
   echo "Error: Icon '$ICON_NAME' not found"
   exit 1
 fi

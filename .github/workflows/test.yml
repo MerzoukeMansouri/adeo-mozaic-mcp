@@ -55,6 +55,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Install shell script dependencies (sqlite3, jq)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y sqlite3 jq
+
+      - name: Rebuild native modules for current Node version
+        run: pnpm rebuild better-sqlite3
+
       - name: Run tests with coverage
         run: pnpm test:coverage
 
@@ -78,6 +86,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Rebuild native modules for current Node version
+        run: pnpm rebuild better-sqlite3
 
       - name: Run sanity check
         run: pnpm database:sanity

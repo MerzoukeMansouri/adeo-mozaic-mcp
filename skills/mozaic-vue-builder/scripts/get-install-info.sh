@@ -4,7 +4,7 @@
 
 COMPONENT_NAME="$1"
 PACKAGE_MANAGER="${2:-pnpm}"
-DB_PATH="${HOME}/.claude/mozaic.db"
+DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.claude/mozaic.db}"
 
 if [ -z "$COMPONENT_NAME" ]; then
   echo "Error: Component name required"

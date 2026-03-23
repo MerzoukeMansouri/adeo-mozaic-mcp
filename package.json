@@ -6,6 +6,7 @@
   "main": "dist/index.js",
   "bin": {
     "mozaic-mcp-server": "dist/index.js",
+    "mozaic-install": "bin/install.js",
     "mozaic-skills": "bin/install-skills.js"
   },
   "files": [
@@ -19,16 +20,14 @@
     "LICENSE"
   ],
   "scripts": {
-    "compile": "tsc",
-    "postcompile": "chmod +x dist/index.js",
     "build": "tsc && tsx scripts/build-index.ts",
     "build:docs": "tsx scripts/generate-docs.ts",
-    "rebuild": "pnpm rebuild better-sqlite3",
+    "prebuild": "rm -rf dist",
+    "postbuild": "chmod +x dist/index.js",
+    "clean": "rm -rf dist data/mozaic.db",
     "start": "node dist/index.js",
     "start:debug": "node dist/index.js --debug",
     "dev": "tsx watch src/index.ts",
-    "clean": "rm -rf dist data/mozaic.db",
-    "database:sanity": "tsx scripts/sanity-check.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -36,12 +35,10 @@
     "lint:fix": "eslint src scripts --fix",
     "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\"",
-    "prepare": "husky",
-    "prebuild": "rm -rf dist",
-    "install-mcp": "./scripts/install.sh",
-    "uninstall-mcp": "./scripts/uninstall.sh",
-    "install-skills": "./scripts/install-skills.sh",
-    "uninstall-skills": "./scripts/uninstall-skills.sh"
+    "install": "node bin/install.js",
+    "db:check": "tsx scripts/sanity-check.ts",
+    "db:rebuild": "pnpm rebuild better-sqlite3",
+    "prepare": "husky"
   },
   "keywords": [
     "mcp",
@@ -62,8 +59,11 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
+    "@types/prompts": "^2.4.9",
     "better-sqlite3": "11.10.0",
+    "commander": "^14.0.3",
     "glob": "^10.0.0",
+    "prompts": "^2.4.2",
     "zod": "^3.23.0"
   },
   "devDependencies": {

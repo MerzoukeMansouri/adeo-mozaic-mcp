@@ -167,14 +167,18 @@
   }
 }
 
-/* Feature card hover effects */
+/* Feature card hover effects - Enhanced with Mozaic shadows */
 .feature-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .feature-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(70, 166, 16, 0.15), 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dark .feature-card:hover {
+  box-shadow: 0 12px 32px rgba(70, 166, 16, 0.25), 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Stats card gradient background */
@@ -186,20 +190,56 @@
   background: linear-gradient(135deg, var(--color-grey-800) 0%, var(--color-grey-900) 100%);
 }
 
-/* Hero section gradient */
+/* Hero section gradient - Enhanced Mozaic style */
 .hero-gradient {
-  background: linear-gradient(180deg, rgba(235, 245, 222, 0.3) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(235, 245, 222, 0.4) 0%, rgba(197, 227, 158, 0.1) 50%, transparent 100%);
+  position: relative;
+}
+
+.hero-gradient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(70, 166, 16, 0.08) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .dark .hero-gradient {
-  background: linear-gradient(180deg, rgba(70, 166, 16, 0.1) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(70, 166, 16, 0.15) 0%, rgba(70, 166, 16, 0.05) 50%, transparent 100%);
 }
 
-/* Code block styling */
+.dark .hero-gradient::before {
+  background: radial-gradient(circle at 30% 20%, rgba(120, 190, 32, 0.12) 0%, transparent 50%);
+}
+
+/* Code block styling - Mozaic inspired */
 .code-block {
-  background: #171B26;
+  background: linear-gradient(135deg, #171B26 0%, #242938 100%);
   border: 1px solid #343B4C;
   border-radius: 0.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.code-block::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #46A610 0%, #78BE20 100%);
+}
+
+/* Small code block (no gradient bar on top) */
+.code-block-sm {
+  background: linear-gradient(135deg, #171B26 0%, #242938 100%);
+  border: 1px solid #343B4C;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
 }
 
 /* Navigation link active state */
@@ -332,6 +372,79 @@
 /* Mobile sidebar */
 .docs-sidebar-toggle {
   display: none;
+}
+
+/* Mozaic-inspired animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Mozaic gradient text */
+.gradient-text-primary {
+  background: linear-gradient(135deg, #46A610 0%, #78BE20 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-blue {
+  background: linear-gradient(135deg, #0B96CC 0%, #3FACD7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-purple {
+  background: linear-gradient(135deg, #7000DD 0%, #A575F3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Mozaic glass effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass-effect {
+  background: rgba(36, 41, 56, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Mozaic accent borders */
+.border-accent {
+  border-left: 4px solid #46A610;
+}
+
+.border-accent-blue {
+  border-left: 4px solid #0B96CC;
+}
+
+.border-accent-purple {
+  border-left: 4px solid #7000DD;
 }
 
 .docs-backdrop {
