@@ -134,7 +134,7 @@ function Home() {
           </h3>
           <div className="code-block-sm p-4 mb-3">
             <pre className="text-grey-100 text-sm font-mono">
-              <code>npx adeo-mozaic-install-tools</code>
+              <code>npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools</code>
             </pre>
           </div>
           <p className="text-sm text-grey-600 dark:text-grey-400">
@@ -149,7 +149,7 @@ function Home() {
             </h3>
             <div className="code-block-sm p-3 mb-2">
               <pre className="text-grey-100 text-xs font-mono">
-                <code>npx adeo-mozaic-install-tools all</code>
+                <code>npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools all</code>
               </pre>
             </div>
             <p className="text-xs text-grey-600 dark:text-grey-400">
@@ -163,7 +163,7 @@ function Home() {
             </h3>
             <div className="code-block-sm p-3 mb-2">
               <pre className="text-grey-100 text-xs font-mono">
-                <code>npx adeo-mozaic-install-tools skills</code>
+                <code>npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills</code>
               </pre>
             </div>
             <p className="text-xs text-grey-600 dark:text-grey-400">
@@ -177,7 +177,7 @@ function Home() {
             </h3>
             <div className="code-block-sm p-3 mb-2">
               <pre className="text-grey-100 text-xs font-mono">
-                <code>npx adeo-mozaic-install-tools mcp</code>
+                <code>npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools mcp</code>
               </pre>
             </div>
             <p className="text-xs text-grey-600 dark:text-grey-400">
@@ -188,7 +188,7 @@ function Home() {
 
         <div className="mt-4 p-4 bg-secondary-blue-100 dark:bg-secondary-blue-900/20 border border-secondary-blue-200 dark:border-secondary-blue-800 rounded-lg">
           <p className="text-sm text-secondary-blue-700 dark:text-secondary-blue-300">
-            <strong>💡 Tip:</strong> Use <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">adeo-mozaic-install-tools list</code> to check status, or <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">--help</code> for all commands.
+            <strong>💡 Tip:</strong> Use <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools list</code> to check status, or <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">--help</code> for all commands.
           </p>
         </div>
       </section>

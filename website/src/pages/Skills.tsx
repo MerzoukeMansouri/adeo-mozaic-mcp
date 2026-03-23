@@ -140,7 +140,7 @@ function Skills() {
               <span className="text-sm">Install Skills</span>
             </div>
             <code className="text-secondary-green-400 text-lg">
-              npx mozaic-mcp-server install-skills
+              npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills
             </code>
           </div>
         </div>
@@ -303,7 +303,7 @@ function Skills() {
 
             <div className="bg-grey-900 dark:bg-grey-950 rounded-lg p-4 font-mono text-sm overflow-x-auto">
               <div className="text-grey-400 mb-1"># Install all 5 skills</div>
-              <code className="text-secondary-green-400">npx mozaic-mcp-server install-skills</code>
+              <code className="text-secondary-green-400">npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills</code>
             </div>
 
             <p className="text-sm text-grey-600 dark:text-grey-300 mt-3">
@@ -404,7 +404,7 @@ function Skills() {
         <div className="flex flex-wrap justify-center gap-4">
           <div className="bg-grey-900 rounded-lg px-6 py-3 font-mono">
             <code className="text-secondary-green-400">
-              npx mozaic-mcp-server install-skills
+              npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills
             </code>
           </div>
         </div>

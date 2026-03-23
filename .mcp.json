@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "mozaic": {
-      "command": "node",
-      "args": ["dist/index.js"]
-    }
-  }
-}

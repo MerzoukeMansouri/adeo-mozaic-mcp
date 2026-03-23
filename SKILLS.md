@@ -272,13 +272,13 @@ Install the latest skills directly from npm:
 
 ```bash
 # Install skills
-npx mozaic-mcp-server install-skills
+npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills
 
 # Uninstall skills
-npx mozaic-mcp-server uninstall-skills
+npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools remove skills
 
 # View all commands
-npx mozaic-mcp-server install
+npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools --help
 ```
 
 This method:

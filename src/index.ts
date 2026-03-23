@@ -50,25 +50,31 @@ function showHelpMenu() {
 ╰─────────────────────────────────────────────────────────────────╯
 
 Usage:
-  npx mozaic-mcp-server [command]
+  npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools [command]
 
 Commands:
-  (no args)           Start MCP server for use in Claude Desktop
-  install             Show this help menu
-  install-skills      Install Claude Code skills and database
-  uninstall-skills    Remove Claude Code skills and database
-  install-mcp         Add MCP server to Claude Desktop config
-  uninstall-mcp       Remove MCP server from Claude Desktop config
+  (no args)           Interactive mode - select components to install
+  all                 Install everything (skills + MCP server)
+  skills              Install Claude Code skills and database
+  mcp                 Install MCP server for Claude Desktop
+  list, status        Show installation status
+  remove <component>  Remove installed components (skills, mcp, or all)
 
 Examples:
-  # Install skills (recommended for most users)
-  npx mozaic-mcp-server install-skills
+  # Interactive mode (recommended)
+  npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools
 
-  # Install MCP server for Claude Desktop
-  npx mozaic-mcp-server install-mcp
+  # Install all components
+  npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools all
 
-  # Start MCP server manually (for testing)
-  npx mozaic-mcp-server
+  # Install skills only
+  npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills
+
+  # Install MCP server only
+  npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools mcp
+
+  # Check status
+  npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools list
 
 Documentation:
   Skills Guide:   https://github.com/MerzoukeMansouri/adeo-mozaic-mcp#skills

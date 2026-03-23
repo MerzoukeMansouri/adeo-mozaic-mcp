@@ -15,7 +15,7 @@ fi
 
 if [ ! -f "$DB_PATH" ]; then
   echo "Error: Database not found at $DB_PATH"
-  echo "Please run: npx mozaic-mcp-server install"
+  echo "Please run: npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills"
   exit 1
 fi
 
