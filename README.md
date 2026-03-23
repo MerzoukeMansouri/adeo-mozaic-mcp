@@ -208,11 +208,20 @@ Compare performance and effectiveness of MCP server approach vs native Claude sk
 
 Steps to publish the MCP server:
 
-- [ ] **npm registry**: Publish to npm (`npm publish`)
+- [ ] **npm registry**: Publish to npm
+  - Supports [npm Trusted Publishers](./TRUSTED_PUBLISHERS_SETUP.md) for automated, secure publishing
+  - Manual: `npm publish` or automated via GitHub release
+  - See [PUBLISH.md](./PUBLISH.md) for complete guide
 - [ ] **Smithery**: Submit to [smithery.ai](https://smithery.ai) MCP marketplace
-- [ ] **GitHub release**: Create tagged release with changelog
+- [ ] **GitHub release**: Create tagged release with changelog (auto-publishes to npm with Trusted Publishers)
 - [ ] **Claude Desktop config**: Document installation in `claude_desktop_config.json`
 - [ ] **Version strategy**: Define semver policy for database schema changes
+
+**Publishing Features**:
+- ✅ Automated publishing via GitHub Actions
+- ✅ npm Trusted Publishers (OIDC) support
+- ✅ Provenance attestation for supply chain security
+- ✅ Skills automatically included in npm package
 
 ### Future Improvements
 

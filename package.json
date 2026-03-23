@@ -1,6 +1,6 @@
 {
   "name": "mozaic-mcp-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP server for Mozaic Design System by ADEO",
   "type": "module",
   "main": "dist/index.js",
@@ -51,6 +51,14 @@
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MerzoukeMansouri/adeo-mozaic-mcp.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
     "better-sqlite3": "11.10.0",

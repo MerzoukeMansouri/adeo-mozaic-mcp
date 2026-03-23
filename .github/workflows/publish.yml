@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write  # Required for npm Trusted Publishers (OIDC)
 
 jobs:
   publish:
@@ -31,6 +32,9 @@ jobs:
           node-version: 22
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Install latest npm (for Trusted Publishers)
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -64,8 +68,8 @@ jobs:
           npm version ${{ inputs.version }} --no-git-tag-version
           echo "Updated version to ${{ inputs.version }}"
 
-      - name: Publish to NPM
-        run: pnpm publish --no-git-checks
+      - name: Publish to NPM (with Trusted Publishers)
+        run: npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
