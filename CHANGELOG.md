@@ -1,3 +1,10 @@
+## [2.0.3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.2...v2.0.3) (2026-03-23)
+
+
+### Chores
+
+* rename package to adeo-mozaic-install-tools ([497599e](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/497599ec0a02aebbde2d2f2ac464f21f5dec81e3))
+
 ## [2.0.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.1...v2.0.2) (2026-03-23)
 
 
