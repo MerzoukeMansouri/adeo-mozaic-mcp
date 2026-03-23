@@ -20,6 +20,7 @@
   ],
   "scripts": {
     "compile": "tsc",
+    "postcompile": "chmod +x dist/index.js",
     "build": "tsc && tsx scripts/build-index.ts",
     "build:docs": "tsx scripts/generate-docs.ts",
     "rebuild": "pnpm rebuild better-sqlite3",
