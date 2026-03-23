@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v1.1.0...v1.1.1) (2026-03-23)
+
+
+### Bug Fixes
+
+* skip version update if version already matches ([e0ad8d2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/e0ad8d2d4fa7457515a8d45842c24ead1f9cef34))
+
 ## [1.1.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v1.0.3...v1.1.0) (2026-03-23)
 
 

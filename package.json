@@ -1,6 +1,6 @@
 {
   "name": "mozaic-mcp-server",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Self-contained Claude Code skills for Mozaic Design System by ADEO",
   "type": "module",
   "main": "dist/index.js",
