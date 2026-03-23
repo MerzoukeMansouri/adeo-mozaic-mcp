@@ -1,3 +1,14 @@
+## [2.0.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v1.2.0...v2.0.0) (2026-03-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* Minimum Node.js version updated from 25.0.0 to 25.2.0. Users running older versions of Node.js 25.x will need to upgrade to 25.2.0 or later.
+
+### Features
+
+* update minimum Node.js version requirement ([307330d](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/307330d4cb75fbfd493c79c89d206a29140ad606))
+
 ## [1.2.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v1.1.3...v1.2.0) (2026-03-23)
 
 
