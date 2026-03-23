@@ -5,8 +5,8 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
+    "adeo-mozaic-install-tools": "bin/install.js",
     "mozaic-mcp-server": "dist/index.js",
-    "mozaic-install": "bin/install.js",
     "mozaic-skills": "bin/install-skills.js"
   },
   "files": [

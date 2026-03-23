@@ -5,7 +5,7 @@ This package provides **two installation modes**: Skills (recommended) and MCP S
 ## Interactive Mode (Easiest!)
 
 ```bash
-npx mozaic-install
+npx adeo-mozaic-install-tools
 ```
 
 This launches an **interactive checkbox interface** where you can:
@@ -24,36 +24,36 @@ For quick operations without prompts:
 
 ```bash
 # Install everything (skills + MCP server)
-npx mozaic-install all
+npx adeo-mozaic-install-tools all
 
 # Install only Claude Code skills
-npx mozaic-install skills
+npx adeo-mozaic-install-tools skills
 
 # Install only MCP server for Claude Desktop
-npx mozaic-install mcp
+npx adeo-mozaic-install-tools mcp
 ```
 
 ### Status & Help
 
 ```bash
 # Check what's installed
-npx mozaic-install list
+npx adeo-mozaic-install-tools list
 
 # Show all available commands
-npx mozaic-install --help
+npx adeo-mozaic-install-tools --help
 ```
 
 ### Remove Commands
 
 ```bash
 # Remove everything
-npx mozaic-install remove all
+npx adeo-mozaic-install-tools remove all
 
 # Remove only skills
-npx mozaic-install remove skills
+npx adeo-mozaic-install-tools remove skills
 
 # Remove only MCP server
-npx mozaic-install remove mcp
+npx adeo-mozaic-install-tools remove mcp
 ```
 
 ## What Gets Installed

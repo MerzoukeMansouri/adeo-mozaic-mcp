@@ -265,9 +265,9 @@ function printSuccess(installed, uninstalled) {
 const program = new Command();
 
 program
-  .name('mozaic-install')
+  .name('adeo-mozaic-install-tools')
   .description('Mozaic Design System installer for Claude Code & Claude Desktop\n  Run without arguments for interactive mode')
-  .version('1.0.0')
+  .version('2.0.1')
   .hook('preAction', () => {
     printLogo();
   });
@@ -311,7 +311,7 @@ program
       log('│                                                         │', 'cyan');
       log('│     Nothing installed                                   │', 'yellow');
       log('│                                                         │', 'cyan');
-      log('│     Run: mozaic-install all                             │', 'dim');
+      log('│     Run: adeo-mozaic-install-tools all                  │', 'dim');
     }
 
     log('│                                                         │', 'cyan');

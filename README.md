@@ -30,44 +30,44 @@ This package includes **5 self-contained Claude Code skills** with interactive, 
 
 **Interactive mode (recommended):**
 ```bash
-npx mozaic-install
+npx adeo-mozaic-install-tools
 # or
-npx mozaic-install select
+npx adeo-mozaic-install-tools select
 ```
 Select individual skills and MCP server with checkboxes!
 
 **Quick install commands:**
 ```bash
 # Install everything (skills + MCP server)
-npx mozaic-install all
+npx adeo-mozaic-install-tools all
 
 # Or install just skills for Claude Code
-npx mozaic-install skills
+npx adeo-mozaic-install-tools skills
 
 # Or install just MCP server for Claude Desktop
-npx mozaic-install mcp
+npx adeo-mozaic-install-tools mcp
 ```
 
 **Check what's installed:**
 ```bash
-npx mozaic-install list
+npx adeo-mozaic-install-tools list
 ```
 
 **Uninstall:**
 ```bash
 # Remove everything
-npx mozaic-install remove all
+npx adeo-mozaic-install-tools remove all
 
 # Remove just skills
-npx mozaic-install remove skills
+npx adeo-mozaic-install-tools remove skills
 
 # Remove just MCP server
-npx mozaic-install remove mcp
+npx adeo-mozaic-install-tools remove mcp
 ```
 
 **Help:**
 ```bash
-npx mozaic-install --help
+npx adeo-mozaic-install-tools --help
 ```
 
 **Learn more:** [SKILLS.md](./SKILLS.md) | [INSTALLATION.md](./INSTALLATION.md)
