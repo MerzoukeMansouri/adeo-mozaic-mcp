@@ -1,3 +1,10 @@
+## [2.0.6](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.5...v2.0.6) (2026-03-23)
+
+
+### Documentation
+
+* add README with project overview and usage ([e5e5cfc](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/e5e5cfccd7cc379a87f3bf54082577b2d7790d0c))
+
 ## [2.0.5](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.4...v2.0.5) (2026-03-23)
 
 
