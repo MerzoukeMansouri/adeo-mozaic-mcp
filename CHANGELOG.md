@@ -1,3 +1,10 @@
+## [2.1.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.7...v2.1.0) (2026-04-08)
+
+
+### Features
+
+* trigger build to regenerate db ([958b286](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/958b2867f5ae9e5c167e6efc4d8b86e079a7dde7))
+
 ## [2.0.7](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.6...v2.0.7) (2026-03-23)
 
 
