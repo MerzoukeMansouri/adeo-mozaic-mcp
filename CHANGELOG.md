@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.1.0...v2.1.1) (2026-04-08)
+
+
+### Chores
+
+* remove temporary SQLite files ([280ce67](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/280ce67200ec6179d7e2fdf9543db448be06454b))
+
 ## [2.1.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.0.7...v2.1.0) (2026-04-08)
 
 
