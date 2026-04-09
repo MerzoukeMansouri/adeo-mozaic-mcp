@@ -13,20 +13,20 @@ Self-contained Claude Code skills and MCP server for the [Mozaic Design System](
 
 This package provides two complementary tools for working with the Mozaic Design System in AI assistants:
 
-- **🤖 Claude Code Skills** - 6 interactive skills for guided component building and design token usage
-- **🔌 MCP Server** - Model Context Protocol server with 14 tools for programmatic access to Mozaic resources
+- **🤖 Claude Code Skills** - 7 interactive skills for guided component building and design token usage
+- **🔌 MCP Server** - Model Context Protocol server with 17 tools for programmatic access to Mozaic resources
 
 ### What's Included
 
 | Resource Type | Count | Description |
 |--------------|-------|-------------|
 | Design Tokens | 586 | Colors, typography, spacing, shadows, borders, breakpoints |
-| Components | 91+ | Vue 3, React, and native Web Components with full documentation |
+| Components | 131+ | Vue 3, React, Web Components, and Freemarker macros with full documentation |
 | Icons | 1,473 | SVG icons across 15 categories |
 | CSS Utilities | 6 | Flexy grid, Container, Margin, Padding, Ratio, Scroll |
 | Documentation | 281 | Searchable usage guides and best practices |
-| MCP Tools | 14 | Programmatic access to all resources |
-| Claude Skills | 6 | Interactive workflows for Vue, React, Web Components, and agnostic use |
+| MCP Tools | 17 | Programmatic access to all resources |
+| Claude Skills | 7 | Interactive workflows for Vue, React, Web Components, Freemarker, and agnostic use |
 
 ## Quick Start
 
@@ -80,6 +80,7 @@ The playground lets you:
 | **mozaic-vue-builder** | Interactive Vue 3 component generator | Building Vue apps with Mozaic |
 | **mozaic-react-builder** | Interactive React/TSX component generator | Building React apps with Mozaic |
 | **mozaic-webcomponents-builder** | Interactive Web Components generator | Building framework-agnostic apps with native web components |
+| **mozaic-freemarker-builder** | Interactive Freemarker macro generator | Building server-side templates with Freemarker |
 | **mozaic-design-tokens** | Design tokens and styling expert | Accessing colors, typography, spacing |
 | **mozaic-css-utilities** | CSS utility classes and layouts | Building responsive layouts |
 | **mozaic-icons** | Icon search and integration | Finding and using Mozaic icons |
@@ -116,6 +117,9 @@ Claude Code will automatically activate the appropriate skill (Vue or React buil
 | **`generate_webcomponent`** | **Code Gen** | **Generate native Web Component HTML with imports** |
 | **`get_webcomponent_info`** | **Web Components** | **Get attributes, slots, events, CSS properties** |
 | **`list_webcomponents`** | **Web Components** | **List web components by category** |
+| **`generate_freemarker`** | **Code Gen** | **Generate Freemarker macro code with configuration** |
+| **`get_freemarker_info`** | **Freemarker** | **Get macro configuration options and usage** |
+| **`list_freemarker`** | **Freemarker** | **List Freemarker macros by category** |
 | `search_documentation` | Docs | Full-text search across 281 documentation pages |
 | `get_css_utility` | CSS | Get CSS utility classes and examples |
 | `list_css_utilities` | CSS | List available CSS utilities |

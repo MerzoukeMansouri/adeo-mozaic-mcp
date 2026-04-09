@@ -490,7 +490,7 @@ function consolidateComponent(
   if (!base) return null;
 
   const component: Component = {
-    name: base.name,
+    name: base.name + " (Web Component)", // Make name unique to avoid conflicts with Vue/React
     slug: base.tagName,
     category: inferCategory(base.name, base.tagName),
     description: base.description,
@@ -597,32 +597,45 @@ export async function parseWebComponents(componentsPath: string): Promise<Compon
       }
     }
 
-    if (componentFile) {
-      const sourceData = parseWebComponentFile(componentFile);
+    const sourceData = componentFile ? parseWebComponentFile(componentFile) : null;
 
-      // Get manifest data if available
-      const manifestData = sourceData ? manifestMap.get(sourceData.tagName) : undefined;
+    // Get manifest data if available (try by directory name as tag)
+    // Directory names like "accordionlist" match tags like "m-accordion-list" or "m-accordionlist"
+    const possibleTagNames = [
+      `m-${dirName}`, // e.g., "m-accordionlist"
+      `m-${dirName.replace(/([A-Z])/g, "-$1").toLowerCase()}`, // e.g., "m-accordion-list" for "accordionList"
+      `mozaic-${dirName}`,
+      dirName,
+      sourceData?.tagName || "",
+    ];
 
-      // Parse stories
-      let stories: Array<{ title: string; code: string }> = [];
-      const storyPatterns = [
-        join(dir, `${dirName}.stories.ts`),
-        join(dir, `${dirName}.stories.js`),
-        join(dir, "stories", `${dirName}.stories.ts`),
-      ];
-
-      for (const storyPath of storyPatterns) {
-        if (existsSync(storyPath)) {
-          stories = parseWebComponentStories(storyPath);
-          break;
-        }
+    let manifestData: ParsedWebComponent | undefined;
+    for (const tagName of possibleTagNames) {
+      if (manifestMap.has(tagName)) {
+        manifestData = manifestMap.get(tagName);
+        break;
       }
+    }
 
-      // Consolidate all data
-      const component = consolidateComponent(manifestData, sourceData, stories);
-      if (component) {
-        components.push(component);
+    // Parse stories
+    let stories: Array<{ title: string; code: string }> = [];
+    const storyPatterns = [
+      join(dir, `${dirName}.stories.ts`),
+      join(dir, `${dirName}.stories.js`),
+      join(dir, "stories", `${dirName}.stories.ts`),
+    ];
+
+    for (const storyPath of storyPatterns) {
+      if (existsSync(storyPath)) {
+        stories = parseWebComponentStories(storyPath);
+        break;
       }
+    }
+
+    // Consolidate all data (manifest-only is ok if no source file found)
+    const component = consolidateComponent(manifestData, sourceData, stories);
+    if (component) {
+      components.push(component);
     }
   }
 

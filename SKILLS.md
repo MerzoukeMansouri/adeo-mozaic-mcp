@@ -477,3 +477,25 @@ For issues or questions:
 **Created**: March 23, 2026
 **Author**: Mozaic MCP Server Team
 **License**: MIT
+
+## Skill 4: mozaic-freemarker-builder
+
+**Location**: `skills/mozaic-freemarker-builder/skill.md`
+
+### Purpose
+Interactive assistant for building server-side templates with Freemarker macros using Mozaic Design System.
+
+### Shell Scripts
+- `list-components.sh` - Browse Freemarker macros by category
+- `get-component.sh` - Get macro configuration options
+- `search-components.sh` - Search macros by name or description
+- `generate-component.sh` - Generate Freemarker macro code
+
+### Key Features
+- Browse Freemarker macros by category
+- Configuration object examples
+- Import statements and macro invocation
+- Nested content handling
+- Maven/Java integration examples
+- i18n locale support
+

@@ -18,6 +18,7 @@ const SKILLS = [
   'mozaic-vue-builder',
   'mozaic-react-builder',
   'mozaic-webcomponents-builder',
+  'mozaic-freemarker-builder',
   'mozaic-design-tokens',
   'mozaic-css-utilities',
   'mozaic-icons'

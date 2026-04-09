@@ -62,6 +62,26 @@ const skills = [
     ]
   },
   {
+    name: "mozaic-freemarker-builder",
+    icon: Code,
+    type: "Framework",
+    color: "secondary-blue",
+    description: "Interactive Freemarker macro generator for server-side templates",
+    features: [
+      "Browse Freemarker macros by category",
+      "Generate macro code with configuration",
+      "Import statements and invocation",
+      "Nested content handling",
+      "Maven/Java integration examples"
+    ],
+    tools: [
+      "mcp__mozaic__list_freemarker",
+      "mcp__mozaic__get_freemarker_info",
+      "mcp__mozaic__generate_freemarker",
+      "mcp__mozaic__get_install_info"
+    ]
+  },
+  {
     name: "mozaic-design-tokens",
     icon: Palette,
     type: "Agnostic",
@@ -234,7 +254,7 @@ function Skills() {
             Available Skills
           </h2>
           <span className="text-sm text-grey-500 dark:text-grey-400">
-            6 skills • No database required
+            7 skills • No database required
           </span>
         </div>
 
@@ -322,7 +342,7 @@ function Skills() {
             </div>
 
             <div className="bg-grey-900 dark:bg-grey-950 rounded-lg p-4 font-mono text-sm overflow-x-auto">
-              <div className="text-grey-400 mb-1"># Install all 6 skills</div>
+              <div className="text-grey-400 mb-1"># Install all 7 skills</div>
               <code className="text-secondary-green-400">npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills</code>
             </div>
 

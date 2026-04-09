@@ -3,7 +3,7 @@ import { getComponentBySlug } from "../db/queries.js";
 
 export interface GetComponentInfoInput {
   component: string;
-  framework?: "vue" | "react" | "html" | "webcomponents";
+  framework?: "vue" | "react" | "html" | "webcomponents" | "freemarker";
 }
 
 export interface ComponentInfoOutput {
@@ -106,6 +106,10 @@ function generateBasicExample(componentName: string, framework: string): string 
       const tagName = componentName.replace(/^M/, "").toLowerCase();
       return `<mozaic-${tagName}>Content</mozaic-${tagName}>`;
     }
+    case "freemarker": {
+      const macroName = componentName.replace(/^M/, "").toLowerCase().replace(/-/g, "");
+      return `<#import "mozaic/${macroName}.ftl" as ${macroName}>\n<@${macroName}.${macroName} config={}>Content</@${macroName}.${macroName}>`;
+    }
     case "html": {
       const cssClass = `mc-${componentName.replace(/^M/, "").toLowerCase()}`;
       return `<div class="${cssClass}">Content</div>`;
@@ -129,7 +133,7 @@ export const getComponentInfoTool = {
       },
       framework: {
         type: "string",
-        enum: ["vue", "react", "html", "webcomponents"],
+        enum: ["vue", "react", "html", "webcomponents", "freemarker"],
         default: "vue",
         description: "Framework for code examples",
       },

@@ -224,6 +224,15 @@ import {
   handleListWebComponents,
   type ListWebComponentsInput,
 } from "./tools/list-webcomponents.js";
+import {
+  handleGenerateFreemarker,
+  type GenerateFreemarkerInput,
+} from "./tools/generate-freemarker.js";
+import {
+  handleGetFreemarkerInfo,
+  type GetFreemarkerInfoInput,
+} from "./tools/get-freemarker-info.js";
+import { handleListFreemarker, type ListFreemarkerInput } from "./tools/list-freemarker.js";
 
 // Get database path
 const __filename = fileURLToPath(import.meta.url);
@@ -599,6 +608,78 @@ server.registerTool(
     if (!db) db = initializeDatabase();
     const result = handleListWebComponents(db, args as ListWebComponentsInput);
     log("Tool result: list_webcomponents", { contentLength: result.content.length });
+    return result;
+  }
+);
+
+// Freemarker tools
+server.registerTool(
+  "generate_freemarker",
+  {
+    description:
+      "Generate ready-to-use Freemarker macro code with import statements and configuration examples for Mozaic components.",
+    inputSchema: {
+      component: z.string().describe("Component name (e.g., 'button', 'field', 'modal')"),
+      config: z
+        .string()
+        .optional()
+        .describe('Configuration as JSON (e.g., {"color": "primary", "size": "m"})'),
+      content: z.string().optional().describe("Nested content for the macro"),
+    },
+  },
+  async (args) => {
+    log("Tool called: generate_freemarker", args);
+    if (!db) db = initializeDatabase();
+    const result = handleGenerateFreemarker(db, args as GenerateFreemarkerInput);
+    log("Tool result: generate_freemarker", { contentLength: result.content.length });
+    return result;
+  }
+);
+
+server.registerTool(
+  "get_freemarker_info",
+  {
+    description:
+      "Get detailed information about a Freemarker component including configuration options, CSS classes, and usage examples.",
+    inputSchema: {
+      component: z.string().describe("Component name (e.g., 'button', 'field', 'modal')"),
+    },
+  },
+  async (args) => {
+    log("Tool called: get_freemarker_info", args);
+    if (!db) db = initializeDatabase();
+    const result = handleGetFreemarkerInfo(db, args as GetFreemarkerInfoInput);
+    log("Tool result: get_freemarker_info", { contentLength: result.content.length });
+    return result;
+  }
+);
+
+server.registerTool(
+  "list_freemarker",
+  {
+    description:
+      "List available Mozaic Freemarker macros by category. Returns macro names and import paths.",
+    inputSchema: {
+      category: z
+        .enum([
+          "form",
+          "navigation",
+          "feedback",
+          "layout",
+          "data-display",
+          "action",
+          "other",
+          "all",
+        ])
+        .default("all")
+        .describe("Filter freemarker components by category"),
+    },
+  },
+  async (args) => {
+    log("Tool called: list_freemarker", args);
+    if (!db) db = initializeDatabase();
+    const result = handleListFreemarker(db, args as ListFreemarkerInput);
+    log("Tool result: list_freemarker", { contentLength: result.content.length });
     return result;
   }
 );

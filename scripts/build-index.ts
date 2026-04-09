@@ -21,6 +21,7 @@ import { parseCssUtilities } from "../src/parsers/scss-parser.js";
 import { parseTokens } from "../src/parsers/tokens-parser.js";
 import { parseVueComponents } from "../src/parsers/vue-parser.js";
 import { parseWebComponents } from "../src/parsers/web-components-parser.js";
+import { parseFreemarkerComponents } from "../src/parsers/freemarker-parser.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -47,6 +48,10 @@ const REPOS = {
   webComponents: {
     url: "git@github.com:adeo/mozaic-web-components.git",
     path: join(REPOS_DIR, "mozaic-web-components"),
+  },
+  freemarker: {
+    url: "git@github.com:adeo/mozaic-freemarker.git",
+    path: join(REPOS_DIR, "mozaic-freemarker"),
   },
 };
 
@@ -196,6 +201,29 @@ async function indexWebComponents(db: ReturnType<typeof initDatabase>): Promise<
   insertComponents(db, components);
 
   console.log(`   ✓ Indexed ${components.length} Web Components`);
+  return components.length;
+}
+
+async function indexFreemarkerComponents(db: ReturnType<typeof initDatabase>): Promise<number> {
+  console.log("📄 Indexing Freemarker Components...");
+
+  const repoPath = REPOS.freemarker.path;
+
+  if (!existsSync(repoPath)) {
+    throw new Error(
+      `Freemarker repository not found: ${repoPath}. Make sure the mozaic-freemarker repository was cloned successfully.`
+    );
+  }
+
+  const components = await parseFreemarkerComponents(repoPath);
+
+  if (components.length === 0) {
+    throw new Error("No Freemarker components were parsed from the mozaic-freemarker repository.");
+  }
+
+  insertComponents(db, components);
+
+  console.log(`   ✓ Indexed ${components.length} Freemarker components`);
   return components.length;
 }
 
@@ -352,6 +380,7 @@ async function main(): Promise<void> {
   await indexVueComponents(db);
   await indexReactComponents(db);
   await indexWebComponents(db);
+  await indexFreemarkerComponents(db);
   await indexCssUtilities(db);
   await indexDocumentation(db);
   await indexStorybookDocs(db);
