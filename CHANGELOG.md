@@ -1,3 +1,10 @@
+## [2.3.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.2.0...v2.3.0) (2026-04-09)
+
+
+### Features
+
+* add Freemarker support with new builder skill and 3 MCP tools ([10977a1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/10977a1b085ec7b5fb46705d0ad6796baa872b4f))
+
 ## [2.2.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.1.1...v2.2.0) (2026-04-09)
 
 
