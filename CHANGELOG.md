@@ -1,3 +1,10 @@
+## [2.2.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.1.1...v2.2.0) (2026-04-09)
+
+
+### Features
+
+* add Web Components support with new skill and 3 MCP tools ([dbc4d12](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/dbc4d126b1f653e2e060ce817ff852b583fe7a84))
+
 ## [2.1.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.1.0...v2.1.1) (2026-04-08)
 
 
