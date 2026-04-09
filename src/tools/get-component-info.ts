@@ -3,7 +3,7 @@ import { getComponentBySlug } from "../db/queries.js";
 
 export interface GetComponentInfoInput {
   component: string;
-  framework?: "vue" | "react" | "html";
+  framework?: "vue" | "react" | "html" | "webcomponents";
 }
 
 export interface ComponentInfoOutput {
@@ -102,6 +102,10 @@ function generateBasicExample(componentName: string, framework: string): string 
       return `<${tag}>Content</${tag}>`;
     case "react":
       return `<${tag}>Content</${tag}>`;
+    case "webcomponents": {
+      const tagName = componentName.replace(/^M/, "").toLowerCase();
+      return `<mozaic-${tagName}>Content</mozaic-${tagName}>`;
+    }
     case "html": {
       const cssClass = `mc-${componentName.replace(/^M/, "").toLowerCase()}`;
       return `<div class="${cssClass}">Content</div>`;
@@ -125,7 +129,7 @@ export const getComponentInfoTool = {
       },
       framework: {
         type: "string",
-        enum: ["vue", "react", "html"],
+        enum: ["vue", "react", "html", "webcomponents"],
         default: "vue",
         description: "Framework for code examples",
       },

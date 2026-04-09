@@ -20,6 +20,7 @@ import { parseReactComponents } from "../src/parsers/react-parser.js";
 import { parseCssUtilities } from "../src/parsers/scss-parser.js";
 import { parseTokens } from "../src/parsers/tokens-parser.js";
 import { parseVueComponents } from "../src/parsers/vue-parser.js";
+import { parseWebComponents } from "../src/parsers/web-components-parser.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -42,6 +43,10 @@ const REPOS = {
   react: {
     url: "git@github.com:adeo/mozaic-react.git",
     path: join(REPOS_DIR, "mozaic-react"),
+  },
+  webComponents: {
+    url: "git@github.com:adeo/mozaic-web-components.git",
+    path: join(REPOS_DIR, "mozaic-web-components"),
   },
 };
 
@@ -168,6 +173,29 @@ async function indexReactComponents(db: ReturnType<typeof initDatabase>): Promis
   insertComponents(db, components);
 
   console.log(`   ✓ Indexed ${components.length} React components`);
+  return components.length;
+}
+
+async function indexWebComponents(db: ReturnType<typeof initDatabase>): Promise<number> {
+  console.log("🌐 Indexing Web Components...");
+
+  const componentsPath = join(REPOS.webComponents.path, "src", "components");
+
+  if (!existsSync(componentsPath)) {
+    throw new Error(
+      `Web Components path not found: ${componentsPath}. Make sure the mozaic-web-components repository was cloned successfully.`
+    );
+  }
+
+  const components = await parseWebComponents(componentsPath);
+
+  if (components.length === 0) {
+    throw new Error("No Web Components were parsed from the mozaic-web-components repository.");
+  }
+
+  insertComponents(db, components);
+
+  console.log(`   ✓ Indexed ${components.length} Web Components`);
   return components.length;
 }
 
@@ -323,6 +351,7 @@ async function main(): Promise<void> {
   await indexTokens(db);
   await indexVueComponents(db);
   await indexReactComponents(db);
+  await indexWebComponents(db);
   await indexCssUtilities(db);
   await indexDocumentation(db);
   await indexStorybookDocs(db);

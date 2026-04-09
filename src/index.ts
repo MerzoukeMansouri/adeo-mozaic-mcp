@@ -212,6 +212,18 @@ import {
 import { handleSearchIcons, type SearchIconsInput } from "./tools/search-icons.js";
 import { handleGetIcon, type GetIconInput } from "./tools/get-icon.js";
 import { handleGetInstallInfo, type GetInstallInfoInput } from "./tools/get-install-info.js";
+import {
+  handleGenerateWebComponent,
+  type GenerateWebComponentInput,
+} from "./tools/generate-webcomponent.js";
+import {
+  handleGetWebComponentInfo,
+  type GetWebComponentInfoInput,
+} from "./tools/get-webcomponent-info.js";
+import {
+  handleListWebComponents,
+  type ListWebComponentsInput,
+} from "./tools/list-webcomponents.js";
 
 // Get database path
 const __filename = fileURLToPath(import.meta.url);
@@ -514,6 +526,79 @@ server.registerTool(
     if (!db) db = initializeDatabase();
     const result = handleGetInstallInfo(db, args as GetInstallInfoInput);
     log("Tool result: get_install_info", { contentLength: result.content.length });
+    return result;
+  }
+);
+
+// Web Components tools
+server.registerTool(
+  "generate_webcomponent",
+  {
+    description:
+      "Generate ready-to-use Web Component code using Mozaic Design System (@adeo/mozaic-web-components). Returns HTML with custom elements and import statement.",
+    inputSchema: {
+      component: z
+        .string()
+        .describe(
+          "Component type to generate (e.g., 'button', 'card', 'modal'). Will be converted to kebab-case tag name."
+        ),
+      attributes: z
+        .record(z.string())
+        .optional()
+        .describe(
+          "HTML attributes to apply (all values as strings). Use 'true'/'false' for boolean attributes."
+        ),
+      children: z.string().optional().describe("Inner HTML content / slot content"),
+    },
+  },
+  async (args) => {
+    log("Tool called: generate_webcomponent", args);
+    if (!db) db = initializeDatabase();
+    const result = handleGenerateWebComponent(db, args as GenerateWebComponentInput);
+    log("Tool result: generate_webcomponent", { contentLength: result.content.length });
+    return result;
+  }
+);
+
+server.registerTool(
+  "get_webcomponent_info",
+  {
+    description:
+      "Get detailed information about a Mozaic Web Component including attributes, slots, events, CSS custom properties, and usage examples.",
+    inputSchema: {
+      component: z
+        .string()
+        .describe(
+          "Web component name (e.g., 'button', 'card', 'mozaic-button'). Will be converted to tag name."
+        ),
+    },
+  },
+  async (args) => {
+    log("Tool called: get_webcomponent_info", args);
+    if (!db) db = initializeDatabase();
+    const result = handleGetWebComponentInfo(db, args as GetWebComponentInfoInput);
+    log("Tool result: get_webcomponent_info", { contentLength: result.content.length });
+    return result;
+  }
+);
+
+server.registerTool(
+  "list_webcomponents",
+  {
+    description:
+      "List available Mozaic Web Components by category. Returns custom element tag names and descriptions.",
+    inputSchema: {
+      category: z
+        .enum(["form", "navigation", "feedback", "layout", "data-display", "action", "all"])
+        .default("all")
+        .describe("Filter web components by category"),
+    },
+  },
+  async (args) => {
+    log("Tool called: list_webcomponents", args);
+    if (!db) db = initializeDatabase();
+    const result = handleListWebComponents(db, args as ListWebComponentsInput);
+    log("Tool result: list_webcomponents", { contentLength: result.content.length });
     return result;
   }
 );

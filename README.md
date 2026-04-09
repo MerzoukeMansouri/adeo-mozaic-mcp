@@ -13,20 +13,20 @@ Self-contained Claude Code skills and MCP server for the [Mozaic Design System](
 
 This package provides two complementary tools for working with the Mozaic Design System in AI assistants:
 
-- **🤖 Claude Code Skills** - 5 interactive skills for guided component building and design token usage
-- **🔌 MCP Server** - Model Context Protocol server with 11 tools for programmatic access to Mozaic resources
+- **🤖 Claude Code Skills** - 6 interactive skills for guided component building and design token usage
+- **🔌 MCP Server** - Model Context Protocol server with 14 tools for programmatic access to Mozaic resources
 
 ### What's Included
 
 | Resource Type | Count | Description |
 |--------------|-------|-------------|
 | Design Tokens | 586 | Colors, typography, spacing, shadows, borders, breakpoints |
-| Components | 91 | Vue 3 and React components with full documentation |
+| Components | 91+ | Vue 3, React, and native Web Components with full documentation |
 | Icons | 1,473 | SVG icons across 15 categories |
 | CSS Utilities | 6 | Flexy grid, Container, Margin, Padding, Ratio, Scroll |
 | Documentation | 281 | Searchable usage guides and best practices |
-| MCP Tools | 11 | Programmatic access to all resources |
-| Claude Skills | 5 | Interactive workflows for Vue, React, and agnostic use |
+| MCP Tools | 14 | Programmatic access to all resources |
+| Claude Skills | 6 | Interactive workflows for Vue, React, Web Components, and agnostic use |
 
 ## Quick Start
 
@@ -71,7 +71,7 @@ The playground lets you:
 
 ## Claude Code Skills
 
-5 self-contained skills that provide interactive workflows for building with Mozaic.
+6 self-contained skills that provide interactive workflows for building with Mozaic.
 
 ### Available Skills
 
@@ -79,6 +79,7 @@ The playground lets you:
 |-------|-------------|----------|
 | **mozaic-vue-builder** | Interactive Vue 3 component generator | Building Vue apps with Mozaic |
 | **mozaic-react-builder** | Interactive React/TSX component generator | Building React apps with Mozaic |
+| **mozaic-webcomponents-builder** | Interactive Web Components generator | Building framework-agnostic apps with native web components |
 | **mozaic-design-tokens** | Design tokens and styling expert | Accessing colors, typography, spacing |
 | **mozaic-css-utilities** | CSS utility classes and layouts | Building responsive layouts |
 | **mozaic-icons** | Icon search and integration | Finding and using Mozaic icons |
@@ -101,7 +102,7 @@ Claude Code will automatically activate the appropriate skill (Vue or React buil
 
 ## MCP Server Tools
 
-11 programmatic tools for accessing Mozaic resources via the Model Context Protocol.
+14 programmatic tools for accessing Mozaic resources via the Model Context Protocol.
 
 ### Available Tools
 
@@ -112,6 +113,9 @@ Claude Code will automatically activate the appropriate skill (Vue or React buil
 | `list_components` | Components | List components by category or framework |
 | `generate_vue_component` | Code Gen | Generate Vue 3 SFC code with props |
 | `generate_react_component` | Code Gen | Generate React/TSX code with TypeScript |
+| **`generate_webcomponent`** | **Code Gen** | **Generate native Web Component HTML with imports** |
+| **`get_webcomponent_info`** | **Web Components** | **Get attributes, slots, events, CSS properties** |
+| **`list_webcomponents`** | **Web Components** | **List web components by category** |
 | `search_documentation` | Docs | Full-text search across 281 documentation pages |
 | `get_css_utility` | CSS | Get CSS utility classes and examples |
 | `list_css_utilities` | CSS | List available CSS utilities |

@@ -1,4 +1,4 @@
-import { Code, Terminal, Zap, Palette, Box, Image } from "lucide-react";
+import { Code, Terminal, Zap, Palette, Box, Image, Globe } from "lucide-react";
 
 const skills = [
   {
@@ -38,6 +38,26 @@ const skills = [
       "mcp__mozaic__list_components",
       "mcp__mozaic__get_component_info",
       "mcp__mozaic__generate_react_component",
+      "mcp__mozaic__get_install_info"
+    ]
+  },
+  {
+    name: "mozaic-webcomponents-builder",
+    icon: Globe,
+    type: "Framework",
+    color: "secondary-orange",
+    description: "Interactive native Web Components generator for framework-agnostic applications",
+    features: [
+      "Browse native web components",
+      "Generate HTML with ES module imports",
+      "Attributes and CustomEvent handling",
+      "Slot-based content projection",
+      "CSS custom properties for theming"
+    ],
+    tools: [
+      "mcp__mozaic__list_webcomponents",
+      "mcp__mozaic__get_webcomponent_info",
+      "mcp__mozaic__generate_webcomponent",
       "mcp__mozaic__get_install_info"
     ]
   },
@@ -129,7 +149,7 @@ function Skills() {
         </h1>
 
         <p className="text-lg md:text-xl text-grey-600 dark:text-grey-300 max-w-3xl mx-auto mb-8 leading-relaxed">
-          5 interactive skills that provide guided workflows for building applications with Mozaic Design System.
+          6 interactive skills that provide guided workflows for building applications with Mozaic Design System.
           Skills work with the MCP server to provide procedural knowledge and best practices.
         </p>
 
@@ -214,7 +234,7 @@ function Skills() {
             Available Skills
           </h2>
           <span className="text-sm text-grey-500 dark:text-grey-400">
-            5 skills • No database required
+            6 skills • No database required
           </span>
         </div>
 
@@ -302,7 +322,7 @@ function Skills() {
             </div>
 
             <div className="bg-grey-900 dark:bg-grey-950 rounded-lg p-4 font-mono text-sm overflow-x-auto">
-              <div className="text-grey-400 mb-1"># Install all 5 skills</div>
+              <div className="text-grey-400 mb-1"># Install all 6 skills</div>
               <code className="text-secondary-green-400">npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills</code>
             </div>
 

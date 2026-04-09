@@ -4,7 +4,7 @@ Self-contained Claude Code skills for working with the Mozaic Design System. No 
 
 ## Overview
 
-**5 Self-Contained Skills** that use **local shell scripts** (~15 scripts total) to query a SQLite database.
+**6 Self-Contained Skills** that use **local shell scripts** (~18 scripts total) to query a SQLite database.
 
 **Architecture Pattern**: Skills provide workflows + data access through bash scripts → local database
 
@@ -14,11 +14,12 @@ Self-contained Claude Code skills for working with the Mozaic Design System. No 
 |-------|------|-------------|---------------|
 | `mozaic-vue-builder` | Framework | Interactive Vue 3 component generator | 4 scripts |
 | `mozaic-react-builder` | Framework | Interactive React/TSX component generator | 4 scripts |
+| **`mozaic-webcomponents-builder`** | **Framework** | **Interactive native Web Components generator** | **4 scripts** |
 | `mozaic-design-tokens` | Agnostic | Design tokens and styling expert | 2 scripts |
 | `mozaic-css-utilities` | Agnostic | CSS utility classes and layouts | 2 scripts |
 | `mozaic-icons` | Both | Icon search and integration | 2 scripts |
 
-**Total**: 5 skills with 14 shell scripts querying `~/.claude/mozaic.db`
+**Total**: 6 skills with 18 shell scripts querying `~/.claude/mozaic.db`
 
 ---
 
@@ -90,7 +91,54 @@ Skill: Proposes components with TypeScript interfaces → Generates typed React 
 
 ---
 
-## Skill 3: mozaic-design-tokens
+## Skill 3: mozaic-webcomponents-builder
+
+**Location**: `skills/mozaic-webcomponents-builder/skill.md`
+
+### Purpose
+Interactive assistant for building framework-agnostic applications with native Web Components (Custom Elements v1) using Mozaic Design System.
+
+### Shell Scripts
+- `list-components.sh` - Browse Web Components by category
+- `get-component.sh` - Get component attributes, slots, events, CSS properties
+- `search-components.sh` - Search web components by name or description
+- `generate-component.sh` - Generate web component usage code
+
+### Key Features
+- Browse native web components by category
+- Interactive component selection with examples
+- Generate HTML with ES module imports
+- Attributes and CustomEvent handling
+- Slot-based content projection
+- CSS custom properties for theming
+- Progressive enhancement patterns
+- Server-side rendering friendly
+
+### Example Usage
+```
+User: "I need a contact form using web components"
+Skill: Proposes mozaic-input + mozaic-button → Generates HTML with imports and event listeners
+```
+
+### Use When
+- Building framework-agnostic applications
+- Need components that work across frameworks (React, Vue, Angular, Svelte)
+- Building micro-frontends
+- Adding progressive enhancement to server-rendered apps
+- Want lightweight, standards-based components
+- Building with vanilla JavaScript
+
+### Web Component Features
+- **Custom Elements**: `<mozaic-button>`, `<mozaic-input>`, etc.
+- **Attributes**: HTML attributes for configuration
+- **Properties**: JavaScript properties for complex data
+- **Events**: CustomEvents for component interactions
+- **Slots**: Content projection with named slots
+- **CSS Properties**: Theming with CSS custom properties
+
+---
+
+## Skill 4: mozaic-design-tokens
 
 **Location**: `skills/mozaic-design-tokens/skill.md`
 
@@ -132,7 +180,7 @@ Skill: Returns colors in requested format (SCSS/CSS/JS) with usage examples
 
 ---
 
-## Skill 4: mozaic-css-utilities
+## Skill 5: mozaic-css-utilities
 
 **Location**: `skills/mozaic-css-utilities/skill.md`
 
@@ -174,7 +222,7 @@ Skill: Returns Flexy grid HTML with responsive breakpoints
 
 ---
 
-## Skill 5: mozaic-icons
+## Skill 6: mozaic-icons
 
 **Location**: `skills/mozaic-icons/skill.md`
 

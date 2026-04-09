@@ -17,6 +17,7 @@ const DB_DEST = join(homedir(), '.claude', 'mozaic.db');
 const SKILLS = [
   'mozaic-vue-builder',
   'mozaic-react-builder',
+  'mozaic-webcomponents-builder',
   'mozaic-design-tokens',
   'mozaic-css-utilities',
   'mozaic-icons'

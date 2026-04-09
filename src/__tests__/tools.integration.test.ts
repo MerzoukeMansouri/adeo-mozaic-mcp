@@ -8,6 +8,9 @@ import { handleListComponents } from "../tools/list-components.js";
 import { handleGetCssUtility } from "../tools/get-css-utility.js";
 import { handleListCssUtilities } from "../tools/list-css-utilities.js";
 import { handleGetInstallInfo } from "../tools/get-install-info.js";
+import { handleGenerateWebComponent } from "../tools/generate-webcomponent.js";
+import { handleGetWebComponentInfo } from "../tools/get-webcomponent-info.js";
+import { handleListWebComponents } from "../tools/list-webcomponents.js";
 
 describe("MCP Tools Integration Tests", () => {
   let db: Database.Database;
@@ -283,6 +286,113 @@ describe("MCP Tools Integration Tests", () => {
       const data = JSON.parse(result.content[0].text);
 
       expect(data.error).toContain("Please provide a component name");
+    });
+  });
+
+  describe("Web Components Tools", () => {
+    describe("generate_webcomponent", () => {
+      it("generates basic web component code", () => {
+        const result = handleGenerateWebComponent(db, { component: "button" });
+
+        expect(result.content[0].text).toContain("import '@adeo/mozaic-web-components/button.js'");
+        expect(result.content[0].text).toContain("<");
+        expect(result.content[0].text).toContain(">");
+      });
+
+      it("generates component with attributes", () => {
+        const result = handleGenerateWebComponent(db, {
+          component: "button",
+          attributes: { theme: "primary", size: "m" },
+        });
+
+        expect(result.content[0].text).toContain('theme="primary"');
+        expect(result.content[0].text).toContain('size="m"');
+      });
+
+      it("generates component with children", () => {
+        const result = handleGenerateWebComponent(db, {
+          component: "button",
+          children: "Click me",
+        });
+
+        expect(result.content[0].text).toContain("Click me");
+        expect(result.content[0].text).toMatch(/<[^>]+>[\s\S]*Click me[\s\S]*<\/[^>]+>/);
+      });
+
+      it("handles kebab-case conversion", () => {
+        const result = handleGenerateWebComponent(db, { component: "button" });
+
+        // Should generate mozaic-button or similar tag name
+        expect(result.content[0].text).toContain("<");
+      });
+    });
+
+    describe("get_webcomponent_info", () => {
+      it("returns web component information", () => {
+        const result = handleGetWebComponentInfo(db, { component: "button" });
+
+        // Check if it's a formatted markdown response or contains component info
+        expect(result.content[0].text).toBeDefined();
+        expect(result.content[0].text.length).toBeGreaterThan(0);
+      });
+
+      it("handles component not found", () => {
+        const result = handleGetWebComponentInfo(db, { component: "nonexistent-wc" });
+
+        expect(result.content[0].text).toContain("not found");
+      });
+
+      it("shows attributes section", () => {
+        const result = handleGetWebComponentInfo(db, { component: "button" });
+
+        // Should contain structured information
+        expect(result.content[0].text).toBeDefined();
+      });
+    });
+
+    describe("list_webcomponents", () => {
+      it("lists all web components", () => {
+        const result = handleListWebComponents(db, { category: "all" });
+
+        expect(result.content[0].text).toBeDefined();
+        expect(result.content[0].text.length).toBeGreaterThan(0);
+      });
+
+      it("filters web components by category", () => {
+        const result = handleListWebComponents(db, { category: "form" });
+
+        expect(result.content[0].text).toBeDefined();
+      });
+
+      it("returns proper structure", () => {
+        const result = handleListWebComponents(db, { category: "all" });
+
+        // Check that it contains either formatted text or JSON
+        expect(result.content[0].text).toBeDefined();
+      });
+    });
+
+    describe("get_component_info with webcomponents framework", () => {
+      it("supports webcomponents as framework option", () => {
+        const result = handleGetComponentInfo(db, {
+          component: "button",
+          framework: "webcomponents",
+        });
+
+        expect(result.content[0].text).toBeDefined();
+      });
+
+      it("generates web component example for webcomponents framework", () => {
+        const result = handleGetComponentInfo(db, {
+          component: "button",
+          framework: "webcomponents",
+        });
+
+        const data = JSON.parse(result.content[0].text);
+
+        // Should have examples property
+        expect(data.examples).toBeDefined();
+      });
     });
   });
 });

@@ -13,7 +13,10 @@ type ToolName =
   | "list_css_utilities"
   | "get_install_info"
   | "generate_vue_component"
-  | "generate_react_component";
+  | "generate_react_component"
+  | "generate_webcomponent"
+  | "get_webcomponent_info"
+  | "list_webcomponents";
 
 interface ToolConfig {
   name: ToolName;
@@ -465,6 +468,135 @@ export default function MyComponent() {
 }`;
     },
   },
+  {
+    name: "generate_webcomponent",
+    label: "Generate Web Component",
+    description: "Generate native Web Component HTML with ES module imports",
+    isCodeGenerator: true,
+    fields: [
+      {
+        name: "component",
+        label: "Component",
+        type: "text",
+        placeholder: "button",
+        defaultValue: "button",
+      },
+      {
+        name: "attributes",
+        label: "Attributes (JSON)",
+        type: "text",
+        placeholder: '{"theme": "primary", "size": "m"}',
+        defaultValue: '{"theme": "primary"}',
+      },
+      {
+        name: "children",
+        label: "Slot Content",
+        type: "text",
+        placeholder: "Click me",
+        defaultValue: "Click me",
+      },
+    ],
+    buildQuery: (values) => {
+      const comp = values.component.toLowerCase();
+      return `
+        SELECT c.name, c.slug
+        FROM components c
+        WHERE c.frameworks LIKE '%webcomponents%' AND (c.slug LIKE '%${comp}%' OR c.name LIKE '%${comp}%')
+        LIMIT 1
+      `;
+    },
+    generateCode: (values, componentData) => {
+      if (!componentData) return "<!-- Component not found -->";
+
+      const tagName = `mozaic-${componentData.slug.replace('m-', '')}`;
+      let attrsObj: Record<string, unknown> = {};
+      try {
+        attrsObj = JSON.parse(values.attributes || "{}");
+      } catch {
+        attrsObj = {};
+      }
+
+      const attrsStr = Object.entries(attrsObj)
+        .map(([key, value]) => `${key}="${value}"`)
+        .join(" ");
+
+      const children = values.children || "Content";
+
+      return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mozaic Web Component</title>
+</head>
+<body>
+  <${tagName}${attrsStr ? " " + attrsStr : ""}>
+    ${children}
+  </${tagName}>
+
+  <script type="module">
+    import '@mozaic-ds/web-components/${componentData.slug}';
+  </script>
+</body>
+</html>`;
+    },
+  },
+  {
+    name: "get_webcomponent_info",
+    label: "Get Web Component Info",
+    description: "Get web component attributes, slots, events, and CSS properties",
+    fields: [
+      {
+        name: "component",
+        label: "Component",
+        type: "text",
+        placeholder: "button",
+        defaultValue: "button",
+      },
+    ],
+    buildQuery: (values) => {
+      const comp = values.component.toLowerCase();
+      return `
+        SELECT c.name, c.slug, c.category, c.description,
+               (SELECT COUNT(*) FROM component_props WHERE component_id = c.id) as attrs_count,
+               (SELECT COUNT(*) FROM component_slots WHERE component_id = c.id) as slots_count,
+               (SELECT COUNT(*) FROM component_events WHERE component_id = c.id) as events_count
+        FROM components c
+        WHERE c.frameworks LIKE '%webcomponents%' AND (c.slug LIKE '%${comp}%' OR c.name LIKE '%${comp}%')
+        LIMIT 10
+      `;
+    },
+  },
+  {
+    name: "list_webcomponents",
+    label: "List Web Components",
+    description: "List native web components by category",
+    fields: [
+      {
+        name: "category",
+        label: "Category",
+        type: "select",
+        options: [
+          { value: "all", label: "All" },
+          { value: "action", label: "Action" },
+          { value: "data-display", label: "Data Display" },
+          { value: "feedback", label: "Feedback" },
+          { value: "form", label: "Form" },
+          { value: "layout", label: "Layout" },
+          { value: "navigation", label: "Navigation" },
+          { value: "other", label: "Other" },
+        ],
+        defaultValue: "all",
+      },
+    ],
+    buildQuery: (values) => {
+      const cat = values.category;
+      if (cat === "all") {
+        return "SELECT name, slug, category FROM components WHERE frameworks LIKE '%webcomponents%' ORDER BY category, name LIMIT 50";
+      }
+      return `SELECT name, slug, category FROM components WHERE frameworks LIKE '%webcomponents%' AND category = '${cat}' ORDER BY name`;
+    },
+  },
 ];
 
 function Playground() {
@@ -587,7 +719,7 @@ function Playground() {
             Test It!
           </h1>
           <p className="text-lg text-grey-600 dark:text-grey-400">
-            Interactive playground to test MCP tools. The SQLite database runs directly in your browser using WebAssembly.
+            Interactive playground to test all 14 MCP tools. The SQLite database runs directly in your browser using WebAssembly.
           </p>
         </div>
         <Flag variant="solid" theme="primary">Live Demo</Flag>
@@ -696,7 +828,11 @@ function Playground() {
               {result.generatedCode && (
                 <div className="mb-6">
                   <p className="text-xs text-grey-500 dark:text-grey-400 mb-2 uppercase tracking-wide font-medium">
-                    {currentTool.name === "generate_vue_component" ? "Vue 3 Component" : "React Component"}
+                    {currentTool.name === "generate_vue_component"
+                      ? "Vue 3 Component"
+                      : currentTool.name === "generate_react_component"
+                      ? "React Component"
+                      : "Web Component HTML"}
                   </p>
                   <pre className="bg-primary-02-900 text-grey-100 p-4 rounded-lg text-sm overflow-x-auto font-mono whitespace-pre-wrap">
                     <code>{result.generatedCode}</code>

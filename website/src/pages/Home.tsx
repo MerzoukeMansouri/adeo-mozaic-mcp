@@ -4,12 +4,12 @@ import { Code } from "lucide-react";
 
 const stats = [
   { label: "Design Tokens", value: "586", gradient: "from-secondary-blue-500 to-secondary-blue-600" },
-  { label: "Components", value: "91", gradient: "from-primary-01-500 to-primary-01-600" },
+  { label: "Components", value: "91+", gradient: "from-primary-01-500 to-primary-01-600" },
   { label: "Icons", value: "1,473", gradient: "from-secondary-purple-500 to-secondary-purple-600" },
   { label: "CSS Utilities", value: "6", gradient: "from-secondary-blue-600 to-secondary-blue-700" },
   { label: "Documentation", value: "281", gradient: "from-primary-01-600 to-primary-01-700" },
-  { label: "MCP Tools", value: "11", gradient: "from-secondary-purple-600 to-secondary-purple-700" },
-  { label: "Claude Skills", value: "5", gradient: "from-secondary-green-500 to-secondary-green-600" },
+  { label: "MCP Tools", value: "14", gradient: "from-secondary-purple-600 to-secondary-purple-700" },
+  { label: "Claude Skills", value: "6", gradient: "from-secondary-green-500 to-secondary-green-600" },
 ];
 
 const tools = [
@@ -18,12 +18,15 @@ const tools = [
   { name: "list_components", desc: "List components by category", category: "components" },
   { name: "generate_vue_component", desc: "Generate Vue 3 code", category: "components" },
   { name: "generate_react_component", desc: "Generate React code", category: "components" },
+  { name: "generate_webcomponent", desc: "Generate Web Component HTML", category: "webcomponents", badge: "new" },
+  { name: "get_webcomponent_info", desc: "Get web component attributes, slots, events", category: "webcomponents", badge: "new" },
+  { name: "list_webcomponents", desc: "List web components by category", category: "webcomponents", badge: "new" },
   { name: "search_documentation", desc: "Full-text search across docs", category: "docs" },
   { name: "get_css_utility", desc: "Get CSS utility classes", category: "css" },
   { name: "list_css_utilities", desc: "List available CSS utilities", category: "css" },
   { name: "search_icons", desc: "Search icons by name/type", category: "icons" },
   { name: "get_icon", desc: "Get icon SVG and code", category: "icons" },
-  { name: "get_install_info", desc: "Get installation commands (beta)", category: "install" },
+  { name: "get_install_info", desc: "Get installation commands", category: "install" },
 ];
 
 const features = [
@@ -34,7 +37,7 @@ const features = [
   },
   {
     title: "Component Documentation",
-    desc: "Get complete documentation for 91 Vue and React components with props, slots, events, and code examples.",
+    desc: "Get complete documentation for 91+ Vue, React, and native Web Components with props, slots, events, and code examples.",
     color: "primary-01",
   },
   {
@@ -212,11 +215,16 @@ function Home() {
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary-01-100 dark:bg-primary-01-900/20 rounded-full -mr-16 -mt-16 opacity-50"></div>
               <div className="relative z-10">
                 <div className="flex items-start justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-1">
                     <Code className="w-4 h-4 text-primary-01-500" />
                     <code className="text-primary-01-600 dark:text-primary-01-400 font-mono text-sm font-semibold group-hover:text-primary-01-700 dark:group-hover:text-primary-01-300 transition-colors">
                       {tool.name}
                     </code>
+                    {tool.badge && (
+                      <Badge theme="success">
+                        {tool.badge}
+                      </Badge>
+                    )}
                   </div>
                   <Badge theme="info">{tool.category}</Badge>
                 </div>
