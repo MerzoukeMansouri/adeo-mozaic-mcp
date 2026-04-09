@@ -23,6 +23,8 @@ const MCP_CONFIG_FILE = join(MCP_CONFIG_DIR, 'claude_desktop_config.json');
 const SKILLS = [
   'mozaic-vue-builder',
   'mozaic-react-builder',
+  'mozaic-webcomponents-builder',
+  'mozaic-freemarker-builder',
   'mozaic-design-tokens',
   'mozaic-css-utilities',
   'mozaic-icons'
@@ -456,6 +458,8 @@ async function runInteractive() {
       const descriptions = {
         'mozaic-vue-builder': 'Vue 3 component generator',
         'mozaic-react-builder': 'React/TSX component generator',
+        'mozaic-webcomponents-builder': 'Web Components generator',
+        'mozaic-freemarker-builder': 'Freemarker macro generator',
         'mozaic-design-tokens': 'Design tokens & styling',
         'mozaic-css-utilities': 'CSS utilities & layouts',
         'mozaic-icons': 'Icon search & integration'
