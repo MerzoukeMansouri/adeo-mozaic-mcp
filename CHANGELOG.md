@@ -1,3 +1,10 @@
+## [2.4.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.3.0...v2.4.0) (2026-04-09)
+
+
+### Features
+
+* add webcomponents and freemarker builders to install options ([1ea0953](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/1ea09536855a9c8a7f54bd2d5e742053c2a5be48))
+
 ## [2.3.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.2.0...v2.3.0) (2026-04-09)
 
 
