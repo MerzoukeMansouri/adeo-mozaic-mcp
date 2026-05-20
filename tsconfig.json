@@ -13,8 +13,16 @@
     "resolveJsonModule": true,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "strictNullChecks": false,
+    "noFallthroughCasesInSwitch": false
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "repos", "data"]
+  "exclude": ["node_modules", "dist", "repos", "data", "**/*.spec.ts", "**/*.test.ts"]
 }
