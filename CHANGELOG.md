@@ -1,3 +1,10 @@
+## [2.5.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.5.0...v2.5.1) (2026-05-20)
+
+
+### Bug Fixes
+
+* expose PORT for Dokploy ([526d5ff](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/526d5ff1c68feef56d9349920ea5f67fe78132d9))
+
 ## [2.5.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.4.0...v2.5.0) (2026-05-20)
 
 
