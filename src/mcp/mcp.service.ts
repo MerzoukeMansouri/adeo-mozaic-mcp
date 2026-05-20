@@ -44,6 +44,7 @@ export class McpService implements OnModuleInit, OnModuleDestroy {
   private eventEmitter = new EventEmitter();
   private serverInfo: McpServerInfo | null = null;
   private tools: McpTool[] = [];
+  private buffer = "";
 
   constructor(private configService: ConfigService) {}
 
@@ -75,17 +76,27 @@ export class McpService implements OnModuleInit, OnModuleDestroy {
     // Handle stdout (MCP responses)
     this.mcpProcess.stdout?.on("data", (data) => {
       try {
-        const rawData = data.toString();
-        this.logger.debug(`MCP stdout raw: ${rawData.substring(0, 200)}`);
-        const lines = rawData.split("\n").filter(Boolean);
-        for (const line of lines) {
-          this.logger.debug(`Parsing line: ${line.substring(0, 100)}`);
-          const message = JSON.parse(line);
-          this.handleMcpMessage(message);
+        this.buffer += data.toString();
+
+        // Process complete lines from buffer
+        let newlineIndex: number;
+        while ((newlineIndex = this.buffer.indexOf("\n")) !== -1) {
+          const line = this.buffer.slice(0, newlineIndex).trim();
+          this.buffer = this.buffer.slice(newlineIndex + 1);
+
+          if (line) {
+            try {
+              this.logger.debug(`Parsing line: ${line.substring(0, 100)}`);
+              const message = JSON.parse(line);
+              this.handleMcpMessage(message);
+            } catch (error) {
+              this.logger.error("Failed to parse MCP message:", error);
+              this.logger.error(`Line was: ${line.substring(0, 200)}`);
+            }
+          }
         }
       } catch (error) {
-        this.logger.error("Failed to parse MCP message:", error);
-        this.logger.error(`Raw data was: ${data.toString().substring(0, 200)}`);
+        this.logger.error("Failed to process MCP data:", error);
       }
     });
 
