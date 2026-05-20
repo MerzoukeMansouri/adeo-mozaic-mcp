@@ -13,3 +13,4 @@ cmd = "node dist/main.js"
 [variables]
 NODE_ENV = "production"
 DATABASE_PATH = "/app/data/mozaic.db"
+PORT = "3000"
