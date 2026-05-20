@@ -23,6 +23,7 @@
     "compile": "tsc",
     "postcompile": "chmod +x dist/index.js",
     "build": "tsc && tsx scripts/build-index.ts",
+    "build:nest": "tsc",
     "build:docs": "tsx scripts/generate-docs.ts",
     "prebuild": "rm -rf dist",
     "postbuild": "chmod +x dist/index.js",

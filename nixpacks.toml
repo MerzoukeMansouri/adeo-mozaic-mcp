@@ -5,7 +5,7 @@ nixPkgs = ["nodejs_22", "nodePackages.pnpm"]
 cmds = ["pnpm install --no-frozen-lockfile"]
 
 [phases.build]
-cmds = ["cp -f $HOME/.claude/mozaic.db ./mozaic.db || true", "pnpm run build"]
+cmds = ["pnpm run build:nest"]
 
 [start]
 cmd = "node dist/main.js"
