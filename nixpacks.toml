@@ -1,0 +1,15 @@
+[phases.setup]
+nixPkgs = ["nodejs_22", "pnpm-9"]
+
+[phases.install]
+cmds = ["pnpm install --no-frozen-lockfile"]
+
+[phases.build]
+cmds = ["cp -f $HOME/.claude/mozaic.db ./mozaic.db || true", "pnpm run build"]
+
+[start]
+cmd = "node dist/main.js"
+
+[variables]
+NODE_ENV = "production"
+DATABASE_PATH = "/app/data/mozaic.db"
