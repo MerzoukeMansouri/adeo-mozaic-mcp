@@ -1,3 +1,10 @@
+## [2.5.4](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.5.3...v2.5.4) (2026-05-20)
+
+
+### Bug Fixes
+
+* add website to workspace to fix GitHub Actions build ([dc42099](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/dc42099328f279fe46b921d5c9c70e3ec476c938))
+
 ## [2.5.3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.5.2...v2.5.3) (2026-05-20)
 
 
