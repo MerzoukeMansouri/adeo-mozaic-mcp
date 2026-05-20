@@ -32,7 +32,7 @@ jobs:
           node-version: 22
           cache: "pnpm"
 
-      - name: Install root dependencies
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Build database (if needed)
@@ -43,11 +43,6 @@ jobs:
           else
             echo "Database exists, skipping build"
           fi
-
-      - name: Install website dependencies
-        run: |
-          cd website
-          pnpm install --frozen-lockfile
 
       - name: Build website
         run: |
