@@ -3,6 +3,7 @@ import { Outlet, NavLink } from "react-router-dom";
 
 const navItems = [
   { path: "/", label: "Home" },
+  { path: "/public-api", label: "Public API" },
   { path: "/docs", label: "Documentation" },
   { path: "/skills", label: "Skills" },
   { path: "/sources", label: "Sources" },

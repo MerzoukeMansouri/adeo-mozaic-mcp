@@ -16,6 +16,104 @@ This package provides two complementary tools for working with the Mozaic Design
 - **🤖 Claude Code Skills** - 7 interactive skills for guided component building and design token usage
 - **🔌 MCP Server** - Model Context Protocol server with 17 tools for programmatic access to Mozaic resources
 
+## HTTP API
+
+Public MCP server available at **https://mozaic-mcp.m14i.com**
+
+**Endpoints:**
+- `GET /health` - Health check
+- `POST /mcp/list-tools` - List available tools
+- `POST /mcp/call-tool` - Call a specific tool
+- `GET /api` - [Swagger documentation](https://mozaic-mcp.m14i.com/api)
+
+**Authentication:** Bearer token required. [Contact me](https://adeo-tech-community.slack.com/archives/D05E2CXR8TB) on Slack for access.
+
+**Example:**
+```bash
+curl -X POST https://mozaic-mcp.m14i.com/mcp/list-tools \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+<details>
+<summary>Example Response (17 MCP Tools)</summary>
+
+```json
+{
+  "tools": [
+    {
+      "name": "get_design_tokens",
+      "description": "Get Mozaic design tokens with CSS/SCSS variables. Categories: colors (brand, semantic, component), typography (font sizes, weights, line heights), spacing (magic unit scale), shadows, borders, screens (breakpoints), grid (gutters)."
+    },
+    {
+      "name": "get_component_info",
+      "description": "Get Vue/React component details: props (types, defaults, required), slots, events, and code examples."
+    },
+    {
+      "name": "list_components",
+      "description": "List Mozaic Vue/React components by category."
+    },
+    {
+      "name": "generate_vue_component",
+      "description": "Generate ready-to-use Vue 3 code with Mozaic components (@mozaic-ds/vue-3)."
+    },
+    {
+      "name": "generate_react_component",
+      "description": "Generate ready-to-use React/TSX code with Mozaic components (@mozaic-ds/react)."
+    },
+    {
+      "name": "search_documentation",
+      "description": "Search Mozaic Design System documentation for installation guides, component usage, configuration, styling, tokens, patterns, and best practices."
+    },
+    {
+      "name": "get_css_utility",
+      "description": "Get CSS utility classes and examples for Mozaic layout and spacing utilities."
+    },
+    {
+      "name": "list_css_utilities",
+      "description": "List Mozaic CSS-only utilities (no framework needed)."
+    },
+    {
+      "name": "search_icons",
+      "description": "Search Mozaic Design System icons by name or type."
+    },
+    {
+      "name": "get_icon",
+      "description": "Get a specific Mozaic icon by name with SVG markup and ready-to-use code for React/Vue."
+    },
+    {
+      "name": "get_install_info",
+      "description": "Get installation commands and import statements for a Mozaic component."
+    },
+    {
+      "name": "generate_webcomponent",
+      "description": "Generate ready-to-use Web Component code using Mozaic Design System (@adeo/mozaic-web-components)."
+    },
+    {
+      "name": "get_webcomponent_info",
+      "description": "Get detailed information about a Mozaic Web Component including attributes, slots, events, CSS custom properties, and usage examples."
+    },
+    {
+      "name": "list_webcomponents",
+      "description": "List available Mozaic Web Components by category."
+    },
+    {
+      "name": "generate_freemarker",
+      "description": "Generate ready-to-use Freemarker macro code with import statements and configuration examples for Mozaic components."
+    },
+    {
+      "name": "get_freemarker_info",
+      "description": "Get detailed information about a Freemarker component including configuration options, CSS classes, and usage examples."
+    },
+    {
+      "name": "list_freemarker",
+      "description": "List available Mozaic Freemarker macros by category."
+    }
+  ]
+}
+```
+</details>
+
 ### What's Included
 
 | Resource Type | Count | Description |
@@ -126,28 +224,6 @@ Claude Code will automatically activate the appropriate skill (Vue or React buil
 | `search_icons` | Icons | Search 1,473 icons by name, type, or category |
 | `get_icon` | Icons | Get icon SVG and framework code |
 | `get_install_info` | Install | Get npm/yarn/pnpm installation commands |
-
-### v0.dev Integration (HTTP API)
-
-The MCP server can be deployed as an HTTP API for v0.dev integration:
-
-```bash
-# Run locally
-DATABASE_PATH=./data/mozaic.db MCP_SERVER_PATH=./dist/index.js AUTH_TOKEN=your-secret-token node dist/main.js
-
-# Or deploy with Docker
-docker build -t mozaic-mcp-server .
-docker run -p 3000:3000 -e AUTH_TOKEN=your-secret-token mozaic-mcp-server
-```
-
-**Endpoints:**
-- `GET /health` - Health check
-- `POST /mcp` - JSON-RPC endpoint for MCP protocol
-- `POST /mcp/list-tools` - List available tools
-- `POST /mcp/call-tool` - Call a specific tool
-- `GET /api` - Swagger documentation
-
-All endpoints require bearer token authentication. See deployment documentation for Dokploy integration.
 
 ### Configuration
 
