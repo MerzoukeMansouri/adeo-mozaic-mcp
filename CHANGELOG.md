@@ -1,3 +1,18 @@
+## [2.5.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.4.0...v2.5.0) (2026-05-20)
+
+
+### Features
+
+* add NestJS HTTP wrapper for v0 integration ([558f156](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/558f15613242606a86134bbed1fb49fda3a50126))
+
+
+### Bug Fixes
+
+* add nixpacks.toml for Dokploy build ([35e3e0b](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/35e3e0b6e081a91685489d263479f412a8f8ce33))
+* remove GH_PAT from release workflow ([b891248](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/b89124838898297357629610f2b13a5289f03765))
+* skip database build in Dokploy ([c2f58a1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/c2f58a1468191f9eeaad8954d2c870374e8392f8))
+* use GH_TOKEN for semantic-release ([2db99a3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/2db99a333921d83efd3ad3780a924268c94436bd))
+
 ## [2.4.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.3.0...v2.4.0) (2026-04-09)
 
 
