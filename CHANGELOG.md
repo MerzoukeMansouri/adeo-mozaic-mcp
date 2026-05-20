@@ -1,3 +1,10 @@
+## [2.5.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.5.1...v2.5.2) (2026-05-20)
+
+
+### Chores
+
+* update docs and workflow for website deployment ([771c8ab](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/771c8ab4dd287b1178476c8a320ed6edc984a246))
+
 ## [2.5.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.5.0...v2.5.1) (2026-05-20)
 
 
