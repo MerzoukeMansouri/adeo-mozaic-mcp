@@ -1,3 +1,10 @@
+## [2.5.5](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.5.4...v2.5.5) (2026-05-20)
+
+
+### Documentation
+
+* add public API documentation and navigation ([46100b0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/46100b02747738c97248f68164bd63ba1f97f23e))
+
 ## [2.5.4](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.5.3...v2.5.4) (2026-05-20)
 
 
