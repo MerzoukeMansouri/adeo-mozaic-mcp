@@ -7,7 +7,7 @@
 
 Self-contained Claude Code skills and MCP server for the [Mozaic Design System](https://mozaic.adeo.cloud/) by ADEO.
 
-**📚 [Documentation](https://merzoukemansouri.github.io/adeo-mozaic-mcp/) • 🎮 [MCP Playground](https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/playground)**
+**📚 [Documentation](https://merzoukemansouri.github.io/adeo-mozaic-mcp/) • 🎮 [MCP Playground](https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/playground) • 🌐 [Website](https://merzoukemansouri.github.io/adeo-mozaic-mcp/)**
 
 ## Overview
 
@@ -103,7 +103,7 @@ Claude Code will automatically activate the appropriate skill (Vue or React buil
 
 ## MCP Server Tools
 
-14 programmatic tools for accessing Mozaic resources via the Model Context Protocol.
+17 programmatic tools for accessing Mozaic resources via the Model Context Protocol.
 
 ### Available Tools
 
@@ -126,6 +126,28 @@ Claude Code will automatically activate the appropriate skill (Vue or React buil
 | `search_icons` | Icons | Search 1,473 icons by name, type, or category |
 | `get_icon` | Icons | Get icon SVG and framework code |
 | `get_install_info` | Install | Get npm/yarn/pnpm installation commands |
+
+### v0.dev Integration (HTTP API)
+
+The MCP server can be deployed as an HTTP API for v0.dev integration:
+
+```bash
+# Run locally
+DATABASE_PATH=./data/mozaic.db MCP_SERVER_PATH=./dist/index.js AUTH_TOKEN=your-secret-token node dist/main.js
+
+# Or deploy with Docker
+docker build -t mozaic-mcp-server .
+docker run -p 3000:3000 -e AUTH_TOKEN=your-secret-token mozaic-mcp-server
+```
+
+**Endpoints:**
+- `GET /health` - Health check
+- `POST /mcp` - JSON-RPC endpoint for MCP protocol
+- `POST /mcp/list-tools` - List available tools
+- `POST /mcp/call-tool` - Call a specific tool
+- `GET /api` - Swagger documentation
+
+All endpoints require bearer token authentication. See deployment documentation for Dokploy integration.
 
 ### Configuration
 
@@ -361,8 +383,10 @@ We use semantic versioning with conventional commits:
 ## Resources
 
 ### Documentation & Tools
-- **📚 Documentation**: https://merzoukemansouri.github.io/adeo-mozaic-mcp/
+- **🌐 Website**: https://merzoukemansouri.github.io/adeo-mozaic-mcp/
+- **📚 Documentation**: https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/docs
 - **🎮 MCP Playground**: https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/playground
+- **🎨 Skills Guide**: https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/skills
 - **GitHub**: https://github.com/MerzoukeMansouri/adeo-mozaic-mcp
 - **npm**: https://www.npmjs.com/package/mozaic-mcp-server
 
@@ -378,10 +402,11 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## Support
 
 For issues or questions:
-- 📚 Read the [online documentation](https://merzoukemansouri.github.io/adeo-mozaic-mcp/)
+- 🌐 Visit the [website](https://merzoukemansouri.github.io/adeo-mozaic-mcp/)
+- 📚 Read the [documentation](https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/docs)
 - 🎮 Try the [MCP playground](https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/playground)
 - 🐛 Open an issue on [GitHub](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/issues)
-- 📖 Check the [Skills documentation](SKILLS.md)
+- 📖 Check the [Skills guide](https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/skills)
 - 🎨 Review [Mozaic Design System docs](https://mozaic.adeo.cloud/)
 
 ---

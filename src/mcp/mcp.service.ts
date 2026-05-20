@@ -75,21 +75,23 @@ export class McpService implements OnModuleInit, OnModuleDestroy {
     // Handle stdout (MCP responses)
     this.mcpProcess.stdout?.on("data", (data) => {
       try {
-        const lines = data.toString().split("\n").filter(Boolean);
+        const rawData = data.toString();
+        this.logger.debug(`MCP stdout raw: ${rawData.substring(0, 200)}`);
+        const lines = rawData.split("\n").filter(Boolean);
         for (const line of lines) {
+          this.logger.debug(`Parsing line: ${line.substring(0, 100)}`);
           const message = JSON.parse(line);
           this.handleMcpMessage(message);
         }
       } catch (error) {
         this.logger.error("Failed to parse MCP message:", error);
+        this.logger.error(`Raw data was: ${data.toString().substring(0, 200)}`);
       }
     });
 
     // Handle stderr (logging)
     this.mcpProcess.stderr?.on("data", (data) => {
-      if (this.configService.get<boolean>("mcp.debug")) {
-        this.logger.debug(`MCP Server: ${data.toString()}`);
-      }
+      this.logger.debug(`MCP stderr: ${data.toString()}`);
     });
 
     // Handle process exit
@@ -104,6 +106,12 @@ export class McpService implements OnModuleInit, OnModuleDestroy {
       this.pendingRequests.clear();
     });
 
+    // Wait a bit for process to start
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Send initialize immediately to trigger ready event
+    this.sendInitialize();
+
     // Wait for server to be ready
     await new Promise<void>((resolve) => {
       const timeout = setTimeout(() => {
@@ -117,6 +125,38 @@ export class McpService implements OnModuleInit, OnModuleDestroy {
         resolve();
       });
     });
+  }
+
+  private sendInitialize() {
+    if (!this.mcpProcess?.stdin) return;
+
+    const request = {
+      jsonrpc: "2.0",
+      id: 1,
+      method: "initialize",
+      params: {
+        protocolVersion: "2024-11-05",
+        capabilities: {},
+        clientInfo: {
+          name: "mozaic-mcp-nestjs",
+          version: "2.4.0",
+        },
+      },
+    };
+
+    // Track this as a pending request
+    this.pendingRequests.set(1, {
+      resolve: (_value) => {
+        this.logger.debug("Initialize response received");
+        this.eventEmitter.emit("ready");
+      },
+      reject: (reason) => {
+        this.logger.error("Initialize failed:", reason);
+      },
+    });
+
+    this.logger.debug("Sending initialize request");
+    this.mcpProcess.stdin.write(JSON.stringify(request) + "\n");
   }
 
   private stopMcpServer() {
@@ -142,11 +182,6 @@ export class McpService implements OnModuleInit, OnModuleDestroy {
     if (message.method && !message.id) {
       this.handleNotification(message);
       return;
-    }
-
-    // Handle other message types
-    if (message.method === "initialize" && message.result) {
-      this.eventEmitter.emit("ready");
     }
   }
 

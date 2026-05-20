@@ -45,16 +45,15 @@ jobs:
           fi
 
       - name: Install website dependencies
-        run: pnpm install --frozen-lockfile
-        working-directory: website
-
-      - name: Copy assets to website
-        run: node scripts/copy-assets.js
-        working-directory: website
+        run: |
+          cd website
+          pnpm install --frozen-lockfile
 
       - name: Build website
-        run: pnpm build
-        working-directory: website
+        run: |
+          cd website
+          pnpm run prebuild
+          pnpm build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
