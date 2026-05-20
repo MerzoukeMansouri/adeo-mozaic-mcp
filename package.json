@@ -82,8 +82,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
-    "@nestjs/cli": "^10.4.15",
-    "@nestjs/schematics": "^10.2.3",
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^10.4.15",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^11.1.0",
