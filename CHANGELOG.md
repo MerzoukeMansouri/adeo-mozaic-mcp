@@ -1,3 +1,10 @@
+## [2.5.3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.5.2...v2.5.3) (2026-05-20)
+
+
+### Chores
+
+* remove temporary db files and improve MCP message parsing ([b688fc8](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/b688fc8959261d7dafef1dfe4a6de2b5cd15ea4a))
+
 ## [2.5.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.5.1...v2.5.2) (2026-05-20)
 
 
