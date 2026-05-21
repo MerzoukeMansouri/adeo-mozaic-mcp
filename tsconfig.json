@@ -5,6 +5,7 @@
     "moduleResolution": "NodeNext",
     "lib": ["ES2022"],
     "outDir": "./dist",
+    "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -22,6 +23,6 @@
     "strictNullChecks": false,
     "noFallthroughCasesInSwitch": false
   },
-  "include": ["src/**/*", "tokens-mcp-server.ts", "tokens-api-server.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "repos", "data", "**/*.spec.ts", "**/*.test.ts"]
 }
