@@ -1,3 +1,11 @@
+## [2.6.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.5.5...v2.6.0) (2026-05-21)
+
+
+### Features
+
+* add lightweight /mcp/light controller with 5 token tools ([fa4c6c3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/fa4c6c395ea4c99925c3240366271a6b8e524f75))
+* add MCP Light controller for design tokens and utilities ([bc667c7](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/bc667c75760f8b89cdef59a233de04120410ffea))
+
 ## [2.5.5](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.5.4...v2.5.5) (2026-05-20)
 
 
