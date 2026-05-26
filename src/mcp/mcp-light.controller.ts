@@ -64,6 +64,16 @@ interface McpResponse {
   content: Array<{ type: string; text: string }>;
 }
 
+interface JsonRpcRequest {
+  jsonrpc: string;
+  method: string;
+  params?: {
+    name?: string;
+    arguments?: Record<string, unknown>;
+  };
+  id?: string | number;
+}
+
 @ApiTags("MCP Light")
 @Controller("mcp/light")
 @UseGuards(AuthGuard)
@@ -75,6 +85,67 @@ export class McpLightController {
     const dbPath = this.configService.get<string>("database.path");
     this.db = new Database(dbPath, { readonly: true });
     this.db.pragma("journal_mode = WAL");
+  }
+
+  @Post()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "JSON-RPC 2.0 endpoint for MCP Light protocol" })
+  handleJsonRpc(@Body() body: JsonRpcRequest | McpToolCall) {
+    // Check if this is a JSON-RPC 2.0 request
+    if ("jsonrpc" in body && body.jsonrpc === "2.0") {
+      const request = body as JsonRpcRequest;
+      try {
+        switch (request.method) {
+          case "tools/list":
+            return {
+              jsonrpc: "2.0",
+              id: request.id,
+              result: this.listTools(),
+            };
+          case "tools/call":
+            if (!request.params?.name) {
+              return {
+                jsonrpc: "2.0",
+                id: request.id,
+                error: {
+                  code: -32602,
+                  message: "Invalid params: 'name' is required",
+                },
+              };
+            }
+            return {
+              jsonrpc: "2.0",
+              id: request.id,
+              result: this.callTool({
+                name: request.params.name,
+                arguments: request.params.arguments,
+              }),
+            };
+          default:
+            return {
+              jsonrpc: "2.0",
+              id: request.id,
+              error: {
+                code: -32601,
+                message: `Method not found: ${request.method}`,
+              },
+            };
+        }
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Internal error";
+        return {
+          jsonrpc: "2.0",
+          id: request.id,
+          error: {
+            code: -32603,
+            message: errorMessage,
+          },
+        };
+      }
+    }
+
+    // Fallback: treat as simple tool call request
+    return this.callTool(body as McpToolCall);
   }
 
   @Post("list-tools")
