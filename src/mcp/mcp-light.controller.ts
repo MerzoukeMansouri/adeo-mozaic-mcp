@@ -96,6 +96,28 @@ export class McpLightController {
       const request = body as JsonRpcRequest;
       try {
         switch (request.method) {
+          case "initialize":
+            return {
+              jsonrpc: "2.0",
+              id: request.id,
+              result: {
+                protocolVersion: "2024-11-05",
+                capabilities: {
+                  tools: {},
+                },
+                serverInfo: {
+                  name: "mozaic-mcp-light",
+                  version: "1.0.0",
+                },
+              },
+            };
+          case "initialized":
+            // Notification - no response needed
+            return {
+              jsonrpc: "2.0",
+              id: request.id,
+              result: {},
+            };
           case "tools/list":
             return {
               jsonrpc: "2.0",
