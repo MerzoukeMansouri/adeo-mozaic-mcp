@@ -1,3 +1,10 @@
+## [2.8.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.7.0...v2.8.0) (2026-05-26)
+
+
+### Features
+
+* add MCP protocol initialize method to /mcp/light endpoint ([92857a0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/92857a09076ef58e2af7f67fec7584c24e7b02bf))
+
 ## [2.7.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.6.0...v2.7.0) (2026-05-26)
 
 
