@@ -1,3 +1,10 @@
+## [2.7.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.6.0...v2.7.0) (2026-05-26)
+
+
+### Features
+
+* add JSON-RPC 2.0 endpoint for MCP Light protocol ([04e3d78](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/04e3d78804cd0dd5883f06412f290c677058cb18))
+
 ## [2.6.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.5.5...v2.6.0) (2026-05-21)
 
 
