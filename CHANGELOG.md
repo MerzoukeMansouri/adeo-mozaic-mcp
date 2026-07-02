@@ -1,3 +1,10 @@
+## [2.8.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.8.0...v2.8.1) (2026-07-02)
+
+
+### Chores
+
+* trigger release build ([57efa3a](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/57efa3a015e7dcaae00c868dd46f3a0d5213fcd2))
+
 ## [2.8.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.7.0...v2.8.0) (2026-05-26)
 
 
