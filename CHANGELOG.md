@@ -1,3 +1,10 @@
+## [2.8.5](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.8.4...v2.8.5) (2026-09-02)
+
+
+### Documentation
+
+* add Web Components and Freemarker repos to data-flow diagram ([3df6607](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/3df6607f40967bfb27c01c5b6cdbe3ff542cb5a0))
+
 ## [2.8.4](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.8.3...v2.8.4) (2026-09-02)
 
 
