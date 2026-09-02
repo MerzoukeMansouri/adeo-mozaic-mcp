@@ -1,3 +1,10 @@
+## [2.8.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.8.1...v2.8.2) (2026-09-02)
+
+
+### Documentation
+
+* sync DEVELOPMENT.md with shipped Web Components, Freemarker, and HTTP server ([a838615](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/a8386150cd0a6019d49e0e1c580feeac687e243e))
+
 ## [2.8.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.8.0...v2.8.1) (2026-07-02)
 
 
