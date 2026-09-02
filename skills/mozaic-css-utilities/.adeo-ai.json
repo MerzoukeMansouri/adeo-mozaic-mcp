@@ -1,0 +1,7 @@
+{
+  "type": "skill",
+  "name": "mozaic-css-utilities",
+  "description": "Mozaic CSS utility classes and layout systems expert. Master Flexy grid, Container, Margin, Padding, Ratio, and Scroll utilities for responsive layouts without writing custom CSS.",
+  "tags": ["mozaic", "css", "layout", "flexy", "design-system"],
+  "compatibleWith": ["any"]
+}

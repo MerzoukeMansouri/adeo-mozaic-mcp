@@ -1,0 +1,7 @@
+{
+  "type": "skill",
+  "name": "mozaic-react-builder",
+  "description": "Interactive React/TSX component generator with Mozaic Design System. Helps discover, configure, and generate production-ready React components with TypeScript support, proper imports, and installation guidance.",
+  "tags": ["mozaic", "react", "typescript", "code-generation", "design-system"],
+  "compatibleWith": ["any"]
+}

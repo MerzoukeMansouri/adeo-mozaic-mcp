@@ -1,0 +1,7 @@
+{
+  "type": "skill",
+  "name": "mozaic-design-tokens",
+  "description": "Mozaic Design System tokens and styling expert. Access design tokens (colors, typography, spacing, shadows, borders, breakpoints, grid) in multiple formats (JSON, SCSS, CSS, JS) and search documentation for styling guidance.",
+  "tags": ["mozaic", "design-tokens", "styling", "design-system"],
+  "compatibleWith": ["any"]
+}

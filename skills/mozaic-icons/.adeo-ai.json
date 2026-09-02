@@ -1,0 +1,7 @@
+{
+  "type": "skill",
+  "name": "mozaic-icons",
+  "description": "Mozaic icon search and integration for Vue & React. Search icons by name or type, view multiple sizes (16, 24, 32, 48, 64), and generate framework-specific code with proper imports.",
+  "tags": ["mozaic", "icons", "vue", "react", "design-system"],
+  "compatibleWith": ["any"]
+}

@@ -1,0 +1,7 @@
+{
+  "type": "skill",
+  "name": "mozaic-vue-builder",
+  "description": "Interactive Vue 3 component generator with Mozaic Design System. Helps discover, configure, and generate production-ready Vue components with proper imports and installation guidance.",
+  "tags": ["mozaic", "vue", "code-generation", "design-system"],
+  "compatibleWith": ["any"]
+}

@@ -1,0 +1,7 @@
+{
+  "type": "skill",
+  "name": "mozaic-webcomponents-builder",
+  "description": "Interactive Web Components generator with Mozaic Design System. Helps discover, configure, and generate production-ready native web components with proper imports and usage patterns.",
+  "tags": ["mozaic", "web-components", "code-generation", "design-system"],
+  "compatibleWith": ["any"]
+}
