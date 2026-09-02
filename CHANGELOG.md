@@ -1,3 +1,10 @@
+## [2.8.3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.8.2...v2.8.3) (2026-09-02)
+
+
+### Chores
+
+* add .adeo-ai.json to each skill for ADEO AI Marketplace listing ([b83d618](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/b83d61863b0b9a2c24aa5ac131386f5a091c2838))
+
 ## [2.8.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.8.1...v2.8.2) (2026-09-02)
 
 
