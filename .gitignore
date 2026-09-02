@@ -6,6 +6,8 @@ dist/
 
 # Generated data
 repos/
+data/*.db-shm
+data/*.db-wal
 
 # IDE
 .vscode/
