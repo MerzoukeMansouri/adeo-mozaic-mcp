@@ -1,3 +1,10 @@
+## [2.8.4](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.8.3...v2.8.4) (2026-09-02)
+
+
+### Bug Fixes
+
+* stop tracking SQLite WAL/SHM journal files ([870085c](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/870085cd1f1fdeaa822dad7ce2eb4abf2da30983))
+
 ## [2.8.3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.8.2...v2.8.3) (2026-09-02)
 
 
