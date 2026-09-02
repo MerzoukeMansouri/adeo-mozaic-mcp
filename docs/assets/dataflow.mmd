@@ -6,6 +6,8 @@ flowchart LR
         R1[mozaic-design-system]
         R2[mozaic-vue]
         R3[mozaic-react]
+        R4[mozaic-web-components]
+        R5[mozaic-freemarker]
     end
 
     subgraph TokenParsers["Token Parsers"]
@@ -25,6 +27,8 @@ flowchart LR
         P4[docs-parser.ts]
         P5[scss-parser.ts]
         P6[icon-parser.ts]
+        P7[web-components-parser.ts]
+        P8[freemarker-parser.ts]
     end
 
     subgraph Data["Extracted Data"]
@@ -36,6 +40,8 @@ flowchart LR
         D4[Documentation<br/>MDX content, frontmatter]
         D5[CSS Utilities<br/>Flexy, Margin, Padding, etc.]
         D6[Icons<br/>SVG icons with metadata]
+        D7[Web Components<br/>attributes, slots, events, examples]
+        D8[Freemarker Macros<br/>params, examples]
     end
 
     subgraph DB["SQLite Database"]
@@ -72,3 +78,8 @@ flowchart LR
     D2 --> T3 & T4 & T5 & T6
     D3 --> T3 & T5 & T6
     R1 --> P6 --> D6 --> IC
+
+    R4 --> P7 --> D7 --> T2
+    D7 --> T3 & T4 & T5 & T6
+    R5 --> P8 --> D8 --> T2
+    D8 --> T3 & T6

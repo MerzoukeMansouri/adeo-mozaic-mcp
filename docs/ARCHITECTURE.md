@@ -1,6 +1,6 @@
 # Mozaic MCP Server - Architecture Documentation
 
-> Auto-generated on 2025-12-15
+> Auto-generated on 2026-09-02
 >
 > For detailed development guide, database schema, and implementation specs, see [DEVELOPMENT.md](./DEVELOPMENT.md).
 
@@ -10,17 +10,17 @@
 |--------|-------|
 | **Tokens** | 586 |
 | Token Properties (composite) | 15 |
-| **Components** | 91 |
-| Vue Components | 52 |
+| **Components** | 187 |
+| Vue Components | 75 |
 | React Components | 39 |
-| Vue Examples | 238 |
+| Vue Examples | 312 |
 | React Examples | 60 |
 | **Icons** | 1473 |
 | **CSS Utilities** | 6 |
 | CSS Utility Classes | 505 |
-| **Documentation** | 281 |
+| **Documentation** | 307 |
 | Design System Docs | 220 |
-| Vue Storybook Docs | 58 |
+| Vue Storybook Docs | 84 |
 | React Storybook Docs | 3 |
 
 ### Token Categories
