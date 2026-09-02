@@ -18,6 +18,7 @@
   - [search_documentation](#5-search_documentation)
   - [get_css_utility](#6-get_css_utility)
   - [list_css_utilities](#7-list_css_utilities)
+- [Shipped Additions](#shipped-additions-post-planning)
 - [Data Extraction Strategy](#data-extraction-strategy)
   - [Phase 1: Clone Repositories](#phase-1-clone-and-parse-repositories)
   - [Phase 2: Extract Tokens](#phase-2-extract-design-tokens)
@@ -49,6 +50,8 @@ An MCP (Model Context Protocol) server that exposes the **Mozaic Design System**
 | **Main Design System**   | `https://github.com/adeo/mozaic-design-system` | Core tokens, styles, icons, documentation |
 | **Vue Implementation**   | `https://github.com/adeo/mozaic-vue`           | Vue.js component library                  |
 | **React Implementation** | `https://github.com/adeo/mozaic-react`         | React component library                   |
+| **Web Components**       | `@adeo/mozaic-web-components`                  | Native/framework-agnostic Web Components  |
+| **Freemarker**           | `mozaic-freemarker` (see `repos/`)             | Freemarker macros for server-side templates |
 | **Documentation Site**   | `https://mozaic.adeo.cloud/`                   | Official documentation                    |
 | **Vue Storybook**        | `https://adeo.github.io/mozaic-vue/`           | Vue component demos                       |
 
@@ -80,13 +83,31 @@ An MCP (Model Context Protocol) server that exposes the **Mozaic Design System**
 ```
 mozaic-mcp-server/
 ├── src/
-│   ├── index.ts              # MCP server entry point
+│   ├── index.ts              # MCP (stdio) server entry point
+│   ├── main.ts                # NestJS HTTP server entry point (v0/web clients)
+│   ├── app.module.ts          # NestJS root module
+│   ├── mcp/
+│   │   ├── mcp.controller.ts        # /mcp HTTP endpoint (stdio-equivalent MCP)
+│   │   ├── mcp-light.controller.ts  # /mcp/light lightweight JSON-RPC token/CSS/icon tools
+│   │   ├── mcp.module.ts
+│   │   └── mcp.service.ts
+│   ├── auth/                  # Bearer auth guard for the HTTP server
+│   ├── config/                # NestJS configuration
 │   ├── tools/
 │   │   ├── get-design-tokens.ts
 │   │   ├── get-component-info.ts
 │   │   ├── list-components.ts
 │   │   ├── generate-vue-component.ts
 │   │   ├── generate-react-component.ts
+│   │   ├── generate-webcomponent.ts
+│   │   ├── get-webcomponent-info.ts
+│   │   ├── list-webcomponents.ts
+│   │   ├── generate-freemarker.ts
+│   │   ├── get-freemarker-info.ts
+│   │   ├── list-freemarker.ts
+│   │   ├── get-icon.ts
+│   │   ├── search-icons.ts
+│   │   ├── get-install-info.ts
 │   │   ├── search-documentation.ts
 │   │   ├── get-css-utility.ts
 │   │   └── list-css-utilities.ts
@@ -123,6 +144,8 @@ mozaic-mcp-server/
 ---
 
 ## MCP Tools to Implement
+
+> Since this section was drafted, Web Components, Freemarker, and icon tools shipped too. See [Shipped Additions](#shipped-additions-post-planning) below for what actually exists; keep both in sync when adding tools.
 
 ### 1. `get_design_tokens`
 
@@ -330,6 +353,31 @@ List available CSS-only utilities by category.
   }
 }
 ```
+
+---
+
+## Shipped Additions (post-planning)
+
+Tools and integrations added after the original plan above, not yet reflected in the numbered spec:
+
+| Tool                    | Purpose                                                                 |
+| ----------------------- | ------------------------------------------------------------------------ |
+| `generate_webcomponent` | Generate native Web Component HTML using `@adeo/mozaic-web-components`   |
+| `get_webcomponent_info` | Get a Web Component's attributes, slots, events, CSS custom properties   |
+| `list_webcomponents`    | List Web Components by category                                        |
+| `generate_freemarker`   | Generate Freemarker macro usage code                                    |
+| `get_freemarker_info`   | Get a Freemarker macro's parameters and usage                          |
+| `list_freemarker`       | List available Freemarker macros                                       |
+| `get_icon`              | Get an icon's SVG/metadata by name                                     |
+| `search_icons`          | Search icons by name or type                                            |
+| `get_install_info`      | Get install/setup instructions (npx installer, skills, MCP modes)       |
+
+**HTTP server (NestJS):** alongside the stdio MCP server (`src/index.ts`), `src/main.ts` boots a NestJS HTTP app exposing:
+
+- `POST /mcp` — full MCP tool set over HTTP, for web/v0 clients (CORS-enabled for `v0.dev`)
+- `POST /mcp/light` — lightweight JSON-RPC 2.0 endpoint (including `initialize`) exposing a reduced set of token/CSS-utility/icon tools without the full component/doc database
+- `GET /api` — Swagger docs, `GET /health` — health check
+- Bearer-token auth via `src/auth/auth.guard.ts`
 
 ---
 
