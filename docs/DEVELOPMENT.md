@@ -67,6 +67,23 @@ An MCP (Model Context Protocol) server that exposes the **Mozaic Design System**
 @mozaic-ds/vue-3         # Vue 3 components
 ```
 
+### Hand-Authored Sources
+
+Every source above is a vendored repo under `repos/` that `build-index.ts` parses. The **style guide catalog** is the one exception: it has no upstream repo to parse, so its content is authored directly in this repository.
+
+```
+style-guides/<slug>/
+├── meta.json       # { name, category, site, description, components: string[] }
+└── screenshot.png  # Reference screenshot of the composed pattern
+```
+
+- `<slug>` is the `style_guides.slug` primary key (e.g. `modal-confirm`, `cascading-column-browser`).
+- `category` is the pattern shape (reusable across sites); `site` is the source app the screenshot was captured from (e.g. `elo`, `sop`) — two independent axes, both open strings, both filterable via `list_style_guides(category?, site?)`.
+- `components` is a list of component **slugs** (matching `components.slug`), not names — used to cross-link a pattern to the component docs/builder skills.
+- `build-index.ts` fails fast if a folder is missing `meta.json`, `screenshot.png`, or has malformed JSON — same convention as every other core table.
+- Known categories so far: `modal-confirm`, `nav-header`, `search-filter`, `data-table`, `master-detail`, `calendar-view`, `onboarding-stepper`, `cascading-column-browser`, `detail-view`, `form`.
+- Known sites so far: `elo`, `sop`.
+
 ---
 
 ## Architecture
@@ -371,6 +388,8 @@ Tools and integrations added after the original plan above, not yet reflected in
 | `get_icon`              | Get an icon's SVG/metadata by name                                     |
 | `search_icons`          | Search icons by name or type                                            |
 | `get_install_info`      | Get install/setup instructions (npx installer, skills, MCP modes)       |
+| `list_style_guides`     | List style guide patterns, filter by category and/or site (no full-text search) |
+| `get_style_guide`       | Get a pattern's screenshot (base64 image content block) + linked component slugs |
 
 **HTTP server (NestJS):** alongside the stdio MCP server (`src/index.ts`), `src/main.ts` boots a NestJS HTTP app exposing:
 
@@ -676,6 +695,24 @@ CREATE VIRTUAL TABLE docs_fts USING fts5(
   content='documentation',
   content_rowid='id'
 );
+
+-- Style Guides (hand-authored composed-pattern catalog, source: style-guides/<slug>/meta.json)
+-- Small, browse-only table: no FTS table (list_style_guides only filters by category/site).
+CREATE TABLE style_guides (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  slug TEXT NOT NULL UNIQUE,      -- 'modal-confirm', 'cascading-column-browser'
+  name TEXT NOT NULL,
+  category TEXT NOT NULL,         -- pattern shape: 'modal-confirm', 'nav-header', 'search-filter',
+                                   -- 'data-table', 'master-detail', 'calendar-view',
+                                   -- 'onboarding-stepper', 'cascading-column-browser', 'detail-view', 'form'
+  site TEXT,                      -- source app the screenshot was captured from, e.g. 'elo', 'sop'
+  description TEXT NOT NULL,
+  components TEXT,                -- JSON array of component slugs, e.g. '["button","modal","text-input"]'
+  image_path TEXT NOT NULL        -- Relative path to style-guides/<slug>/screenshot.png
+);
+
+CREATE INDEX idx_style_guides_category ON style_guides(category);
+CREATE INDEX idx_style_guides_site ON style_guides(site);
 ```
 
 ---

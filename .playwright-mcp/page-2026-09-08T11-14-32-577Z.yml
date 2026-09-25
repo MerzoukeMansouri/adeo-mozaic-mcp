@@ -1,0 +1,531 @@
+- generic [active] [ref=f22e1]:
+  - navigation "Menu principale ELO" [ref=f22e2]:
+    - generic [ref=f22e3]:
+      - generic [ref=f22e4]:
+        - checkbox "Ingrandire il menu di navigazione" [ref=f22e5] [cursor=pointer]
+        - img [aria-hidden] [ref=f22e7] [cursor=pointer]
+      - list [ref=f22e9]:
+        - listitem [ref=f22e10]:
+          - button "Accedi alla ricerca del prodotto" [ref=f22e11] [cursor=pointer]:
+            - generic: Catalogo
+        - listitem [ref=f22e15]:
+          - button "Ricerca clienti - Area clienti" [ref=f22e16] [cursor=pointer]:
+            - generic: Clienti
+        - listitem [ref=f22e20]:
+          - button "Vai al carrello del cliente" [ref=f22e21] [cursor=pointer]:
+            - generic: Carrello
+        - listitem [ref=f22e26]:
+          - button "Vai alla pagina delle prestazioni" [ref=f22e27] [cursor=pointer]:
+            - generic: Performance
+        - listitem [ref=f22e31]:
+          - button "Vai al menu" [ref=f22e32] [cursor=pointer]:
+            - generic: Menu
+  - banner [ref=f22e40]:
+    - generic:
+      - dialog [aria-hidden]:
+        - dialog
+    - generic [ref=f22e42]:
+      - generic [ref=f22e44]:
+        - link "Indietro" [ref=f22e45] [cursor=pointer]:
+          - /url: javascript:history.back()
+        - heading "Risultati della ricerca" [level=1] [ref=f22e48]
+      - search [ref=f22e51]:
+        - combobox "Inserisci i termini da cercare, quindi naviga tra le proposte con le frecce su e giù e clicca per confermare la tua scelta" [ref=f22e52]: trapano
+        - button "Cancella" [ref=f22e53] [cursor=pointer]
+        - button "Ricerca" [ref=f22e56] [cursor=pointer]
+  - navigation "Menu secondario ELO" [ref=f22e60]:
+    - list [ref=f22e62]:
+      - listitem [ref=f22e63]:
+        - link "Catalogo" [ref=f22e64] [cursor=pointer]:
+          - /url: /prodotti/
+      - listitem [ref=f22e65]:
+        - link "Servizi" [ref=f22e66] [cursor=pointer]:
+          - /url: /servizi/
+      - listitem [ref=f22e67]:
+        - link "Configuratori" [ref=f22e68] [cursor=pointer]:
+          - /url: /calcolatori/
+      - listitem [ref=f22e69]:
+        - link "Prodotti non standard" [ref=f22e70] [cursor=pointer]:
+          - /url: /custom-product-form/
+  - generic:
+    - dialog [aria-hidden]:
+      - dialog
+  - generic:
+    - region [aria-hidden]
+    - list
+  - main [ref=f22e71]:
+    - generic [ref=f22e73]:
+      - generic [ref=f22e76]:
+        - list [ref=f22e81]:
+          - listitem [ref=f22e82]:
+            - generic [ref=f22e83]:
+              - generic [ref=f22e84]: Che tipo di “trapano” stai cercando?
+              - list [ref=f22e86]:
+                - listitem [ref=f22e87]:
+                  - generic [ref=f22e88] [cursor=pointer]: Ryobi
+        - generic [ref=f22e92]:
+          - generic [ref=f22e93]:
+            - generic [ref=f22e94]:
+              - button "Ordina i prodotti" [ref=f22e95] [cursor=pointer]
+              - generic [ref=f22e97]:
+                - button "Venduto da Leroy Merlin" [ref=f22e98] [cursor=pointer]
+                - button "Reparti" [ref=f22e101] [cursor=pointer]
+                - button "Prezzo" [ref=f22e103] [cursor=pointer]
+                - button "Recensioni" [ref=f22e105] [cursor=pointer]
+                - button "Tipo di mandrino" [ref=f22e107] [cursor=pointer]
+                - button "Tipo di prodotto" [ref=f22e109] [cursor=pointer]
+                - button "Tipo di motore" [ref=f22e111] [cursor=pointer]
+            - button "Apri la finestra di dialogo dei filtri" [ref=f22e113] [cursor=pointer]:
+              - generic [ref=f22e114]: + filtri
+          - generic [ref=f22e115]:
+            - generic [ref=f22e116]: 38 risultati
+            - button "Scopri come vengono ordinati i risultati" [ref=f22e117] [cursor=pointer]
+            - generic [ref=f22e119]:
+              - generic [ref=f22e120]:
+                - generic [ref=f22e121]: Venduto da Leroy Merlin
+                - button "rimuovere il filtro Venduto da Leroy Merlin" [ref=f22e122] [cursor=pointer]
+              - button "reimpostare tutti i filtri" [ref=f22e124] [cursor=pointer]:
+                - generic [ref=f22e125]: Ripristina
+        - list [ref=f22e126]:
+          - listitem [ref=f22e127]:
+            - article [ref=f22e128]:
+              - generic [ref=f22e129]:
+                - img "Trapano a percussione a batteria METABO SB 18 LT BL 18 V, senza batteria" [ref=f22e132]
+                - generic [ref=f22e133]:
+                  - link "Trapano a percussione a batteria METABO SB 18 LT BL 18 V, senza batteria" [ref=f22e135] [cursor=pointer]:
+                    - /url: /prodotti/trapano-a-percussione-a-batteria-metabo-sb-18-lt-bl-18-v-senza-batteria-80139141.html
+                  - generic [ref=f22e137]:
+                    - paragraph [ref=f22e138]:
+                      - generic [ref=f22e140]: Ritiro gratuito 5 giorni feriali in negozio
+                    - paragraph [ref=f22e141]:
+                      - generic [ref=f22e143] [cursor=pointer]: Verifica la disponibilità in negozio
+              - generic [ref=f22e144]:
+                - paragraph [ref=f22e148]:
+                  - generic [aria-hidden] [ref=f22e149]:
+                    - text: "198"
+                    - generic [ref=f22e150]:
+                      - generic [ref=f22e151]: ",90"
+                      - generic [ref=f22e152]: €
+                    - generic [ref=f22e153]: IVA inclusa
+                  - generic: Venduto 198,90 € IVA inclusa
+                - button "Aggiungi Trapano a percussione a batteria METABO SB 18 LT BL 18 V, senza batteria" [ref=f22e156] [cursor=pointer]:
+                  - generic: Aggiungi
+          - listitem [ref=f22e157]:
+            - article [ref=f22e158]:
+              - generic [ref=f22e159]:
+                - img "Trapano a percussione a batteria RYOBI R18PDBL-0 18 V, batteria non inclusa" [ref=f22e162]
+                - generic [ref=f22e163]:
+                  - link "Trapano a percussione a batteria RYOBI R18PDBL-0 18 V, batteria non inclusa" [ref=f22e165] [cursor=pointer]:
+                    - /url: /prodotti/trapano-a-percussione-a-batteria-ryobi-r18pdbl-0-18-v-batteria-non-inclusa-35788200.html
+                  - generic [ref=f22e168]:
+                    - img "Note 4 sur 5" [ref=f22e169]
+                    - generic [ref=f22e185]: (1)
+                  - paragraph [ref=f22e187]:
+                    - generic [ref=f22e189] [cursor=pointer]: Verifica la disponibilità in negozio
+              - paragraph [ref=f22e194]:
+                - generic [aria-hidden] [ref=f22e195]:
+                  - text: "139"
+                  - generic [ref=f22e196]:
+                    - generic [ref=f22e197]: ",90"
+                    - generic [ref=f22e198]: €
+                  - generic [ref=f22e199]: IVA inclusa
+                - generic: Venduto 139,90 € IVA inclusa
+          - listitem [ref=f22e200]:
+            - article [ref=f22e201]:
+              - generic [ref=f22e202]:
+                - img "Trapano avvitatore a batteria BOSCH AdvanceImpact 18 QuickSnap 18 V, 2.5 Ah, 2 batterie" [ref=f22e205]
+                - generic [ref=f22e206]:
+                  - img "BOSCH" [ref=f22e208]
+                  - link "Trapano avvitatore a batteria BOSCH AdvanceImpact 18 QuickSnap 18 V, 2.5 Ah, 2 batterie" [ref=f22e210] [cursor=pointer]:
+                    - /url: /prodotti/trapano-avvitatore-a-batteria-bosch-advanceimpact-18-quicksnap-18-v-2-5-ah-2-batterie-36592892.html
+                  - paragraph [ref=f22e213]:
+                    - generic [ref=f22e215] [cursor=pointer]: Verifica la disponibilità in negozio
+              - paragraph [ref=f22e220]:
+                - generic [aria-hidden] [ref=f22e221]:
+                  - text: "249"
+                  - generic [ref=f22e222]:
+                    - generic [ref=f22e223]: ",90"
+                    - generic [ref=f22e224]: €
+                  - generic [ref=f22e225]: IVA inclusa
+                - generic: Venduto 249,90 € IVA inclusa
+          - listitem [ref=f22e226]:
+            - article [ref=f22e227]:
+              - generic [ref=f22e228]:
+                - img "Avvitatore a batteria DEXTER SD2.5 3.6 V, 1.5 Ah, 1 batteria" [ref=f22e231]
+                - generic [ref=f22e232]:
+                  - link "Avvitatore a batteria DEXTER SD2.5 3.6 V, 1.5 Ah, 1 batteria" [ref=f22e234] [cursor=pointer]:
+                    - /url: /prodotti/avvitatore-a-batteria-dexter-sd2-5-3-6-v-1-5-ah-1-batteria-82630771.html
+                  - generic [ref=f22e236]:
+                    - paragraph [ref=f22e237]:
+                      - generic [ref=f22e239]: Ritiro gratuito 5 giorni feriali in negozio
+                    - paragraph [ref=f22e240]:
+                      - generic [ref=f22e242] [cursor=pointer]: Verifica la disponibilità in negozio
+              - generic [ref=f22e243]:
+                - paragraph [ref=f22e247]:
+                  - generic [aria-hidden] [ref=f22e248]:
+                    - text: "29"
+                    - generic [ref=f22e249]:
+                      - generic [ref=f22e250]: ",90"
+                      - generic [ref=f22e251]: €
+                    - generic [ref=f22e252]: IVA inclusa
+                  - generic: Venduto 29,90 € IVA inclusa
+                - button "Aggiungi Avvitatore a batteria DEXTER SD2.5 3.6 V, 1.5 Ah, 1 batteria" [ref=f22e255] [cursor=pointer]:
+                  - generic: Aggiungi
+          - listitem [ref=f22e256]:
+            - article [ref=f22e257]:
+              - generic [ref=f22e258]:
+                - img "Punta per vetro e piastrelle morbide codolo cilindrico BOSCH L 70 mm Ø 4 mm" [ref=f22e261]
+                - generic [ref=f22e262]:
+                  - img "BOSCH" [ref=f22e264]
+                  - link "Punta per vetro e piastrelle morbide codolo cilindrico BOSCH L 70 mm Ø 4 mm" [ref=f22e266] [cursor=pointer]:
+                    - /url: /prodotti/punta-per-vetro-e-piastrelle-morbide-codolo-cilindrico-bosch-l-70-mm-4-mm-34661270.html
+                  - generic [ref=f22e269]:
+                    - img "Note 5 sur 5" [ref=f22e270]
+                    - generic [ref=f22e286]: (1)
+                  - paragraph [ref=f22e288]: 1 altra offerta
+                  - generic [ref=f22e289]:
+                    - paragraph [ref=f22e290]:
+                      - generic [ref=f22e292]: Ritiro gratuito 5 giorni feriali in negozio
+                    - paragraph [ref=f22e293]:
+                      - generic [ref=f22e295] [cursor=pointer]: Verifica la disponibilità in negozio
+              - generic [ref=f22e296]:
+                - paragraph [ref=f22e300]:
+                  - generic [aria-hidden] [ref=f22e301]:
+                    - text: "4"
+                    - generic [ref=f22e302]:
+                      - generic [ref=f22e303]: ",49"
+                      - generic [ref=f22e304]: €
+                    - generic [ref=f22e305]: IVA inclusa
+                  - generic: Venduto 4,49 € IVA inclusa
+                - button "Aggiungi Punta per vetro e piastrelle morbide codolo cilindrico BOSCH L 70 mm Ø 4 mm" [ref=f22e308] [cursor=pointer]:
+                  - generic: Aggiungi
+          - listitem [ref=f22e309]:
+            - article [ref=f22e310]:
+              - generic [ref=f22e311]:
+                - img "Set di punte BOSCH codolo cilindrico Ø4-8 mm, 5 pezzi" [ref=f22e314]
+                - generic [ref=f22e315]:
+                  - img "BOSCH" [ref=f22e317]
+                  - link "Set di punte BOSCH codolo cilindrico Ø4-8 mm, 5 pezzi" [ref=f22e319] [cursor=pointer]:
+                    - /url: /prodotti/set-di-punte-bosch-codolo-cilindrico-4-8-mm-5-pezzi-34660276.html
+                  - generic [ref=f22e322]:
+                    - img "Note 3,8 sur 5" [ref=f22e323]
+                    - generic [ref=f22e339]: (6)
+                  - generic [ref=f22e340]:
+                    - paragraph [ref=f22e341]:
+                      - generic [ref=f22e343]: Ritiro gratuito 5 giorni feriali in negozio
+                    - paragraph [ref=f22e344]:
+                      - generic [ref=f22e346] [cursor=pointer]: Verifica la disponibilità in negozio
+              - generic [ref=f22e347]:
+                - paragraph [ref=f22e351]:
+                  - generic [aria-hidden] [ref=f22e352]:
+                    - text: "12"
+                    - generic [ref=f22e353]:
+                      - generic [ref=f22e354]: ",99"
+                      - generic [ref=f22e355]: €
+                    - generic [ref=f22e356]: IVA inclusa
+                  - generic: Venduto 12,99 € IVA inclusa
+                - button "Aggiungi Set di punte BOSCH codolo cilindrico Ø4-8 mm, 5 pezzi" [ref=f22e359] [cursor=pointer]:
+                  - generic: Aggiungi
+          - listitem [ref=f22e360]:
+            - article [ref=f22e361]:
+              - generic [ref=f22e362]:
+                - img "Punta per vetro e piastrelle morbide codolo cilindrico BOSCH L 80 mm Ø 8 mm" [ref=f22e365]
+                - generic [ref=f22e366]:
+                  - img "BOSCH" [ref=f22e368]
+                  - link "Punta per vetro e piastrelle morbide codolo cilindrico BOSCH L 80 mm Ø 8 mm" [ref=f22e370] [cursor=pointer]:
+                    - /url: /prodotti/punta-per-vetro-e-piastrelle-morbide-codolo-cilindrico-bosch-l-80-mm-8-mm-34660976.html
+                  - generic [ref=f22e373]:
+                    - img "Note 3,4 sur 5" [ref=f22e374]
+                    - generic [ref=f22e390]: (5)
+                  - generic [ref=f22e391]:
+                    - paragraph [ref=f22e392]:
+                      - generic [ref=f22e394]: Ritiro gratuito 5 giorni feriali in negozio
+                    - paragraph [ref=f22e395]:
+                      - generic [ref=f22e397] [cursor=pointer]: Verifica la disponibilità in negozio
+              - generic [ref=f22e398]:
+                - paragraph [ref=f22e402]:
+                  - generic [aria-hidden] [ref=f22e403]:
+                    - text: "5"
+                    - generic [ref=f22e404]:
+                      - generic [ref=f22e405]: ",99"
+                      - generic [ref=f22e406]: €
+                    - generic [ref=f22e407]: IVA inclusa
+                  - generic: Venduto 5,99 € IVA inclusa
+                - button "Aggiungi Punta per vetro e piastrelle morbide codolo cilindrico BOSCH L 80 mm Ø 8 mm" [ref=f22e410] [cursor=pointer]:
+                  - generic: Aggiungi
+          - listitem [ref=f22e411]:
+            - article [ref=f22e412]:
+              - generic [ref=f22e413]:
+                - img "Punta per muro codolo cilindrico BOSCH L 100 mm Ø 5 mm" [ref=f22e416]
+                - generic [ref=f22e417]:
+                  - img "BOSCH" [ref=f22e419]
+                  - link "Punta per muro codolo cilindrico BOSCH L 100 mm Ø 5 mm" [ref=f22e421] [cursor=pointer]:
+                    - /url: /prodotti/punta-per-muro-codolo-cilindrico-bosch-l-100-mm-5-mm-34829921.html
+                  - generic [ref=f22e424]:
+                    - img "Note 4 sur 5" [ref=f22e425]
+                    - generic [ref=f22e441]: (1)
+                  - paragraph [ref=f22e443]:
+                    - generic [ref=f22e445] [cursor=pointer]: Verifica la disponibilità in negozio
+              - paragraph [ref=f22e450]:
+                - generic [aria-hidden] [ref=f22e451]:
+                  - text: "5"
+                  - generic [ref=f22e452]:
+                    - generic [ref=f22e453]: ",30"
+                    - generic [ref=f22e454]: €
+                  - generic [ref=f22e455]: IVA inclusa
+                - generic: Venduto 5,30 € IVA inclusa
+          - listitem [ref=f22e456]:
+            - article [ref=f22e457]:
+              - generic [ref=f22e458]:
+                - img "Batteria BOSCH PROFESSIONAL GBA18V 18V 4Ah" [ref=f22e461]
+                - generic [ref=f22e462]:
+                  - img "BOSCH PROFESSIONAL" [ref=f22e464]
+                  - link "Batteria BOSCH PROFESSIONAL GBA18V 18V 4Ah" [ref=f22e466] [cursor=pointer]:
+                    - /url: /prodotti/batteria-bosch-professional-gba18v-18v-4ah-36169392.html
+                  - generic [ref=f22e468]:
+                    - paragraph [ref=f22e469]:
+                      - generic [ref=f22e471]: Ritiro gratuito 5 giorni feriali in negozio
+                    - paragraph [ref=f22e472]:
+                      - generic [ref=f22e474] [cursor=pointer]: Verifica la disponibilità in negozio
+              - generic [ref=f22e475]:
+                - paragraph [ref=f22e479]:
+                  - generic [aria-hidden] [ref=f22e480]:
+                    - text: "108"
+                    - generic [ref=f22e481]:
+                      - generic [ref=f22e482]: ",90"
+                      - generic [ref=f22e483]: €
+                    - generic [ref=f22e484]: IVA inclusa
+                  - generic: Venduto 108,90 € IVA inclusa
+                - button "Aggiungi Batteria BOSCH PROFESSIONAL GBA18V 18V 4Ah" [ref=f22e487] [cursor=pointer]:
+                  - generic: Aggiungi
+          - listitem [ref=f22e488]:
+            - article [ref=f22e489]:
+              - generic [ref=f22e490]:
+                - img "Punta per vetro e piastrelle morbide codolo cilindrico BOSCH L 70 mm Ø 5 mm" [ref=f22e493]
+                - generic [ref=f22e494]:
+                  - img "BOSCH" [ref=f22e496]
+                  - link "Punta per vetro e piastrelle morbide codolo cilindrico BOSCH L 70 mm Ø 5 mm" [ref=f22e498] [cursor=pointer]:
+                    - /url: /prodotti/punta-per-vetro-e-piastrelle-morbide-codolo-cilindrico-bosch-l-70-mm-5-mm-34661172.html
+                  - generic [ref=f22e501]:
+                    - img "Note 3,5 sur 5" [ref=f22e502]
+                    - generic [ref=f22e518]: (2)
+                  - generic [ref=f22e519]:
+                    - paragraph [ref=f22e520]:
+                      - generic [ref=f22e522]: Ritiro gratuito 5 giorni feriali in negozio
+                    - paragraph [ref=f22e523]:
+                      - generic [ref=f22e525] [cursor=pointer]: Verifica la disponibilità in negozio
+              - generic [ref=f22e526]:
+                - paragraph [ref=f22e530]:
+                  - generic [aria-hidden] [ref=f22e531]:
+                    - text: "4"
+                    - generic [ref=f22e532]:
+                      - generic [ref=f22e533]: ",99"
+                      - generic [ref=f22e534]: €
+                    - generic [ref=f22e535]: IVA inclusa
+                  - generic: Venduto 4,99 € IVA inclusa
+                - button "Aggiungi Punta per vetro e piastrelle morbide codolo cilindrico BOSCH L 70 mm Ø 5 mm" [ref=f22e538] [cursor=pointer]:
+                  - generic: Aggiungi
+          - listitem [ref=f22e539]:
+            - article [ref=f22e540]:
+              - generic [ref=f22e544]:
+                - img "BOSCH" [ref=f22e546]
+                - link "Punta per muro codolo SDS Plus BOSCH S4L L 160 mm Ø 8 mm" [ref=f22e548] [cursor=pointer]:
+                  - /url: /prodotti/punta-per-muro-codolo-sds-plus-bosch-s4l-l-160-mm-8-mm-34658736.html
+                - generic [ref=f22e551]:
+                  - img "Note 4 sur 5" [ref=f22e552]
+                  - generic [ref=f22e568]: (1)
+                - generic [ref=f22e569]:
+                  - paragraph [ref=f22e570]:
+                    - generic [ref=f22e572]: Ritiro gratuito 5 giorni feriali in negozio
+                  - paragraph [ref=f22e573]:
+                    - generic [ref=f22e575] [cursor=pointer]: Verifica la disponibilità in negozio
+              - generic [ref=f22e576]:
+                - paragraph [ref=f22e580]:
+                  - generic [aria-hidden] [ref=f22e581]:
+                    - text: "4"
+                    - generic [ref=f22e582]:
+                      - generic [ref=f22e583]: ",99"
+                      - generic [ref=f22e584]: €
+                    - generic [ref=f22e585]: IVA inclusa
+                  - generic: Venduto 4,99 € IVA inclusa
+                - button "Aggiungi Punta per muro codolo SDS Plus BOSCH S4L L 160 mm Ø 8 mm" [ref=f22e588] [cursor=pointer]:
+                  - generic: Aggiungi
+          - listitem [ref=f22e589]:
+            - article [ref=f22e590]:
+              - generic [ref=f22e594]:
+                - img "BOSCH" [ref=f22e596]
+                - link "Punta per muro codolo cilindrico BOSCH L 150 mm Ø 10 mm" [ref=f22e598] [cursor=pointer]:
+                  - /url: /prodotti/punta-per-muro-codolo-cilindrico-bosch-l-150-mm-10-mm-34829970.html
+                - generic [ref=f22e601]:
+                  - img "Note 4,3 sur 5" [ref=f22e602]
+                  - generic [ref=f22e618]: (3)
+                - paragraph [ref=f22e620]:
+                  - generic [ref=f22e622] [cursor=pointer]: Verifica la disponibilità in negozio
+              - paragraph [ref=f22e627]:
+                - generic [aria-hidden] [ref=f22e628]:
+                  - text: "13"
+                  - generic [ref=f22e629]:
+                    - generic [ref=f22e630]: ",20"
+                    - generic [ref=f22e631]: €
+                  - generic [ref=f22e632]: IVA inclusa
+                - generic: Venduto 13,20 € IVA inclusa
+          - listitem [ref=f22e633]:
+            - article [ref=f22e634]:
+              - generic [ref=f22e638]:
+                - link "Batteria RYOBI RB18L15 18V 1.5Ah" [ref=f22e640] [cursor=pointer]:
+                  - /url: /prodotti/batteria-ryobi-rb18l15-18v-1-5ah-34573854.html
+                - paragraph [ref=f22e643]:
+                  - generic [ref=f22e645] [cursor=pointer]: Verifica la disponibilità in negozio
+              - paragraph [ref=f22e650]:
+                - generic [aria-hidden] [ref=f22e651]:
+                  - text: "64"
+                  - generic [ref=f22e652]:
+                    - generic [ref=f22e653]: ",90"
+                    - generic [ref=f22e654]: €
+                  - generic [ref=f22e655]: IVA inclusa
+                - generic: Venduto 64,90 € IVA inclusa
+          - listitem [ref=f22e656]:
+            - article [ref=f22e657]:
+              - generic [ref=f22e661]:
+                - img "BOSCH" [ref=f22e663]
+                - link "Punta a mecchia per legno codolo esagonale BOSCH L 152 mm Ø 30 mm" [ref=f22e665] [cursor=pointer]:
+                  - /url: /prodotti/punta-a-mecchia-per-legno-codolo-esagonale-bosch-l-152-mm-30-mm-81988729.html
+                - generic [ref=f22e667]:
+                  - paragraph [ref=f22e668]:
+                    - generic [ref=f22e670]: Ritiro gratuito 5 giorni feriali in negozio
+                  - paragraph [ref=f22e671]:
+                    - generic [ref=f22e673] [cursor=pointer]: Verifica la disponibilità in negozio
+              - generic [ref=f22e674]:
+                - paragraph [ref=f22e678]:
+                  - generic [aria-hidden] [ref=f22e679]:
+                    - text: "5"
+                    - generic [ref=f22e680]:
+                      - generic [ref=f22e681]: ",65"
+                      - generic [ref=f22e682]: €
+                    - generic [ref=f22e683]: IVA inclusa
+                  - generic: Venduto 5,65 € IVA inclusa
+                - button "Aggiungi Punta a mecchia per legno codolo esagonale BOSCH L 152 mm Ø 30 mm" [ref=f22e686] [cursor=pointer]:
+                  - generic: Aggiungi
+          - listitem [ref=f22e687]:
+            - article [ref=f22e688]:
+              - generic [ref=f22e692]:
+                - img "BOSCH" [ref=f22e694]
+                - link "Ruota abrasiva BOSCH Mola a lamella H 62x L mm, grana 120" [ref=f22e696] [cursor=pointer]:
+                  - /url: /prodotti/ruota-abrasiva-bosch-mola-a-lamella-h-62x-l-mm-grana-120-35561414.html
+                - generic [ref=f22e698]:
+                  - paragraph [ref=f22e699]:
+                    - generic [ref=f22e701]: Ritiro gratuito 5 giorni feriali in negozio
+                  - paragraph [ref=f22e702]:
+                    - generic [ref=f22e704] [cursor=pointer]: Verifica la disponibilità in negozio
+              - generic [ref=f22e705]:
+                - paragraph [ref=f22e709]:
+                  - generic [aria-hidden] [ref=f22e710]:
+                    - text: "9"
+                    - generic [ref=f22e711]:
+                      - generic [ref=f22e712]: ",95"
+                      - generic [ref=f22e713]: €
+                    - generic [ref=f22e714]: IVA inclusa
+                  - generic: Venduto 9,95 € IVA inclusa
+                - button "Aggiungi Ruota abrasiva BOSCH Mola a lamella H 62x L mm, grana 120" [ref=f22e717] [cursor=pointer]:
+                  - generic: Aggiungi
+          - listitem [ref=f22e718]:
+            - article [ref=f22e719]:
+              - generic [ref=f22e723]:
+                - img "BOSCH" [ref=f22e725]
+                - link "Inserto BOSCH" [ref=f22e727] [cursor=pointer]:
+                  - /url: /prodotti/inserto-bosch-35314370.html
+                - paragraph [ref=f22e730]:
+                  - generic [ref=f22e732] [cursor=pointer]: Verifica la disponibilità in negozio
+              - paragraph [ref=f22e737]:
+                - generic [aria-hidden] [ref=f22e738]:
+                  - text: "5"
+                  - generic [ref=f22e739]:
+                    - generic [ref=f22e740]: ",30"
+                    - generic [ref=f22e741]: €
+                  - generic [ref=f22e742]: IVA inclusa
+                - generic: Venduto 5,30 € IVA inclusa
+          - listitem [ref=f22e743]:
+            - article [ref=f22e744]:
+              - generic [ref=f22e748]:
+                - link "Batteria LEXMAN UP20 20V 5Ah" [ref=f22e750] [cursor=pointer]:
+                  - /url: /prodotti/batteria-lexman-up20-20v-5ah-82253642.html
+                - generic [ref=f22e752]:
+                  - paragraph [ref=f22e753]:
+                    - generic [ref=f22e755]: Ritiro gratuito 5 giorni feriali in negozio
+                  - paragraph [ref=f22e756]:
+                    - generic [ref=f22e758]: Consegna a domicilio
+                  - paragraph [ref=f22e759]:
+                    - generic [ref=f22e761] [cursor=pointer]: Verifica la disponibilità in negozio
+              - generic [ref=f22e762]:
+                - paragraph [ref=f22e766]:
+                  - generic [aria-hidden] [ref=f22e767]:
+                    - text: "69"
+                    - generic [ref=f22e768]:
+                      - generic [ref=f22e769]: ",90"
+                      - generic [ref=f22e770]: €
+                    - generic [ref=f22e771]: IVA inclusa
+                  - generic: Venduto 69,90 € IVA inclusa
+                - button "Aggiungi Batteria LEXMAN UP20 20V 5Ah" [ref=f22e774] [cursor=pointer]:
+                  - generic: Aggiungi
+          - listitem [ref=f22e775]:
+            - article [ref=f22e776]:
+              - generic [ref=f22e780]:
+                - img "BOSCH" [ref=f22e782]
+                - link "Inserto BOSCH, 3 pezzi" [ref=f22e784] [cursor=pointer]:
+                  - /url: /prodotti/inserto-bosch-3-pezzi-35314524.html
+                - paragraph [ref=f22e787]:
+                  - generic [ref=f22e789] [cursor=pointer]: Verifica la disponibilità in negozio
+              - paragraph [ref=f22e794]:
+                - generic [aria-hidden] [ref=f22e795]:
+                  - text: "5"
+                  - generic [ref=f22e796]:
+                    - generic [ref=f22e797]: ",30"
+                    - generic [ref=f22e798]: €
+                  - generic [ref=f22e799]: IVA inclusa
+                - generic: Venduto 5,30 € IVA inclusa
+          - listitem [ref=f22e800]:
+            - article [ref=f22e801]
+          - listitem [ref=f22e812]:
+            - article [ref=f22e813]
+          - listitem [ref=f22e824]:
+            - article [ref=f22e825]
+          - listitem [ref=f22e836]:
+            - article [ref=f22e837]
+          - listitem [ref=f22e848]:
+            - article [ref=f22e849]
+          - listitem [ref=f22e860]:
+            - article [ref=f22e861]
+          - listitem [ref=f22e872]:
+            - article [ref=f22e873]
+          - listitem [ref=f22e884]:
+            - article [ref=f22e885]
+          - listitem [ref=f22e896]:
+            - article [ref=f22e897]
+          - listitem [ref=f22e908]:
+            - article [ref=f22e909]
+          - listitem [ref=f22e920]:
+            - article [ref=f22e921]
+          - listitem [ref=f22e932]:
+            - article [ref=f22e933]
+          - listitem [ref=f22e944]:
+            - article [ref=f22e945]
+          - listitem [ref=f22e956]:
+            - article [ref=f22e957]
+          - listitem [ref=f22e968]:
+            - article [ref=f22e969]
+          - listitem [ref=f22e980]:
+            - article [ref=f22e981]
+          - listitem [ref=f22e992]:
+            - article [ref=f22e993]
+          - listitem [ref=f22e1004]:
+            - article [ref=f22e1005]
+          - listitem [ref=f22e1016]:
+            - article [ref=f22e1017]
+          - listitem [ref=f22e1028]:
+            - article [ref=f22e1029]
+      - status [ref=f22e1040]: Aggiornamento pagina completato
+    - generic:
+      - dialog "Si è verificato un errore durante l'inserimento dei prodotti nel carrello":
+        - dialog "Si è verificato un errore durante l'inserimento dei prodotti nel carrello"
+      - dialog [aria-hidden]:
+        - dialog

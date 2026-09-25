@@ -1,0 +1,12 @@
+{
+  "name": "Home Dashboard",
+  "category": "nav-header",
+  "site": "elo",
+  "description": "Home screen with a persistent top icon-nav bar, a personalized greeting with a prominent global search bar, a large category card grid, and a promo/news list at the bottom.",
+  "components": [
+    "nav-bar",
+    "search-input",
+    "card-grid",
+    "promo-list"
+  ]
+}

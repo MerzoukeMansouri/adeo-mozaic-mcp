@@ -1,0 +1,58 @@
+- generic [active] [ref=f6e1]:
+  - navigation "Menu principale ELO" [ref=f6e2]:
+    - generic [ref=f6e3]:
+      - generic [ref=f6e4]:
+        - checkbox "Ingrandire il menu di navigazione" [ref=f6e5] [cursor=pointer]
+        - img [aria-hidden] [ref=f6e7] [cursor=pointer]
+      - list [ref=f6e9]:
+        - listitem [ref=f6e10]:
+          - button "Accedi alla ricerca del prodotto" [ref=f6e11] [cursor=pointer]:
+            - generic: Catalogo
+        - listitem [ref=f6e15]:
+          - button "Ricerca clienti - Area clienti" [ref=f6e16] [cursor=pointer]:
+            - generic: Clienti
+        - listitem [ref=f6e20]:
+          - button "Vai al carrello del cliente" [ref=f6e21] [cursor=pointer]:
+            - generic: Carrello
+        - listitem [ref=f6e26]:
+          - button "Vai alla pagina delle prestazioni" [ref=f6e27] [cursor=pointer]:
+            - generic: Performance
+        - listitem [ref=f6e31]:
+          - button "Vai al menu" [ref=f6e32] [cursor=pointer]:
+            - generic: Menu
+  - banner [ref=f6e40]:
+    - generic:
+      - dialog [aria-hidden]:
+        - dialog
+    - generic [ref=f6e42]:
+      - heading "Ciao Merzouke" [level=1] [ref=f6e45]
+      - search [ref=f6e48]:
+        - combobox "Inserisci i termini da cercare, quindi naviga tra le proposte con le frecce su e giù e clicca per confermare la tua scelta" [ref=f6e49]
+        - button "Ricerca" [ref=f6e50] [cursor=pointer]
+  - generic:
+    - dialog [aria-hidden]:
+      - dialog
+  - generic:
+    - region [aria-hidden]
+    - list
+  - main [ref=f6e53]:
+    - generic [ref=f6e54]:
+      - generic [ref=f6e59]:
+        - generic [ref=f6e61]:
+          - navigation [ref=f6e62]:
+            - tablist "Ricerca di un cliente" [ref=f6e63]:
+              - tab "Ricerca rapida" [selected] [ref=f6e64] [cursor=pointer]
+              - tab "Ricerca avanzata" [ref=f6e65] [cursor=pointer]
+          - generic [ref=f6e67]:
+            - textbox [aria-hidden]
+            - textbox [aria-hidden]
+            - generic [ref=f6e68]:
+              - textbox "toto (Obbligatorio)" [ref=f6e72]:
+                - /placeholder: E-mail, Telefono, N. ordine, N. Homy, N. cliente, Codice fiscale, P.IVA
+              - button "Avviare la ricerca" [ref=f6e73] [cursor=pointer]
+        - link "Crea account cliente" [ref=f6e78] [cursor=pointer]:
+          - /url: /csa/account-creation.html
+      - list
+  - button "Donne ton avis" [ref=f6e80] [cursor=pointer]
+  - dialog [aria-hidden] [ref=f6e83]:
+    - button [ref=f6e85] [cursor=pointer]

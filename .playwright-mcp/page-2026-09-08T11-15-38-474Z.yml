@@ -1,0 +1,66 @@
+- generic [active] [ref=f6e1]:
+  - navigation "Menu principale ELO" [ref=f6e2]:
+    - generic [ref=f6e3]:
+      - generic [ref=f6e4]:
+        - checkbox "Ingrandire il menu di navigazione" [ref=f6e5] [cursor=pointer]
+        - img [aria-hidden] [ref=f6e7] [cursor=pointer]
+      - list [ref=f6e9]:
+        - listitem [ref=f6e10]:
+          - button "Accedi alla ricerca del prodotto" [ref=f6e11] [cursor=pointer]:
+            - generic: Catalogo
+        - listitem [ref=f6e15]:
+          - button "Ricerca clienti - Area clienti" [ref=f6e16] [cursor=pointer]:
+            - generic: Clienti
+        - listitem [ref=f6e20]:
+          - button "Vai al carrello del cliente" [ref=f6e21] [cursor=pointer]:
+            - generic: Carrello
+        - listitem [ref=f6e26]:
+          - button "Vai alla pagina delle prestazioni" [ref=f6e27] [cursor=pointer]:
+            - generic: Performance
+        - listitem [ref=f6e31]:
+          - button "Vai al menu" [ref=f6e32] [cursor=pointer]:
+            - generic: Menu
+  - banner [ref=f6e40]:
+    - generic:
+      - dialog [aria-hidden]:
+        - dialog
+    - generic [ref=f6e42]:
+      - heading "Menu" [level=1] [ref=f6e45]
+      - search [ref=f6e48]:
+        - combobox "Inserisci i termini da cercare, quindi naviga tra le proposte con le frecce su e giù e clicca per confermare la tua scelta" [ref=f6e49]
+        - button "Ricerca" [ref=f6e50] [cursor=pointer]
+  - generic:
+    - dialog [aria-hidden]:
+      - dialog
+  - generic:
+    - region [aria-hidden]
+    - list
+  - main [ref=f6e53]:
+    - generic [ref=f6e54]:
+      - generic [ref=f6e55]:
+        - generic [ref=f6e57]:
+          - generic [ref=f6e58]:
+            - radio "Vendita a distanza" [ref=f6e59] [cursor=pointer]
+            - generic [ref=f6e60] [cursor=pointer]
+            - generic [ref=f6e61]: Vendita a distanza
+          - generic [ref=f6e65]:
+            - radio "Vendita in negozio" [checked] [ref=f6e66] [cursor=pointer]
+            - generic [ref=f6e67] [cursor=pointer]
+            - generic [ref=f6e68]: Vendita in negozio
+        - generic [ref=f6e73]:
+          - textbox "Ricerca" [ref=f6e76]
+          - heading [level=2] [ref=f6e80]:
+            - button "Preventivo" [ref=f6e81] [cursor=pointer]
+          - heading [level=2] [ref=f6e90]:
+            - button "Servizi" [ref=f6e91] [cursor=pointer]
+          - heading [level=2] [ref=f6e100]:
+            - button "Gestire prodotti e stock" [ref=f6e101] [cursor=pointer]
+          - heading [level=2] [ref=f6e109]:
+            - button "Performance" [ref=f6e110] [cursor=pointer]
+          - heading [level=2] [ref=f6e118]:
+            - button "Impostazioni e cookie" [ref=f6e119] [cursor=pointer]
+          - heading [level=2] [ref=f6e128]:
+            - button "Accesso rapido" [ref=f6e129] [cursor=pointer]
+          - link "Log out" [ref=f6e135] [cursor=pointer]:
+            - /url: /authentication/oauth2/logout
+      - list

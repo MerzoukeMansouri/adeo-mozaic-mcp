@@ -248,6 +248,21 @@ CREATE TRIGGER IF NOT EXISTS icons_au AFTER UPDATE ON icons BEGIN
   INSERT INTO icons_fts(rowid, name, icon_name, type)
   VALUES (new.id, new.name, new.icon_name, new.type);
 END;
+
+-- Style Guides (composed UI patterns, hand-authored under style-guides/<slug>/)
+CREATE TABLE IF NOT EXISTS style_guides (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  slug TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  category TEXT NOT NULL,           -- pattern shape, e.g. 'data-table', 'master-detail', 'modal-confirm'
+  site TEXT,                        -- source app the pattern was captured from, e.g. 'elo', 'sop'
+  description TEXT NOT NULL,
+  components TEXT,                  -- JSON array of component slugs it composes
+  image_path TEXT NOT NULL          -- path (relative to repo root) to the screenshot
+);
+
+CREATE INDEX IF NOT EXISTS idx_style_guides_category ON style_guides(category);
+CREATE INDEX IF NOT EXISTS idx_style_guides_site ON style_guides(site);
 `;
 
 export function initSchema(db: Database.Database): void {

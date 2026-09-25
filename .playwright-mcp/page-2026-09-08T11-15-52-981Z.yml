@@ -1,0 +1,163 @@
+- generic [ref=f12e2]:
+  - navigation [ref=f12e3]:
+    - generic [ref=f12e4]:
+      - button "Open the sidebar" [ref=f12e5] [cursor=pointer]
+      - link "Accueil" [ref=f12e9] [cursor=pointer]:
+        - /url: /
+        - generic [aria-hidden] [ref=f12e16]: Accueil
+      - separator [ref=f12e17]
+      - list [ref=f12e19]:
+        - listitem [ref=f12e20]:
+          - button "Planification" [ref=f12e21] [cursor=pointer]
+          - listitem [ref=f12e27]:
+            - link [ref=f12e28] [cursor=pointer]:
+              - /url: /ahs-sop-calendar/availability
+              - generic [ref=f12e29]: Vérifier la disponibilité
+          - listitem [ref=f12e31]:
+            - link [ref=f12e32] [cursor=pointer]:
+              - /url: /ahs-sop-execution/projects?showFilterBt=false&serviceExecutionStatus=PRESCHEDULED
+              - generic [ref=f12e33]: Programmer un service
+        - listitem [ref=f12e35]:
+          - button "Services et offres" [ref=f12e36] [cursor=pointer]
+          - listitem [ref=f12e43]:
+            - link [ref=f12e44] [cursor=pointer]:
+              - /url: /bizdev/smd/nomenclatures
+              - generic [ref=f12e45]: Nomenclatures
+          - listitem [ref=f12e47]:
+            - link [ref=f12e48] [cursor=pointer]:
+              - /url: /bizdev/smd/service-models
+              - generic [ref=f12e49]: Modèles de service
+          - listitem [ref=f12e51]:
+            - link [ref=f12e52] [cursor=pointer]:
+              - /url: /bizdev/smd/services
+              - generic [ref=f12e53]: Gestion des services
+          - listitem [ref=f12e55]:
+            - link [ref=f12e56] [cursor=pointer]:
+              - /url: /sob/services
+              - generic [ref=f12e57]: Gestion des prix
+        - listitem [ref=f12e59]:
+          - button "Réseaux d'artisans" [ref=f12e60] [cursor=pointer]
+          - listitem [ref=f12e66]:
+            - link [ref=f12e67] [cursor=pointer]:
+              - /url: https://bricoxixsas--recette.sandbox.lightning.force.com
+              - generic [ref=f12e68]: Prospects
+          - listitem [ref=f12e71]:
+            - link [ref=f12e72] [cursor=pointer]:
+              - /url: /spom-collaborator/candidatures
+              - generic [ref=f12e73]: Candidatures
+          - listitem [ref=f12e75]:
+            - link [ref=f12e76] [cursor=pointer]:
+              - /url: /management/service-providers
+              - generic [ref=f12e77]: Entreprises
+          - listitem [ref=f12e79]:
+            - link [ref=f12e80] [cursor=pointer]:
+              - /url: /ahs-sop-provider/work-teams
+              - generic [ref=f12e81]: Équipes
+        - listitem [ref=f12e83]:
+          - button "Gestion de l'exécution" [ref=f12e84] [cursor=pointer]
+          - listitem [ref=f12e91]:
+            - link [ref=f12e92] [cursor=pointer]:
+              - /url: /ahs-sop-execution/projects
+              - generic [ref=f12e93]: Projets
+          - listitem [ref=f12e95]:
+            - link [ref=f12e96] [cursor=pointer]:
+              - /url: /ahs-sop-calendar/service-execution
+              - generic [ref=f12e97]: Calendrier d'exécution des services
+          - listitem [ref=f12e99]:
+            - link [ref=f12e100] [cursor=pointer]:
+              - /url: /ahs-sop-execution/service-executions
+              - generic [ref=f12e101]: Exécutions de service
+        - listitem [ref=f12e103]:
+          - button "Factures" [ref=f12e104] [cursor=pointer]
+        - listitem [ref=f12e114]:
+          - button "Centre de messagerie de service" [ref=f12e115] [cursor=pointer]
+          - listitem [ref=f12e122]:
+            - link [ref=f12e123] [cursor=pointer]:
+              - /url: /ahs-com-center-front/messages-templates
+              - generic [ref=f12e124]: Modèles de messages
+          - listitem [ref=f12e126]:
+            - link [ref=f12e127] [cursor=pointer]:
+              - /url: /ahs-com-center-front/messages-requests
+              - generic [ref=f12e128]: Demande de messages
+          - listitem [ref=f12e130]:
+            - link [ref=f12e131] [cursor=pointer]:
+              - /url: /ahs-com-center-front/tv-report-mapping
+              - generic [ref=f12e132]: Notifications de rapport de TV
+      - generic [ref=f12e134]:
+        - separator [ref=f12e135]
+        - list [ref=f12e136]:
+          - listitem [ref=f12e137]:
+            - link "Centre d'aide" [ref=f12e138] [cursor=pointer]:
+              - /url: https://adeohomeservices1704970811.zendesk.com/hc/signin
+              - generic [aria-hidden] [ref=f12e146]: Centre d'aide
+          - listitem [ref=f12e147]:
+            - link "Changer de pays" [ref=f12e148] [cursor=pointer]:
+              - /url: javascript:void(null)
+              - generic [ref=f12e149]:
+                - paragraph [ref=f12e152]: 🇵🇹
+                - generic [aria-hidden] [ref=f12e153]: Changer de pays
+    - generic [ref=f12e154]:
+      - button "Open the user sub menu" [ref=f12e155]
+      - listitem [ref=f12e159]:
+        - link [ref=f12e160] [cursor=pointer]:
+          - /url: javascript:void(null)
+          - generic [ref=f12e161]: Changer mon langage
+      - listitem [ref=f12e163]:
+        - link [ref=f12e164] [cursor=pointer]:
+          - /url: https://idpb2e-rec.adeo.com/idp/startSLO.ping?TargetResource=https%3A%2F%2Fuat1-ahs-use-ope.mutu.ccdp-nprd.kobi.adeo.cloud%2Fahs-use-operator-portal-auth-check%2Fauth%2Flogout
+          - generic [ref=f12e165]: Déconnexion
+  - generic [ref=f12e482]:
+    - generic [ref=f12e483]:
+      - generic [ref=f12e484]:
+        - generic [ref=f12e485] [cursor=pointer]: Retour à
+        - 'heading "Créer : Code BU AHSC Langue Français" [level=1] [ref=f12e488]':
+          - generic [ref=f12e489]: "Créer :"
+          - generic [ref=f12e491]:
+            - generic [ref=f12e492]:
+              - generic [ref=f12e493]: Code BU
+              - combobox "Code BU" [disabled] [ref=f12e495]:
+                - option "AHSC" [selected]
+                - option "LMFR"
+                - option "LMES"
+                - option "LMPT"
+                - option "LMIT"
+                - option "LMPL"
+            - generic [ref=f12e496]:
+              - generic [ref=f12e497]: Langue
+              - combobox "Langue" [ref=f12e499]:
+                - option "English"
+                - option "Français" [selected]
+                - option "Português"
+                - option "Español"
+                - option "Italiano"
+                - option "Polski"
+      - generic [ref=f12e500]:
+        - separator [ref=f12e501]
+        - navigation "Description du pas à pas" [ref=f12e504]:
+          - list [ref=f12e505]:
+            - listitem "#1 Général, étape actuelle" [ref=f12e506]:
+              - generic [ref=f12e508]: "1"
+              - generic [ref=f12e509]: Général
+            - listitem "#2 Caractéristiques, étape désactivée" [ref=f12e510]:
+              - generic [ref=f12e512]: Caractéristiques
+    - generic [ref=f12e514]:
+      - generic [ref=f12e516]:
+        - generic [ref=f12e520]:
+          - generic [ref=f12e521]: Nom - obligatoire
+          - textbox "Nom" [ref=f12e523]
+        - generic [ref=f12e525]:
+          - generic [ref=f12e527]:
+            - generic [ref=f12e528]: Elément de Nomenclature de niveau 1 - obligatoire
+            - textbox "Elément de Nomenclature de niveau 1 Elément de Nomenclature de niveau 2 Élément de nomenclature" [ref=f12e533]:
+              - /placeholder: Trouver d'abord un élément de nomenclature niveau 1
+          - generic [ref=f12e536]:
+            - generic [ref=f12e537]: Elément de Nomenclature de niveau 2 - obligatoire
+            - textbox "Trouvez ensuite un élément de nomenclature niveau 2" [disabled] [ref=f12e542]
+          - generic [ref=f12e545]:
+            - generic [ref=f12e546]: Élément de nomenclature - obligatoire
+            - textbox "Rechercher un élément de nomenclature" [disabled] [ref=f12e551]
+      - generic [ref=f12e552]:
+        - button "Continuer" [disabled] [ref=f12e554]
+        - button "Annuler" [ref=f12e559] [cursor=pointer]
+    - contentinfo [ref=f12e560]:
+      - paragraph [ref=f12e562]: Accessibilité (non conforme)

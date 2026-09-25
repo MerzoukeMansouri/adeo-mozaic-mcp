@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 
 import { execSync } from "child_process";
-import { existsSync, mkdirSync, rmSync } from "fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
@@ -12,7 +12,9 @@ import {
   insertCssUtilities,
   insertDocs,
   insertIcons,
+  insertStyleGuides,
   insertTokens,
+  type StyleGuide,
 } from "../src/db/queries.js";
 import { parseDocumentation, parseStorybookDocs } from "../src/parsers/docs-parser.js";
 import { parseIcons } from "../src/parsers/icons-parser.js";
@@ -333,6 +335,73 @@ async function indexIcons(db: ReturnType<typeof initDatabase>): Promise<number> 
   return icons.length;
 }
 
+async function indexStyleGuides(db: ReturnType<typeof initDatabase>): Promise<number> {
+  console.log("🖼️  Indexing style guides...");
+
+  const styleGuidesPath = join(PROJECT_ROOT, "style-guides");
+
+  if (!existsSync(styleGuidesPath)) {
+    throw new Error(
+      `Style guides path not found: ${styleGuidesPath}. Add at least one style-guides/<slug>/{meta.json,screenshot.png} folder.`
+    );
+  }
+
+  const slugs = readdirSync(styleGuidesPath, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
+
+  if (slugs.length === 0) {
+    throw new Error(`No style guide folders found under ${styleGuidesPath}.`);
+  }
+
+  const guides: StyleGuide[] = slugs.map((slug) => {
+    const dir = join(styleGuidesPath, slug);
+    const metaPath = join(dir, "meta.json");
+    const imagePath = join(dir, "screenshot.png");
+
+    if (!existsSync(metaPath)) {
+      throw new Error(`Style guide "${slug}" is missing meta.json (${metaPath}).`);
+    }
+    if (!existsSync(imagePath)) {
+      throw new Error(`Style guide "${slug}" is missing screenshot.png (${imagePath}).`);
+    }
+
+    let meta: {
+      name?: string;
+      category?: string;
+      site?: string;
+      description?: string;
+      components?: string[];
+    };
+    try {
+      meta = JSON.parse(readFileSync(metaPath, "utf-8"));
+    } catch (error) {
+      throw new Error(`Style guide "${slug}" has invalid JSON in meta.json: ${error}`);
+    }
+
+    if (!meta.name || !meta.category || !meta.description) {
+      throw new Error(
+        `Style guide "${slug}" meta.json must include "name", "category", and "description".`
+      );
+    }
+
+    return {
+      slug,
+      name: meta.name,
+      category: meta.category,
+      site: meta.site,
+      description: meta.description,
+      components: meta.components,
+      imagePath: `style-guides/${slug}/screenshot.png`,
+    };
+  });
+
+  insertStyleGuides(db, guides);
+
+  console.log(`   ✓ Indexed ${guides.length} style guides`);
+  return guides.length;
+}
+
 function printHeader(): void {
   console.log("");
   console.log("╔══════════════════════════════════════════════════════════╗");
@@ -385,6 +454,7 @@ async function main(): Promise<void> {
   await indexDocumentation(db);
   await indexStorybookDocs(db);
   await indexIcons(db);
+  await indexStyleGuides(db);
 
   // Print stats
   console.log("\n📊 Database Statistics:");
@@ -394,6 +464,7 @@ async function main(): Promise<void> {
   console.log(`   • CSS Utilities: ${stats.cssUtilities}`);
   console.log(`   • Documentation: ${stats.documentation}`);
   console.log(`   • Icons: ${stats.icons}`);
+  console.log(`   • Style Guides: ${stats.styleGuides}`);
 
   db.close();
 

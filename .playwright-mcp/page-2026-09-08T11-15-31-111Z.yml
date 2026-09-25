@@ -1,0 +1,135 @@
+- generic [active] [ref=e1]:
+  - navigation "Menu principale ELO" [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - checkbox "Ingrandire il menu di navigazione" [ref=e5] [cursor=pointer]
+        - img [aria-hidden] [ref=e7] [cursor=pointer]
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - button "Accedi alla ricerca del prodotto" [ref=e11] [cursor=pointer]:
+            - generic: Catalogo
+        - listitem [ref=e15]:
+          - button "Ricerca clienti - Area clienti" [ref=e16] [cursor=pointer]:
+            - generic: Clienti
+        - listitem [ref=e20]:
+          - button "Vai al carrello del cliente" [ref=e21] [cursor=pointer]:
+            - generic: Carrello
+        - listitem [ref=e26]:
+          - button "Vai alla pagina delle prestazioni" [ref=e27] [cursor=pointer]:
+            - generic: Performance
+        - listitem [ref=e31]:
+          - button "Vai al menu" [ref=e32] [cursor=pointer]:
+            - generic: Menu
+  - banner [ref=e40]:
+    - generic:
+      - dialog [aria-hidden]:
+        - dialog
+    - generic [ref=e42]:
+      - heading "Ciao Merzouke" [level=1] [ref=e45]
+      - search [ref=e48]:
+        - combobox "Inserisci i termini da cercare, quindi naviga tra le proposte con le frecce su e giù e clicca per confermare la tua scelta" [ref=e49]
+        - button "Ricerca" [ref=e50] [cursor=pointer]
+  - generic:
+    - dialog [aria-hidden]:
+      - dialog
+  - generic:
+    - region [aria-hidden]
+    - list [ref=e53]:
+      - listitem [ref=e54]:
+        - status [ref=e55]:
+          - generic [ref=e59]:
+            - heading "Sei in modalità \"Vendita in negozio\"" [level=2] [ref=e60]
+            - paragraph [ref=e61]: È possibile modificarla ora o in seguito nel menu.
+            - button "Modifica ruolo" [ref=e63] [cursor=pointer]
+          - button "Close" [ref=e64] [cursor=pointer]
+  - main [ref=e67]:
+    - generic [ref=e68]:
+      - heading "Scopri le nostre categorie" [level=2] [ref=e69]
+      - list [ref=e70]:
+        - listitem [ref=e71]:
+          - heading [level=3] [ref=e73]:
+            - link "Bagno" [ref=e74] [cursor=pointer]:
+              - /url: /prodotti/bagno/
+        - listitem [ref=e75]:
+          - heading [level=3] [ref=e77]:
+            - link "Cucina" [ref=e78] [cursor=pointer]:
+              - /url: /prodotti/cucina/
+        - listitem [ref=e79]:
+          - heading [level=3] [ref=e81]:
+            - link "Decorazione" [ref=e82] [cursor=pointer]:
+              - /url: /prodotti/decorazione/
+        - listitem [ref=e83]:
+          - heading [level=3] [ref=e85]:
+            - link "Edilizia" [ref=e86] [cursor=pointer]:
+              - /url: /prodotti/edilizia/
+        - listitem [ref=e87]:
+          - heading [level=3] [ref=e89]:
+            - link "Elettricità, automazioni e smart home" [ref=e90] [cursor=pointer]:
+              - /url: /prodotti/elettricita-automazioni-e-smart-home/
+        - listitem [ref=e91]:
+          - heading [level=3] [ref=e95]:
+            - link "Falegnameria" [ref=e96] [cursor=pointer]:
+              - /url: /prodotti/falegnameria/
+        - listitem [ref=e97]:
+          - heading [level=3] [ref=e101]:
+            - link "Ferramenta" [ref=e102] [cursor=pointer]:
+              - /url: /prodotti/ferramenta/
+        - listitem [ref=e103]:
+          - heading [level=3] [ref=e105]:
+            - link "Finestre, porte e scale" [ref=e106] [cursor=pointer]:
+              - /url: /prodotti/finestre-porte-e-scale/
+        - listitem [ref=e107]:
+          - heading [level=3] [ref=e109]:
+            - link "Giardino e terrazzo" [ref=e110] [cursor=pointer]:
+              - /url: /prodotti/giardino-e-terrazzo/
+        - listitem [ref=e111]:
+          - heading [level=3] [ref=e113]:
+            - link "Illuminazione" [ref=e114] [cursor=pointer]:
+              - /url: /prodotti/illuminazione/
+        - listitem [ref=e115]:
+          - heading [level=3] [ref=e117]:
+            - link "Ordine e sistemazione" [ref=e118] [cursor=pointer]:
+              - /url: /prodotti/ordine-e-sistemazione/
+        - listitem [ref=e119]:
+          - heading [level=3] [ref=e121]:
+            - link "Pavimenti e rivestimenti" [ref=e122] [cursor=pointer]:
+              - /url: /prodotti/pavimenti-e-rivestimenti/
+        - listitem [ref=e123]:
+          - heading [level=3] [ref=e125]:
+            - link "Stufe, climatizzatori e idraulica" [ref=e126] [cursor=pointer]:
+              - /url: /prodotti/stufe-climatizzatori-e-idraulica/
+        - listitem [ref=e127]:
+          - heading [level=3] [ref=e131]:
+            - link "Utensileria" [ref=e132] [cursor=pointer]:
+              - /url: /prodotti/utensileria/
+        - listitem [ref=e133]:
+          - heading [level=3] [ref=e137]:
+            - link "Vernici" [ref=e138] [cursor=pointer]:
+              - /url: /prodotti/vernici/
+        - listitem [ref=e139]:
+          - heading [level=3] [ref=e143]:
+            - link "Domotica e Smart Home" [ref=e144] [cursor=pointer]:
+              - /url: /prodotti/domotica-e-smart-home/
+        - listitem [ref=e145]:
+          - heading [level=3] [ref=e149]:
+            - link "Le nostre Scelte Responsabili" [ref=e150] [cursor=pointer]:
+              - /url: /prodotti/positive-products/
+        - listitem [ref=e151]:
+          - heading [level=3] [ref=e155]:
+            - link "Arredamento" [ref=e156] [cursor=pointer]:
+              - /url: /prodotti/arredamento/
+    - generic [ref=e158]:
+      - heading "Proprio adesso" [level=2] [ref=e159]
+      - list [ref=e160]:
+        - listitem [ref=e161]:
+          - link "Scopri di più catalogo giardino 2024" [ref=e163] [cursor=pointer]:
+            - /url: "#"
+            - text: Scopri di più
+        - listitem [ref=e164]:
+          - link "Scopri di più Ora di rinnovare" [ref=e166] [cursor=pointer]:
+            - /url: /offerte/ora-di-rinnovare/
+            - text: Scopri di più
+        - listitem [ref=e167]:
+          - link "Scopri di più Soluzioni di installazione e posa pensate per te" [ref=e169] [cursor=pointer]:
+            - /url: /test-servizi/ritiro-e-consegna/soluzioni-di-installazione-e-posa-pensate-per-te.html
+            - text: Scopri di più

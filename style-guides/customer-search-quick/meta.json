@@ -1,0 +1,12 @@
+{
+  "name": "Customer Quick Search",
+  "category": "search-filter",
+  "site": "elo",
+  "description": "Customer lookup screen with a tab switcher between quick and advanced search, above a minimal single-field quick-search form accepting any of several identifiers, plus a secondary create-account link.",
+  "components": [
+    "tabs",
+    "text-input",
+    "button",
+    "text-link"
+  ]
+}

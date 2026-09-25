@@ -1,0 +1,14 @@
+{
+  "name": "Services Management List",
+  "category": "data-table",
+  "site": "sop",
+  "description": "Main services list — a paginated, sortable data table with page-level scope selectors in the header, a search bar, advanced-filter trigger, bulk-edit and create actions above the grid, and a page-size selector with numbered pager below.",
+  "components": [
+    "dropdown",
+    "search-input",
+    "button",
+    "data-table",
+    "badge",
+    "pagination"
+  ]
+}

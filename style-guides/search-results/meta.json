@@ -1,0 +1,15 @@
+{
+  "name": "Product Search Results",
+  "category": "search-filter",
+  "site": "elo",
+  "description": "Product search results page with a left-aligned facet/filter chip bar, active-filter pills with individual remove buttons and a reset-all action, a filter-dialog trigger, sort control, and a responsive product card grid.",
+  "components": [
+    "search-input",
+    "filter-chip",
+    "filter-dialog",
+    "sort-dropdown",
+    "product-card",
+    "rating",
+    "button"
+  ]
+}

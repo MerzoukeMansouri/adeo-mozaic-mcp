@@ -4,9 +4,9 @@ Self-contained Claude Code skills for working with the Mozaic Design System. No 
 
 ## Overview
 
-**6 Self-Contained Skills** that use **local shell scripts** (~18 scripts total) to query a SQLite database.
+**7 Self-Contained Skills** that use **local shell scripts** (~18 scripts total) to query a SQLite database, plus **1 MCP-tool skill** (`mozaic-style-guide`) that calls the MCP server directly to return an image content block.
 
-**Architecture Pattern**: Skills provide workflows + data access through bash scripts → local database
+**Architecture Pattern**: Skills provide workflows + data access through bash scripts → local database (or, for `mozaic-style-guide`, through MCP tool calls)
 
 ## Skills Summary
 
@@ -18,8 +18,9 @@ Self-contained Claude Code skills for working with the Mozaic Design System. No 
 | `mozaic-design-tokens` | Agnostic | Design tokens and styling expert | 2 scripts |
 | `mozaic-css-utilities` | Agnostic | CSS utility classes and layouts | 2 scripts |
 | `mozaic-icons` | Both | Icon search and integration | 2 scripts |
+| `mozaic-style-guide` | Agnostic | Composed-pattern catalog (compliance/reference layer) | MCP tools (no scripts) |
 
-**Total**: 6 skills with 18 shell scripts querying `~/.claude/mozaic.db`
+**Total**: 8 skills; 7 self-contained with 18 shell scripts querying `~/.claude/mozaic.db`, 1 (`mozaic-style-guide`) calling MCP tools directly
 
 ---
 
@@ -263,6 +264,48 @@ Skill: Shows cart icons → User selects size/framework → Generates code
 - Need icons in specific sizes
 - Want Vue or React icon components
 - Building navigation, actions, social links
+
+---
+
+## Skill 7: mozaic-style-guide
+
+**Location**: `skills/mozaic-style-guide/skill.md`
+
+### Purpose
+Framework-agnostic compliance/reference layer: a catalog of real, composed Mozaic UI patterns (not single components) so any coding agent can see how components are combined correctly before generating code, then hand off to the matching framework builder skill.
+
+### MCP Tools
+- `list_style_guides(category?, site?)` - List patterns, optionally filtered by category and/or source site (no full-text search, the table stays small)
+- `get_style_guide(slug)` - Returns the pattern's screenshot as a base64 image content block, its relative path as text, its source site, and the linked component slugs
+
+### Key Features
+- Browse patterns by category (modal-confirm, nav-header, search-filter, data-table, master-detail, calendar-view, onboarding-stepper, cascading-column-browser, detail-view, form) and/or by source site (elo, sop)
+- Visual reference: the agent actually sees the composed screenshot, not just a text description
+- Lists the component slugs used in the pattern, to cross-reference component docs
+- Hands off code generation to `mozaic-react-builder` / `mozaic-vue-builder` / `mozaic-webcomponents-builder` / `mozaic-freemarker-builder` depending on the target stack
+
+### Example Usage
+```
+User: "I need a confirmation modal like the rest of the app"
+Skill: Calls list_style_guides(category: "modal-confirm") → get_style_guide("sales-mode-modal")
+       Shows the screenshot + linked components (modal, radio-group, button) → hands off to the
+       framework builder skill matching the project's stack to generate the actual code
+```
+
+### Use When
+- Building a UI that should match an established Mozaic pattern, not just a single component
+- Unsure how components compose into a real screen (modal + button + form, header + nav, etc.)
+- Need a compliance check against real internal examples before generating code
+- Working in any framework - React, Vue, Web Components, or Freemarker
+
+### Authoring a Style Guide Entry
+Contributors add new patterns as a hand-authored folder (not parsed from a vendored repo):
+```
+style-guides/<slug>/
+├── meta.json       # { name, category, site, description, components: string[] }
+└── screenshot.png  # Reference screenshot of the composed pattern
+```
+`category` is the pattern shape (reusable across sites); `site` is which app it was captured from (e.g. `elo`, `sop`) — both open strings, both filterable. `components` lists component **slugs** (matching the `components` table), used to cross-link to builder skills. The build step fails fast on a missing/malformed folder.
 
 ---
 

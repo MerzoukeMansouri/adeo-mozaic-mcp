@@ -1,0 +1,107 @@
+- navigation [ref=f13e3]:
+  - generic [ref=f13e4]:
+    - button "Open the sidebar" [ref=f13e5] [cursor=pointer]
+    - link "Accueil" [ref=f13e9] [cursor=pointer]:
+      - /url: /
+      - generic [aria-hidden] [ref=f13e16]: Accueil
+    - separator [ref=f13e17]
+    - list [ref=f13e19]:
+      - listitem [ref=f13e20]:
+        - button "Planification" [ref=f13e21] [cursor=pointer]
+        - listitem [ref=f13e27]:
+          - link [ref=f13e28] [cursor=pointer]:
+            - /url: /ahs-sop-calendar/availability
+            - generic [ref=f13e29]: Vérifier la disponibilité
+        - listitem [ref=f13e31]:
+          - link [ref=f13e32] [cursor=pointer]:
+            - /url: /ahs-sop-execution/projects?showFilterBt=false&serviceExecutionStatus=PRESCHEDULED
+            - generic [ref=f13e33]: Programmer un service
+      - listitem [ref=f13e35]:
+        - button "Services et offres" [ref=f13e36] [cursor=pointer]
+        - listitem [ref=f13e43]:
+          - link [ref=f13e44] [cursor=pointer]:
+            - /url: /bizdev/smd/nomenclatures
+            - generic [ref=f13e45]: Nomenclatures
+        - listitem [ref=f13e47]:
+          - link [ref=f13e48] [cursor=pointer]:
+            - /url: /bizdev/smd/service-models
+            - generic [ref=f13e49]: Modèles de service
+        - listitem [ref=f13e51]:
+          - link [ref=f13e52] [cursor=pointer]:
+            - /url: /bizdev/smd/services
+            - generic [ref=f13e53]: Gestion des services
+        - listitem [ref=f13e55]:
+          - link [ref=f13e56] [cursor=pointer]:
+            - /url: /sob/services
+            - generic [ref=f13e57]: Gestion des prix
+      - listitem [ref=f13e59]:
+        - button "Réseaux d'artisans" [ref=f13e60] [cursor=pointer]
+        - listitem [ref=f13e66]:
+          - link [ref=f13e67] [cursor=pointer]:
+            - /url: https://bricoxixsas--recette.sandbox.lightning.force.com
+            - generic [ref=f13e68]: Prospects
+        - listitem [ref=f13e71]:
+          - link [ref=f13e72] [cursor=pointer]:
+            - /url: /spom-collaborator/candidatures
+            - generic [ref=f13e73]: Candidatures
+        - listitem [ref=f13e75]:
+          - link [ref=f13e76] [cursor=pointer]:
+            - /url: /management/service-providers
+            - generic [ref=f13e77]: Entreprises
+        - listitem [ref=f13e79]:
+          - link [ref=f13e80] [cursor=pointer]:
+            - /url: /ahs-sop-provider/work-teams
+            - generic [ref=f13e81]: Équipes
+      - listitem [ref=f13e83]:
+        - button "Gestion de l'exécution" [ref=f13e84] [cursor=pointer]
+        - listitem [ref=f13e91]:
+          - link [ref=f13e92] [cursor=pointer]:
+            - /url: /ahs-sop-execution/projects
+            - generic [ref=f13e93]: Projets
+        - listitem [ref=f13e95]:
+          - link [ref=f13e96] [cursor=pointer]:
+            - /url: /ahs-sop-calendar/service-execution
+            - generic [ref=f13e97]: Calendrier d'exécution des services
+        - listitem [ref=f13e99]:
+          - link [ref=f13e100] [cursor=pointer]:
+            - /url: /ahs-sop-execution/service-executions
+            - generic [ref=f13e101]: Exécutions de service
+      - listitem [ref=f13e103]:
+        - button "Factures" [ref=f13e104] [cursor=pointer]
+      - listitem [ref=f13e114]:
+        - button "Centre de messagerie de service" [ref=f13e115] [cursor=pointer]
+        - listitem [ref=f13e122]:
+          - link [ref=f13e123] [cursor=pointer]:
+            - /url: /ahs-com-center-front/messages-templates
+            - generic [ref=f13e124]: Modèles de messages
+        - listitem [ref=f13e126]:
+          - link [ref=f13e127] [cursor=pointer]:
+            - /url: /ahs-com-center-front/messages-requests
+            - generic [ref=f13e128]: Demande de messages
+        - listitem [ref=f13e130]:
+          - link [ref=f13e131] [cursor=pointer]:
+            - /url: /ahs-com-center-front/tv-report-mapping
+            - generic [ref=f13e132]: Notifications de rapport de TV
+    - generic [ref=f13e134]:
+      - separator [ref=f13e135]
+      - list [ref=f13e136]:
+        - listitem [ref=f13e137]:
+          - link "Centre d'aide" [ref=f13e138] [cursor=pointer]:
+            - /url: https://adeohomeservices1704970811.zendesk.com/hc/signin
+            - generic [aria-hidden] [ref=f13e146]: Centre d'aide
+        - listitem [ref=f13e147]:
+          - link "Changer de pays" [ref=f13e148] [cursor=pointer]:
+            - /url: javascript:void(null)
+            - generic [ref=f13e149]:
+              - paragraph [ref=f13e152]: 🇵🇹
+              - generic [aria-hidden] [ref=f13e153]: Changer de pays
+  - generic [ref=f13e154]:
+    - button "Open the user sub menu" [ref=f13e155]
+    - listitem [ref=f13e159]:
+      - link [ref=f13e160] [cursor=pointer]:
+        - /url: javascript:void(null)
+        - generic [ref=f13e161]: Changer mon langage
+    - listitem [ref=f13e163]:
+      - link [ref=f13e164] [cursor=pointer]:
+        - /url: https://idpb2e-rec.adeo.com/idp/startSLO.ping?TargetResource=https%3A%2F%2Fuat1-ahs-use-ope.mutu.ccdp-nprd.kobi.adeo.cloud%2Fahs-use-operator-portal-auth-check%2Fauth%2Flogout
+        - generic [ref=f13e165]: Déconnexion

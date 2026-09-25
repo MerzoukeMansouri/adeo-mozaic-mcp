@@ -1,0 +1,125 @@
+- generic [active] [ref=f16e1]:
+  - navigation "Menu principale ELO" [ref=f16e2]:
+    - generic [ref=f16e3]:
+      - generic [ref=f16e4]:
+        - checkbox "Ingrandire il menu di navigazione" [ref=f16e5] [cursor=pointer]
+        - img [aria-hidden] [ref=f16e7] [cursor=pointer]
+      - list [ref=f16e9]:
+        - listitem [ref=f16e10]:
+          - button "Accedi alla ricerca del prodotto" [ref=f16e11] [cursor=pointer]:
+            - generic: Catalogo
+        - listitem [ref=f16e15]:
+          - button "Ricerca clienti - Area clienti" [ref=f16e16] [cursor=pointer]:
+            - generic: Clienti
+        - listitem [ref=f16e20]:
+          - button "Vai al carrello del cliente" [ref=f16e21] [cursor=pointer]:
+            - generic: Carrello
+        - listitem [ref=f16e26]:
+          - button "Vai alla pagina delle prestazioni" [ref=f16e27] [cursor=pointer]:
+            - generic: Performance
+        - listitem [ref=f16e31]:
+          - button "Vai al menu" [ref=f16e32] [cursor=pointer]:
+            - generic: Menu
+  - banner [ref=f16e40]:
+    - generic:
+      - dialog [aria-hidden]:
+        - dialog
+    - generic [ref=f16e42]:
+      - heading "Prodotti" [level=1] [ref=f16e45]
+      - search [ref=f16e48]:
+        - combobox "Inserisci i termini da cercare, quindi naviga tra le proposte con le frecce su e giù e clicca per confermare la tua scelta" [ref=f16e49]
+        - button "Ricerca" [ref=f16e50] [cursor=pointer]
+  - navigation "Menu secondario ELO" [ref=f16e54]:
+    - list [ref=f16e56]:
+      - listitem [ref=f16e57]:
+        - link "Catalogo" [ref=f16e58] [cursor=pointer]:
+          - /url: /prodotti/
+      - listitem [ref=f16e59]:
+        - link "Servizi" [ref=f16e60] [cursor=pointer]:
+          - /url: /servizi/
+      - listitem [ref=f16e61]:
+        - link "Configuratori" [ref=f16e62] [cursor=pointer]:
+          - /url: /calcolatori/
+      - listitem [ref=f16e63]:
+        - link "Prodotti non standard" [ref=f16e64] [cursor=pointer]:
+          - /url: /custom-product-form/
+  - generic:
+    - dialog [aria-hidden]:
+      - dialog
+  - generic:
+    - region [aria-hidden]
+    - list
+  - main [ref=f16e65]:
+    - list [ref=f16e67]:
+      - listitem [ref=f16e68]:
+        - heading [level=3] [ref=f16e70]:
+          - link "Bagno" [ref=f16e71] [cursor=pointer]:
+            - /url: /prodotti/bagno/
+      - listitem [ref=f16e72]:
+        - heading [level=3] [ref=f16e74]:
+          - link "Cucina" [ref=f16e75] [cursor=pointer]:
+            - /url: /prodotti/cucina/
+      - listitem [ref=f16e76]:
+        - heading [level=3] [ref=f16e78]:
+          - link "Decorazione" [ref=f16e79] [cursor=pointer]:
+            - /url: /prodotti/decorazione/
+      - listitem [ref=f16e80]:
+        - heading [level=3] [ref=f16e82]:
+          - link "Edilizia" [ref=f16e83] [cursor=pointer]:
+            - /url: /prodotti/edilizia/
+      - listitem [ref=f16e84]:
+        - heading [level=3] [ref=f16e86]:
+          - link "Elettricità, automazioni e smart home" [ref=f16e87] [cursor=pointer]:
+            - /url: /prodotti/elettricita-automazioni-e-smart-home/
+      - listitem [ref=f16e88]:
+        - heading [level=3] [ref=f16e92]:
+          - link "Falegnameria" [ref=f16e93] [cursor=pointer]:
+            - /url: /prodotti/falegnameria/
+      - listitem [ref=f16e94]:
+        - heading [level=3] [ref=f16e98]:
+          - link "Ferramenta" [ref=f16e99] [cursor=pointer]:
+            - /url: /prodotti/ferramenta/
+      - listitem [ref=f16e100]:
+        - heading [level=3] [ref=f16e102]:
+          - link "Finestre, porte e scale" [ref=f16e103] [cursor=pointer]:
+            - /url: /prodotti/finestre-porte-e-scale/
+      - listitem [ref=f16e104]:
+        - heading [level=3] [ref=f16e106]:
+          - link "Giardino e terrazzo" [ref=f16e107] [cursor=pointer]:
+            - /url: /prodotti/giardino-e-terrazzo/
+      - listitem [ref=f16e108]:
+        - heading [level=3] [ref=f16e110]:
+          - link "Illuminazione" [ref=f16e111] [cursor=pointer]:
+            - /url: /prodotti/illuminazione/
+      - listitem [ref=f16e112]:
+        - heading [level=3] [ref=f16e114]:
+          - link "Ordine e sistemazione" [ref=f16e115] [cursor=pointer]:
+            - /url: /prodotti/ordine-e-sistemazione/
+      - listitem [ref=f16e116]:
+        - heading [level=3] [ref=f16e118]:
+          - link "Pavimenti e rivestimenti" [ref=f16e119] [cursor=pointer]:
+            - /url: /prodotti/pavimenti-e-rivestimenti/
+      - listitem [ref=f16e120]:
+        - heading [level=3] [ref=f16e122]:
+          - link "Stufe, climatizzatori e idraulica" [ref=f16e123] [cursor=pointer]:
+            - /url: /prodotti/stufe-climatizzatori-e-idraulica/
+      - listitem [ref=f16e124]:
+        - heading [level=3] [ref=f16e128]:
+          - link "Utensileria" [ref=f16e129] [cursor=pointer]:
+            - /url: /prodotti/utensileria/
+      - listitem [ref=f16e130]:
+        - heading [level=3] [ref=f16e134]:
+          - link "Vernici" [ref=f16e135] [cursor=pointer]:
+            - /url: /prodotti/vernici/
+      - listitem [ref=f16e136]:
+        - heading [level=3] [ref=f16e140]:
+          - link "Domotica e Smart Home" [ref=f16e141] [cursor=pointer]:
+            - /url: /prodotti/domotica-e-smart-home/
+      - listitem [ref=f16e142]:
+        - heading [level=3] [ref=f16e146]:
+          - link "Le nostre Scelte Responsabili" [ref=f16e147] [cursor=pointer]:
+            - /url: /prodotti/positive-products/
+      - listitem [ref=f16e148]:
+        - heading [level=3] [ref=f16e152]:
+          - link "Arredamento" [ref=f16e153] [cursor=pointer]:
+            - /url: /prodotti/arredamento/

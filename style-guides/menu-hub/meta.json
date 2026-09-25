@@ -1,0 +1,9 @@
+{
+  "name": "Menu Hub",
+  "category": "nav-header",
+  "site": "elo",
+  "description": "Full-page menu destination reached via the top nav's menu icon, listing deeper app sections/settings as a dedicated navigation hub rather than a dropdown.",
+  "components": [
+    "nav-list"
+  ]
+}

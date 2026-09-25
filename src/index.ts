@@ -211,6 +211,8 @@ import {
 } from "./tools/search-documentation.js";
 import { handleSearchIcons, type SearchIconsInput } from "./tools/search-icons.js";
 import { handleGetIcon, type GetIconInput } from "./tools/get-icon.js";
+import { handleListStyleGuides, type ListStyleGuidesInput } from "./tools/list-style-guides.js";
+import { handleGetStyleGuide, type GetStyleGuideInput } from "./tools/get-style-guide.js";
 import { handleGetInstallInfo, type GetInstallInfoInput } from "./tools/get-install-info.js";
 import {
   handleGenerateWebComponent,
@@ -509,6 +511,48 @@ server.registerTool(
     if (!db) db = initializeDatabase();
     const result = handleGetIcon(db, args as GetIconInput);
     log("Tool result: get_icon", { contentLength: result.content.length });
+    return result;
+  }
+);
+
+server.registerTool(
+  "list_style_guides",
+  {
+    description:
+      "List Mozaic style guide patterns — real composed UI screens/layouts (not single components) captured from ADEO apps. Optionally filter by category (e.g. data-table, master-detail, modal-confirm) or source site (e.g. elo, sop). Use get_style_guide to see the actual screenshot.",
+    inputSchema: {
+      category: z
+        .string()
+        .optional()
+        .describe(
+          'Filter by pattern category (e.g. "data-table", "master-detail", "search-filter")'
+        ),
+      site: z.string().optional().describe('Filter by source app (e.g. "elo", "sop")'),
+    },
+  },
+  async (args) => {
+    log("Tool called: list_style_guides", args);
+    if (!db) db = initializeDatabase();
+    const result = handleListStyleGuides(db, args as ListStyleGuidesInput);
+    log("Tool result: list_style_guides", { contentLength: result.content.length });
+    return result;
+  }
+);
+
+server.registerTool(
+  "get_style_guide",
+  {
+    description:
+      "Get a specific Mozaic style guide pattern by slug: its description, source site, composed component slugs, and the actual screenshot image. Use list_style_guides first to find slugs.",
+    inputSchema: {
+      slug: z.string().describe('The style guide slug (e.g. "master-detail", "sales-mode-modal")'),
+    },
+  },
+  async (args) => {
+    log("Tool called: get_style_guide", args);
+    if (!db) db = initializeDatabase();
+    const result = handleGetStyleGuide(db, args as GetStyleGuideInput);
+    log("Tool result: get_style_guide", { contentLength: result.content.length });
     return result;
   }
 );

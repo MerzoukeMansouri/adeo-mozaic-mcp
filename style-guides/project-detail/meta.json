@@ -1,0 +1,14 @@
+{
+  "name": "Project Detail",
+  "category": "master-detail",
+  "site": "sop",
+  "description": "Detail page reached from a table row: a sticky summary header above a vertical stack of service cards, each with a status badge, scheduling dates, an inline warning alert, attachment counters, a dropdown action, and a progressive-disclosure 'show more' toggle.",
+  "components": [
+    "sticky-header",
+    "card-list",
+    "badge",
+    "alert",
+    "dropdown",
+    "disclosure"
+  ]
+}

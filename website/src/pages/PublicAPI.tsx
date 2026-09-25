@@ -112,7 +112,7 @@ export default function PublicAPI() {
         {/* Response Example */}
         <section className="bg-white dark:bg-grey-800 rounded-xl p-6 shadow-sm border border-grey-200 dark:border-grey-700">
           <h2 className="text-2xl font-bold text-grey-900 dark:text-grey-000 mb-4">
-            Example Response (17 MCP Tools)
+            Example Response (19 MCP Tools)
           </h2>
           <div className="bg-grey-900 dark:bg-grey-950 rounded-lg p-4 overflow-x-auto max-h-96 overflow-y-auto">
             <pre className="text-xs text-grey-100">
@@ -185,6 +185,14 @@ export default function PublicAPI() {
     {
       "name": "list_freemarker",
       "description": "List available Mozaic Freemarker macros by category."
+    },
+    {
+      "name": "list_style_guides",
+      "description": "List Mozaic style guide patterns (composed screens, not single components), filterable by category and/or source site."
+    },
+    {
+      "name": "get_style_guide",
+      "description": "Get a style guide pattern's screenshot as an image, plus the component slugs it composes."
     }
   ]
 }`}</code>

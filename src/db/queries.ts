@@ -97,6 +97,16 @@ export interface Icon {
   paths: string;
 }
 
+export interface StyleGuide {
+  slug: string;
+  name: string;
+  category: string;
+  site?: string;
+  description: string;
+  components?: string[];
+  imagePath: string;
+}
+
 // Database initialization
 export function initDatabase(dbPath: string): Database.Database {
   const db = new Database(dbPath);
@@ -827,6 +837,7 @@ export function getDatabaseStats(db: Database.Database): {
   cssUtilities: number;
   documentation: number;
   icons: number;
+  styleGuides: number;
 } {
   const tokens = db.prepare("SELECT COUNT(*) as count FROM tokens").get() as { count: number };
   const components = db.prepare("SELECT COUNT(*) as count FROM components").get() as {
@@ -839,6 +850,9 @@ export function getDatabaseStats(db: Database.Database): {
     count: number;
   };
   const icons = db.prepare("SELECT COUNT(*) as count FROM icons").get() as { count: number };
+  const styleGuides = db.prepare("SELECT COUNT(*) as count FROM style_guides").get() as {
+    count: number;
+  };
 
   return {
     tokens: tokens.count,
@@ -846,5 +860,91 @@ export function getDatabaseStats(db: Database.Database): {
     cssUtilities: cssUtilities.count,
     documentation: documentation.count,
     icons: icons.count,
+    styleGuides: styleGuides.count,
   };
+}
+
+// Style Guide operations
+export function insertStyleGuide(db: Database.Database, guide: StyleGuide): void {
+  db.prepare(
+    `
+    INSERT INTO style_guides (slug, name, category, site, description, components, image_path)
+    VALUES (@slug, @name, @category, @site, @description, @components, @imagePath)
+  `
+  ).run({
+    slug: guide.slug,
+    name: guide.name,
+    category: guide.category,
+    site: guide.site ?? null,
+    description: guide.description,
+    components: guide.components ? JSON.stringify(guide.components) : null,
+    imagePath: guide.imagePath,
+  });
+}
+
+export function insertStyleGuides(db: Database.Database, guides: StyleGuide[]): void {
+  const transaction = db.transaction((items: StyleGuide[]) => {
+    for (const guide of items) {
+      insertStyleGuide(db, guide);
+    }
+  });
+  transaction(guides);
+}
+
+interface StyleGuideRow {
+  slug: string;
+  name: string;
+  category: string;
+  site: string | null;
+  description: string;
+  components: string | null;
+  image_path: string;
+}
+
+function rowToStyleGuide(row: StyleGuideRow): StyleGuide {
+  return {
+    slug: row.slug,
+    name: row.name,
+    category: row.category,
+    site: row.site ?? undefined,
+    description: row.description,
+    components: row.components ? (JSON.parse(row.components) as string[]) : undefined,
+    imagePath: row.image_path,
+  };
+}
+
+export function listStyleGuides(
+  db: Database.Database,
+  filters: { category?: string; site?: string } = {}
+): StyleGuide[] {
+  const clauses: string[] = [];
+  const params: Record<string, string> = {};
+
+  if (filters.category) {
+    clauses.push("category = @category");
+    params.category = filters.category;
+  }
+  if (filters.site) {
+    clauses.push("site = @site");
+    params.site = filters.site;
+  }
+
+  const where = clauses.length > 0 ? `WHERE ${clauses.join(" AND ")}` : "";
+  const rows = db
+    .prepare(
+      `SELECT slug, name, category, site, description, components, image_path FROM style_guides ${where}`
+    )
+    .all(params) as StyleGuideRow[];
+
+  return rows.map(rowToStyleGuide);
+}
+
+export function getStyleGuideBySlug(db: Database.Database, slug: string): StyleGuide | null {
+  const row = db
+    .prepare(
+      "SELECT slug, name, category, site, description, components, image_path FROM style_guides WHERE slug = ? COLLATE NOCASE"
+    )
+    .get(slug) as StyleGuideRow | undefined;
+
+  return row ? rowToStyleGuide(row) : null;
 }

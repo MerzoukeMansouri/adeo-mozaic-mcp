@@ -1,0 +1,18 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - heading [level=1]
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - heading "Bienvenue" [level=1] [ref=e7]
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - textbox [active] [ref=e12]
+          - generic [ref=e13]: Identifiant
+        - generic [ref=e15]:
+          - checkbox "Se souvenir de moi" [checked]
+          - generic [ref=e16] [cursor=pointer]: Se souvenir de moi
+        - generic [ref=e17]:
+          - generic "Suivant" [ref=e18] [cursor=pointer]
+          - generic [ref=e19]: Identifiant oublié
+    - contentinfo [ref=e21]:
+      - img "logo footer" [ref=e23]

@@ -1,0 +1,131 @@
+- generic [active] [ref=f10e1]:
+  - navigation "Menu principale ELO" [ref=f10e2]:
+    - generic [ref=f10e3]:
+      - generic [ref=f10e4]:
+        - checkbox "Ingrandire il menu di navigazione" [ref=f10e5] [cursor=pointer]
+        - img [aria-hidden] [ref=f10e7] [cursor=pointer]
+      - list [ref=f10e9]:
+        - listitem [ref=f10e10]:
+          - button "Accedi alla ricerca del prodotto" [ref=f10e11] [cursor=pointer]:
+            - generic: Catalogo
+        - listitem [ref=f10e15]:
+          - button "Ricerca clienti - Area clienti" [ref=f10e16] [cursor=pointer]:
+            - generic: Clienti
+        - listitem [ref=f10e20]:
+          - button "Vai al carrello del cliente" [ref=f10e21] [cursor=pointer]:
+            - generic: Carrello
+        - listitem [ref=f10e26]:
+          - button "Vai alla pagina delle prestazioni" [ref=f10e27] [cursor=pointer]:
+            - generic: Performance
+        - listitem [ref=f10e31]:
+          - button "Vai al menu" [ref=f10e32] [cursor=pointer]:
+            - generic: Menu
+  - banner [ref=f10e40]:
+    - generic:
+      - dialog [aria-hidden]:
+        - dialog
+    - generic [ref=f10e42]:
+      - heading "Ciao Merzouke" [level=1] [ref=f10e45]
+      - search [ref=f10e48]:
+        - combobox "Inserisci i termini da cercare, quindi naviga tra le proposte con le frecce su e giù e clicca per confermare la tua scelta" [ref=f10e49]
+        - button "Ricerca" [ref=f10e50] [cursor=pointer]
+  - generic:
+    - dialog [aria-hidden]:
+      - dialog
+  - generic:
+    - region [aria-hidden]
+    - list
+  - main [ref=f10e53]:
+    - generic [ref=f10e54]:
+      - heading "Scopri le nostre categorie" [level=2] [ref=f10e55]
+      - list [ref=f10e56]:
+        - listitem [ref=f10e57]:
+          - heading [level=3] [ref=f10e59]:
+            - link "Bagno" [ref=f10e60] [cursor=pointer]:
+              - /url: /prodotti/bagno/
+        - listitem [ref=f10e61]:
+          - heading [level=3] [ref=f10e63]:
+            - link "Cucina" [ref=f10e64] [cursor=pointer]:
+              - /url: /prodotti/cucina/
+        - listitem [ref=f10e65]:
+          - heading [level=3] [ref=f10e67]:
+            - link "Decorazione" [ref=f10e68] [cursor=pointer]:
+              - /url: /prodotti/decorazione/
+        - listitem [ref=f10e69]:
+          - heading [level=3] [ref=f10e71]:
+            - link "Edilizia" [ref=f10e72] [cursor=pointer]:
+              - /url: /prodotti/edilizia/
+        - listitem [ref=f10e73]:
+          - heading [level=3] [ref=f10e75]:
+            - link "Elettricità, automazioni e smart home" [ref=f10e76] [cursor=pointer]:
+              - /url: /prodotti/elettricita-automazioni-e-smart-home/
+        - listitem [ref=f10e77]:
+          - heading [level=3] [ref=f10e81]:
+            - link "Falegnameria" [ref=f10e82] [cursor=pointer]:
+              - /url: /prodotti/falegnameria/
+        - listitem [ref=f10e83]:
+          - heading [level=3] [ref=f10e87]:
+            - link "Ferramenta" [ref=f10e88] [cursor=pointer]:
+              - /url: /prodotti/ferramenta/
+        - listitem [ref=f10e89]:
+          - heading [level=3] [ref=f10e91]:
+            - link "Finestre, porte e scale" [ref=f10e92] [cursor=pointer]:
+              - /url: /prodotti/finestre-porte-e-scale/
+        - listitem [ref=f10e93]:
+          - heading [level=3] [ref=f10e95]:
+            - link "Giardino e terrazzo" [ref=f10e96] [cursor=pointer]:
+              - /url: /prodotti/giardino-e-terrazzo/
+        - listitem [ref=f10e97]:
+          - heading [level=3] [ref=f10e99]:
+            - link "Illuminazione" [ref=f10e100] [cursor=pointer]:
+              - /url: /prodotti/illuminazione/
+        - listitem [ref=f10e101]:
+          - heading [level=3] [ref=f10e103]:
+            - link "Ordine e sistemazione" [ref=f10e104] [cursor=pointer]:
+              - /url: /prodotti/ordine-e-sistemazione/
+        - listitem [ref=f10e105]:
+          - heading [level=3] [ref=f10e107]:
+            - link "Pavimenti e rivestimenti" [ref=f10e108] [cursor=pointer]:
+              - /url: /prodotti/pavimenti-e-rivestimenti/
+        - listitem [ref=f10e109]:
+          - heading [level=3] [ref=f10e111]:
+            - link "Stufe, climatizzatori e idraulica" [ref=f10e112] [cursor=pointer]:
+              - /url: /prodotti/stufe-climatizzatori-e-idraulica/
+        - listitem [ref=f10e113]:
+          - heading [level=3] [ref=f10e117]:
+            - link "Utensileria" [ref=f10e118] [cursor=pointer]:
+              - /url: /prodotti/utensileria/
+        - listitem [ref=f10e119]:
+          - heading [level=3] [ref=f10e123]:
+            - link "Vernici" [ref=f10e124] [cursor=pointer]:
+              - /url: /prodotti/vernici/
+        - listitem [ref=f10e125]:
+          - heading [level=3] [ref=f10e129]:
+            - link "Domotica e Smart Home" [ref=f10e130] [cursor=pointer]:
+              - /url: /prodotti/domotica-e-smart-home/
+        - listitem [ref=f10e131]:
+          - heading [level=3] [ref=f10e135]:
+            - link "Le nostre Scelte Responsabili" [ref=f10e136] [cursor=pointer]:
+              - /url: /prodotti/positive-products/
+        - listitem [ref=f10e137]:
+          - heading [level=3] [ref=f10e141]:
+            - link "Arredamento" [ref=f10e142] [cursor=pointer]:
+              - /url: /prodotti/arredamento/
+    - generic [ref=f10e144]:
+      - heading "Proprio adesso" [level=2] [ref=f10e145]
+      - list [ref=f10e146]:
+        - listitem [ref=f10e147]:
+          - link "Scopri di più catalogo giardino 2024" [ref=f10e149] [cursor=pointer]:
+            - /url: "#"
+            - text: Scopri di più
+        - listitem [ref=f10e150]:
+          - link "Scopri di più Ora di rinnovare" [ref=f10e152] [cursor=pointer]:
+            - /url: /offerte/ora-di-rinnovare/
+            - text: Scopri di più
+        - listitem [ref=f10e153]:
+          - link "Scopri di più Soluzioni di installazione e posa pensate per te" [ref=f10e155] [cursor=pointer]:
+            - /url: /test-servizi/ritiro-e-consegna/soluzioni-di-installazione-e-posa-pensate-per-te.html
+            - text: Scopri di più
+  - button "Donne ton avis" [ref=f10e156] [cursor=pointer]
+  - dialog [aria-hidden] [ref=f10e159]:
+    - button [ref=f10e161] [cursor=pointer]

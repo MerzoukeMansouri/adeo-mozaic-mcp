@@ -169,7 +169,7 @@ The playground lets you:
 
 ## Claude Code Skills
 
-6 self-contained skills that provide interactive workflows for building with Mozaic.
+8 skills that provide interactive workflows for building with Mozaic.
 
 ### Available Skills
 
@@ -182,6 +182,7 @@ The playground lets you:
 | **mozaic-design-tokens** | Design tokens and styling expert | Accessing colors, typography, spacing |
 | **mozaic-css-utilities** | CSS utility classes and layouts | Building responsive layouts |
 | **mozaic-icons** | Icon search and integration | Finding and using Mozaic icons |
+| **mozaic-style-guide** | Composed-pattern catalog (framework-agnostic) | Reference real Mozaic-compliant screens before building (modals, dashboards, tables, ...) |
 
 ### How Skills Work
 
@@ -201,7 +202,7 @@ Claude Code will automatically activate the appropriate skill (Vue or React buil
 
 ## MCP Server Tools
 
-17 programmatic tools for accessing Mozaic resources via the Model Context Protocol.
+19 programmatic tools for accessing Mozaic resources via the Model Context Protocol.
 
 ### Available Tools
 
@@ -224,6 +225,8 @@ Claude Code will automatically activate the appropriate skill (Vue or React buil
 | `search_icons` | Icons | Search 1,473 icons by name, type, or category |
 | `get_icon` | Icons | Get icon SVG and framework code |
 | `get_install_info` | Install | Get npm/yarn/pnpm installation commands |
+| `list_style_guides` | Style Guides | List composed-pattern examples, filter by category and/or site |
+| `get_style_guide` | Style Guides | Get a pattern's screenshot (image) + linked component slugs |
 
 ### Configuration
 
