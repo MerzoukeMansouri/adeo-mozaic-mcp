@@ -1,0 +1,7 @@
+{
+  "type": "skill",
+  "name": "mozaic-style-guide",
+  "description": "Mozaic composed-pattern catalog — real UI screens/layouts (master-detail, data-table, search-filter, modal-confirm, etc.) captured from live ADEO apps, each with a screenshot and description. Framework-agnostic reference to check before building a screen, so it comes out Mozaic-compliant.",
+  "tags": ["mozaic", "style-guide", "patterns", "design-system"],
+  "compatibleWith": ["any"]
+}

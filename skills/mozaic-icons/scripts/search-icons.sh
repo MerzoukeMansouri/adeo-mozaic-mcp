@@ -14,6 +14,12 @@ if [ ! -f "$DB_PATH" ]; then
     exit 1
   }
 fi
+# Arguments end up in SQL: escape single quotes, keep numbers numeric
+SQ="'"
+QUERY="${QUERY//$SQ/$SQ$SQ}"
+TYPE="${TYPE//$SQ/$SQ$SQ}"
+[[ "$SIZE" =~ ^[0-9]+$ ]] || SIZE=""
+[[ "$LIMIT" =~ ^[0-9]+$ ]] || LIMIT="20"
 
 if [ -z "$QUERY" ]; then
   echo "Error: Search query required"

@@ -12,6 +12,9 @@ if [ ! -f "$DB_PATH" ]; then
     exit 1
   }
 fi
+# Arguments end up in SQL: escape single quotes, keep numbers numeric
+SQ="'"
+UTILITY_NAME="${UTILITY_NAME//$SQ/$SQ$SQ}"
 
 if [ -z "$UTILITY_NAME" ]; then
   echo "Error: Utility name required"

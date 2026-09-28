@@ -364,7 +364,8 @@ Skills follow the [Agent Skills](https://agentskills.io/specification) format, s
 skills/
 └── <skill-name>/
     ├── SKILL.md      # frontmatter (name, description, compatibility, allowed-tools, metadata) + instructions
-    └── scripts/      # bash scripts querying the SQLite database
+    ├── scripts/      # bash scripts querying the SQLite database (arguments are SQL-escaped)
+    └── references/   # longer examples, loaded only when needed (keeps SKILL.md < 500 lines)
 ```
 
 ### Recommended

@@ -477,6 +477,8 @@ describe("skill packaging", () => {
     const content = readFileSync(`${SKILLS_DIR}/${skill}/SKILL.md`, "utf8");
     expect(content.match(/^---\nname: (.+)$/m)?.[1]).toBe(skill);
     expect(content).toMatch(/^description: .{20,1024}$/m);
+    // Agent Skills spec: keep SKILL.md under 500 lines, move details to references/
+    expect(content.split("\n").length).toBeLessThan(500);
   });
 
   it("scripts bootstrap the database from the current major version", () => {
@@ -496,5 +498,37 @@ describe("skill packaging", () => {
     const result = spawnSync("node", [resolve(process.cwd(), "bin/mozaic-db.js"), dest]);
     expect(result.status).toBe(0);
     expect(statSync(dest).size).toBe(statSync(DB_PATH).size);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Arguments are interpolated into SQL: quotes must be escaped, numbers checked
+// ---------------------------------------------------------------------------
+describe("script argument escaping", () => {
+  it("handles a single quote in a search query", () => {
+    const { stdout, status } = runScript(
+      `${SKILLS_DIR}/mozaic-design-tokens/scripts/search-docs.sh`,
+      ["don't", "1"]
+    );
+    expect(status).toBe(0);
+    expect(() => JSON.parse(stdout)).not.toThrow();
+  });
+
+  it("does not let a query break out of its SQL string", () => {
+    const { stdout } = runScript(`${SKILLS_DIR}/mozaic-icons/scripts/search-icons.sh`, [
+      "arrow' OR 1=1 --",
+    ]);
+    expect(stdout === "" ? [] : JSON.parse(stdout)).toEqual([]);
+  });
+
+  it("ignores a non-numeric limit", () => {
+    const { stdout, status } = runScript(`${SKILLS_DIR}/mozaic-icons/scripts/search-icons.sh`, [
+      "arrow",
+      "",
+      "",
+      "1; DROP TABLE icons",
+    ]);
+    expect(status).toBe(0);
+    expect(JSON.parse(stdout).length).toBeGreaterThan(0);
   });
 });

@@ -13,6 +13,9 @@ if [ ! -f "$DB_PATH" ]; then
     exit 1
   }
 fi
+# Arguments end up in SQL: escape single quotes, keep numbers numeric
+SQ="'"
+ICON_NAME="${ICON_NAME//$SQ/$SQ$SQ}"
 
 if [ -z "$ICON_NAME" ]; then
   echo "Error: Icon name required"

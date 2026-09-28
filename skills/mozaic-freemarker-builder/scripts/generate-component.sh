@@ -11,6 +11,9 @@ if [ ! -f "$DB_PATH" ]; then
     exit 1
   }
 fi
+# Arguments end up in SQL: escape single quotes, keep numbers numeric
+SQ="'"
+COMPONENT="${COMPONENT//$SQ/$SQ$SQ}"
 
 # Get component info
 COMP_DATA=$(sqlite3 "$DB_PATH" "SELECT slug FROM components WHERE frameworks LIKE '%freemarker%' AND (LOWER(slug) LIKE LOWER('%$COMPONENT%') OR LOWER(name) LIKE LOWER('%$COMPONENT%')) LIMIT 1;")

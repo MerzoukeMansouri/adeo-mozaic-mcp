@@ -13,6 +13,9 @@ if [ ! -f "$DB_PATH" ]; then
     exit 1
   }
 fi
+# Arguments end up in SQL: escape single quotes, keep numbers numeric
+SQ="'"
+COMPONENT_SLUG="${COMPONENT_SLUG//$SQ/$SQ$SQ}"
 
 if [ -z "$COMPONENT_SLUG" ]; then
   echo "Error: Component slug required"

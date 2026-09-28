@@ -1,7 +1,7 @@
 {
   "type": "skill",
   "name": "mozaic-freemarker-builder",
-  "description": "Interactive Freemarker macro generator for Mozaic Design System. Helps discover, configure, and generate production-ready Freemarker template code with proper imports and configuration.",
+  "description": "Interactive Freemarker macro generator for Mozaic Design System. Discover, configure, and generate production-ready Freemarker (.ftl) template code with proper imports. Use when working with Freemarker templates or Mozaic macros.",
   "tags": ["mozaic", "freemarker", "code-generation", "design-system"],
   "compatibleWith": ["any"]
 }
