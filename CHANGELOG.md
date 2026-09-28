@@ -1,3 +1,10 @@
+## [2.14.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.14.1...v2.14.2) (2026-09-28)
+
+
+### Bug Fixes
+
+* **skills:** freemarker list/generate scripts, guard against MCP use ([2c12cf3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/2c12cf3450f025f70ac7641a29da5b5411b5033d))
+
 ## [2.14.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.14.0...v2.14.1) (2026-09-28)
 
 
