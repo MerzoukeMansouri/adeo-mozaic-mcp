@@ -81,6 +81,12 @@ jobs:
       - name: Publish to MCP Registry
         run: |
           VERSION=$(node -p "require('./package.json').version")
+          # npm can take a few minutes to serve a new version; the registry validates against it
+          for i in $(seq 1 20); do
+            npm view "mozaic-mcp-server@$VERSION" version >/dev/null 2>&1 && break
+            echo "Waiting for mozaic-mcp-server@$VERSION on npm ($i/20)..."
+            sleep 30
+          done
           jq --arg v "$VERSION" '.version = $v | .packages[0].version = $v' server.json > server.tmp && mv server.tmp server.json
           curl -sL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
           ./mcp-publisher login github-oidc
