@@ -1,3 +1,10 @@
+## [2.14.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.13.0...v2.14.0) (2026-09-28)
+
+
+### Features
+
+* **skills:** mozaic-style-guide works without the MCP server ([83ac57a](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/83ac57afea3dae0a9ac50e92377dae8a32e5bf71))
+
 ## [2.13.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.12.0...v2.13.0) (2026-09-28)
 
 
