@@ -33,8 +33,8 @@ jobs:
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install latest npm (for Trusted Publishers)
-        run: npm install -g npm@latest
+      - name: Install npm 11 (for Trusted Publishers)
+        run: npm install -g npm@11  # npm 12 dropped Node 25 support
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
