@@ -1,3 +1,10 @@
+## [2.13.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.12.0...v2.13.0) (2026-09-28)
+
+
+### Features
+
+* **http:** add style guide tools to the MCP Light API ([b430100](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/b4301004123821721367d8d84a0f6bc09ebb9a65))
+
 ## [2.12.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.11.1...v2.12.0) (2026-09-28)
 
 
