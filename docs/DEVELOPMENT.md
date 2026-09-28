@@ -192,7 +192,7 @@ The browser playground (`website/`) implements all of them as SQL queries agains
 
 - `GET /health`, `GET /api` (Swagger)
 - `POST /mcp` (JSON-RPC 2.0), `GET /mcp/info`, `POST /mcp/list-tools`, `POST /mcp/call-tool`: all 19 tools, proxied to a spawned stdio server
-- `POST /mcp/light` (JSON-RPC 2.0), `POST /mcp/light/list-tools`, `POST /mcp/light/call-tool`: 5 tools (`get_design_tokens`, `list_css_utilities`, `get_css_utility`, `search_icons`, `get_icon`) read directly from SQLite, no subprocess
+- `POST /mcp/light` (JSON-RPC 2.0), `POST /mcp/light/list-tools`, `POST /mcp/light/call-tool`: 7 tools (`get_design_tokens`, `list_css_utilities`, `get_css_utility`, `search_icons`, `get_icon`, `list_style_guides`, `get_style_guide`) read directly from SQLite, no subprocess
 - `call-tool` body: `{"name": "...", "arguments": {...}}`
 
 Env vars and deployment: [DEPLOYMENT.md](../DEPLOYMENT.md).

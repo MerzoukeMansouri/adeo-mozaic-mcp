@@ -7,12 +7,20 @@ const endpoints = [
   { method: "GET", path: "/mcp/info", auth: true, desc: "Server info" },
   { method: "POST", path: "/mcp/list-tools", auth: true, desc: "List the 19 full tools" },
   { method: "POST", path: "/mcp/call-tool", auth: true, desc: "Call a full tool" },
-  { method: "POST", path: "/mcp/light", auth: true, desc: "MCP Light, JSON-RPC 2.0 (5 tools)" },
-  { method: "POST", path: "/mcp/light/list-tools", auth: true, desc: "List the 5 light tools" },
+  { method: "POST", path: "/mcp/light", auth: true, desc: "MCP Light, JSON-RPC 2.0 (7 tools)" },
+  { method: "POST", path: "/mcp/light/list-tools", auth: true, desc: "List the 7 light tools" },
   { method: "POST", path: "/mcp/light/call-tool", auth: true, desc: "Call a light tool" },
 ];
 
-const lightTools = ["get_design_tokens", "list_css_utilities", "get_css_utility", "search_icons", "get_icon"];
+const lightTools = [
+  "get_design_tokens",
+  "list_css_utilities",
+  "get_css_utility",
+  "search_icons",
+  "get_icon",
+  "list_style_guides",
+  "get_style_guide",
+];
 
 function CodeBlock({ children }: { children: string }) {
   return (
@@ -104,7 +112,7 @@ export default function PublicAPI() {
               <strong>Full</strong> (<code className="font-mono">/mcp</code>): all 19 tools, proxied to a spawned stdio MCP server process.
             </li>
             <li>
-              <strong>Light</strong> (<code className="font-mono">/mcp/light</code>): 5 tools (tokens, CSS utilities, icons) read directly from SQLite, no subprocess. Lighter and faster.
+              <strong>Light</strong> (<code className="font-mono">/mcp/light</code>): 7 tools (tokens, CSS utilities, icons, style guides) read directly from SQLite, no subprocess. Lighter and faster.
             </li>
           </ul>
           <div className="flex flex-wrap gap-2 mt-4">

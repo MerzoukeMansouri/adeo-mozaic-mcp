@@ -14,6 +14,8 @@ import type { Token } from "../db/queries.js";
 import { mapCategoryToDbCategories } from "../parsers/tokens-parser.js";
 import { generateSvg } from "../parsers/icons-parser.js";
 import { VERSION } from "../version.js";
+import { handleListStyleGuides, listStyleGuidesTool } from "../tools/list-style-guides.js";
+import { handleGetStyleGuide, getStyleGuideTool } from "../tools/get-style-guide.js";
 
 // Token formatting functions
 function formatAsScss(tokens: Token[]): string {
@@ -62,7 +64,7 @@ interface McpToolCall {
 }
 
 interface McpResponse {
-  content: Array<{ type: string; text: string }>;
+  content: Array<{ type: string; text?: string; data?: string; mimeType?: string }>;
 }
 
 interface JsonRpcRequest {
@@ -173,7 +175,9 @@ export class McpLightController {
 
   @Post("list-tools")
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "List available lightweight MCP tools (tokens, utilities, icons only)" })
+  @ApiOperation({
+    summary: "List available lightweight MCP tools (tokens, CSS utilities, icons, style guides)",
+  })
   listTools() {
     return {
       tools: [
@@ -294,6 +298,8 @@ export class McpLightController {
             required: ["name"],
           },
         },
+        listStyleGuidesTool,
+        getStyleGuideTool,
       ],
     };
   }
@@ -315,6 +321,10 @@ export class McpLightController {
         return this.searchIcons(args);
       case "get_icon":
         return this.getIcon(args);
+      case "list_style_guides":
+        return handleListStyleGuides(this.db, args);
+      case "get_style_guide":
+        return handleGetStyleGuide(this.db, args as { slug: string });
       default:
         return {
           content: [

@@ -8,7 +8,7 @@ A public instance runs at https://mozaic-mcp.m14i.com ([Swagger](https://mozaic-
 
 - **NestJS HTTP server**: REST + JSON-RPC endpoints, Bearer token auth
 - **Full endpoints** (`/mcp*`): proxy to a spawned stdio MCP server (`MCP_SERVER_PATH`), all 19 tools
-- **Light endpoints** (`/mcp/light*`): read SQLite directly, no subprocess, 5 tools (tokens, CSS utilities, icons)
+- **Light endpoints** (`/mcp/light*`): read SQLite directly, no subprocess, 7 tools (tokens, CSS utilities, icons, style guides)
 - **SQLite database**: the repo's `data/mozaic.db`, built by `pnpm build` (586 tokens, 191 components, 1,473 icons, 309 docs, 16 style guides)
 
 ## Prerequisites
@@ -70,10 +70,10 @@ Note: the compose file mounts a named volume on `/app/data`. Docker only seeds i
 | POST | `/mcp/list-tools` | Bearer | List the 19 tools |
 | POST | `/mcp/call-tool` | Bearer | Call a tool |
 | POST | `/mcp/light` | Bearer | JSON-RPC 2.0 MCP Light (`initialize`, `initialized`, `tools/list`, `tools/call`) |
-| POST | `/mcp/light/list-tools` | Bearer | List the 5 light tools |
+| POST | `/mcp/light/list-tools` | Bearer | List the 7 light tools |
 | POST | `/mcp/light/call-tool` | Bearer | Call a light tool |
 
-Light tools: `get_design_tokens`, `list_css_utilities`, `get_css_utility`, `search_icons`, `get_icon`.
+Light tools: `get_design_tokens`, `list_css_utilities`, `get_css_utility`, `search_icons`, `get_icon`, `list_style_guides`, `get_style_guide`.
 
 `call-tool` body: `{"name": "<tool>", "arguments": {...}}`
 

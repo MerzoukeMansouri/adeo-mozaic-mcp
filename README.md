@@ -31,10 +31,10 @@ Public server: **https://mozaic-mcp.m14i.com** ([Swagger](https://mozaic-mcp.m14
 | POST | `/mcp/list-tools` | List the 19 tools |
 | POST | `/mcp/call-tool` | Call a tool |
 | POST | `/mcp/light` | JSON-RPC 2.0 "MCP Light" endpoint (`initialize`, `initialized`, `tools/list`, `tools/call`) |
-| POST | `/mcp/light/list-tools` | List the 5 light tools |
+| POST | `/mcp/light/list-tools` | List the 7 light tools |
 | POST | `/mcp/light/call-tool` | Call a light tool |
 
-**Full vs light:** the full endpoints proxy to a spawned stdio MCP server and expose all 19 tools. The light endpoints read SQLite directly (no subprocess, faster) and expose only 5 tools: `get_design_tokens`, `list_css_utilities`, `get_css_utility`, `search_icons`, `get_icon`.
+**Full vs light:** the full endpoints proxy to a spawned stdio MCP server and expose all 19 tools. The light endpoints read SQLite directly (no subprocess, faster) and expose 7 tools: `get_design_tokens`, `list_css_utilities`, `get_css_utility`, `search_icons`, `get_icon`, `list_style_guides`, `get_style_guide` (`get_style_guide` returns the screenshot as a PNG image block).
 
 **Authentication:** `Authorization: Bearer <token>` on every route except `/health` and `/api`. [Contact me](https://adeo-tech-community.slack.com/archives/D05E2CXR8TB) on Slack for a token.
 

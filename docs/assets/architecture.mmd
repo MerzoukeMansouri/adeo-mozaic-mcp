@@ -21,7 +21,7 @@ flowchart TB
 
     subgraph Http["HTTP server (NestJS) - src/main.ts<br/>Bearer AUTH_TOKEN"]
         MCPR[POST /mcp<br/>JSON-RPC, 19 tools]
-        LIGHT[POST /mcp/light<br/>5 light tools]
+        LIGHT[POST /mcp/light<br/>7 light tools]
     end
 
     DB[(data/mozaic.db<br/>SQLite)]
