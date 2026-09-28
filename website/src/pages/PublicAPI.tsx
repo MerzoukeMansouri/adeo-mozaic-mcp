@@ -1,3 +1,29 @@
+import { Link } from "react-router-dom";
+
+const endpoints = [
+  { method: "GET", path: "/health", auth: false, desc: "Health check" },
+  { method: "GET", path: "/api", auth: false, desc: "Swagger UI", href: "https://mozaic-mcp.m14i.com/api" },
+  { method: "POST", path: "/mcp", auth: true, desc: "Full MCP, JSON-RPC 2.0 (19 tools)" },
+  { method: "GET", path: "/mcp/info", auth: true, desc: "Server info" },
+  { method: "POST", path: "/mcp/list-tools", auth: true, desc: "List the 19 full tools" },
+  { method: "POST", path: "/mcp/call-tool", auth: true, desc: "Call a full tool" },
+  { method: "POST", path: "/mcp/light", auth: true, desc: "MCP Light, JSON-RPC 2.0 (5 tools)" },
+  { method: "POST", path: "/mcp/light/list-tools", auth: true, desc: "List the 5 light tools" },
+  { method: "POST", path: "/mcp/light/call-tool", auth: true, desc: "Call a light tool" },
+];
+
+const lightTools = ["get_design_tokens", "list_css_utilities", "get_css_utility", "search_icons", "get_icon"];
+
+function CodeBlock({ children }: { children: string }) {
+  return (
+    <div className="bg-grey-900 dark:bg-grey-950 rounded-lg p-4 overflow-x-auto">
+      <pre className="text-sm text-grey-100">
+        <code>{children}</code>
+      </pre>
+    </div>
+  );
+}
+
 export default function PublicAPI() {
   return (
     <div className="max-w-4xl">
@@ -17,11 +43,18 @@ export default function PublicAPI() {
             Overview
           </h2>
           <p className="text-grey-700 dark:text-grey-300 mb-4">
-            Public MCP server available at{" "}
+            Hosted HTTP server at{" "}
             <code className="px-2 py-1 bg-grey-100 dark:bg-grey-900 rounded text-primary-01-600 dark:text-primary-01-400">
               https://mozaic-mcp.m14i.com
             </code>
+            , intended for web tools such as v0.
           </p>
+          <div className="p-4 bg-secondary-blue-100 dark:bg-secondary-blue-900/20 border border-secondary-blue-200 dark:border-secondary-blue-800 rounded-lg">
+            <p className="text-sm text-secondary-blue-700 dark:text-secondary-blue-300">
+              For coding agents, the recommended setup is the local stdio server installed by the{" "}
+              <Link to="/" className="underline">Quick Start</Link>, not this HTTP API.
+            </p>
+          </div>
         </section>
 
         {/* Endpoints */}
@@ -30,50 +63,63 @@ export default function PublicAPI() {
             Endpoints
           </h2>
           <div className="space-y-3">
-            <div className="flex items-start gap-3">
-              <code className="px-2 py-1 bg-grey-100 dark:bg-grey-900 rounded text-sm font-mono text-success-600 dark:text-success-400">
-                GET
-              </code>
-              <div>
-                <code className="text-grey-700 dark:text-grey-300 font-mono">/health</code>
-                <p className="text-sm text-grey-600 dark:text-grey-400 mt-1">Health check</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <code className="px-2 py-1 bg-grey-100 dark:bg-grey-900 rounded text-sm font-mono text-info-600 dark:text-info-400">
-                POST
-              </code>
-              <div>
-                <code className="text-grey-700 dark:text-grey-300 font-mono">/mcp/list-tools</code>
-                <p className="text-sm text-grey-600 dark:text-grey-400 mt-1">List available tools</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <code className="px-2 py-1 bg-grey-100 dark:bg-grey-900 rounded text-sm font-mono text-info-600 dark:text-info-400">
-                POST
-              </code>
-              <div>
-                <code className="text-grey-700 dark:text-grey-300 font-mono">/mcp/call-tool</code>
-                <p className="text-sm text-grey-600 dark:text-grey-400 mt-1">Call a specific tool</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <code className="px-2 py-1 bg-grey-100 dark:bg-grey-900 rounded text-sm font-mono text-success-600 dark:text-success-400">
-                GET
-              </code>
-              <div>
-                <a
-                  href="https://mozaic-mcp.m14i.com/api"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary-01-600 dark:text-primary-01-400 hover:underline font-mono"
+            {endpoints.map((e) => (
+              <div key={e.path} className="flex items-start gap-3">
+                <code
+                  className={`px-2 py-1 bg-grey-100 dark:bg-grey-900 rounded text-sm font-mono w-14 text-center ${
+                    e.method === "GET" ? "text-success-600 dark:text-success-400" : "text-info-600 dark:text-info-400"
+                  }`}
                 >
-                  /api
-                </a>
-                <p className="text-sm text-grey-600 dark:text-grey-400 mt-1">Swagger documentation</p>
+                  {e.method}
+                </code>
+                <div>
+                  {e.href ? (
+                    <a
+                      href={e.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary-01-600 dark:text-primary-01-400 hover:underline font-mono"
+                    >
+                      {e.path}
+                    </a>
+                  ) : (
+                    <code className="text-grey-700 dark:text-grey-300 font-mono">{e.path}</code>
+                  )}
+                  <p className="text-sm text-grey-600 dark:text-grey-400 mt-1">
+                    {e.desc} · {e.auth ? "Bearer token" : "public"}
+                  </p>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
+        </section>
+
+        {/* Full vs Light */}
+        <section className="bg-white dark:bg-grey-800 rounded-xl p-6 shadow-sm border border-grey-200 dark:border-grey-700">
+          <h2 className="text-2xl font-bold text-grey-900 dark:text-grey-000 mb-4">
+            Full vs Light
+          </h2>
+          <ul className="list-disc pl-5 space-y-2 text-grey-700 dark:text-grey-300">
+            <li>
+              <strong>Full</strong> (<code className="font-mono">/mcp</code>): all 19 tools, proxied to a spawned stdio MCP server process.
+            </li>
+            <li>
+              <strong>Light</strong> (<code className="font-mono">/mcp/light</code>): 5 tools (tokens, CSS utilities, icons) read directly from SQLite, no subprocess. Lighter and faster.
+            </li>
+          </ul>
+          <div className="flex flex-wrap gap-2 mt-4">
+            {lightTools.map((t) => (
+              <code key={t} className="px-2 py-1 bg-grey-100 dark:bg-grey-900 rounded text-primary-01-600 dark:text-primary-01-400 text-sm">
+                {t}
+              </code>
+            ))}
+          </div>
+          <p className="text-sm text-grey-600 dark:text-grey-400 mt-4">
+            <code className="font-mono">call-tool</code> body:{" "}
+            <code className="font-mono">{`{"name": "<tool>", "arguments": {...}}`}</code>. JSON-RPC endpoints support{" "}
+            <code className="font-mono">initialize</code>, <code className="font-mono">tools/list</code>,{" "}
+            <code className="font-mono">tools/call</code>.
+          </p>
         </section>
 
         {/* Authentication */}
@@ -82,7 +128,8 @@ export default function PublicAPI() {
             Authentication
           </h2>
           <p className="text-grey-700 dark:text-grey-300 mb-4">
-            Bearer token required.{" "}
+            Bearer token required on every route except <code className="font-mono">/health</code> and{" "}
+            <code className="font-mono">/api</code>.{" "}
             <a
               href="https://adeo-tech-community.slack.com/archives/D05E2CXR8TB"
               target="_blank"
@@ -95,24 +142,39 @@ export default function PublicAPI() {
           </p>
         </section>
 
-        {/* Example */}
+        {/* Examples */}
         <section className="bg-white dark:bg-grey-800 rounded-xl p-6 shadow-sm border border-grey-200 dark:border-grey-700">
           <h2 className="text-2xl font-bold text-grey-900 dark:text-grey-000 mb-4">
-            Example
+            Examples
           </h2>
-          <div className="bg-grey-900 dark:bg-grey-950 rounded-lg p-4 overflow-x-auto">
-            <pre className="text-sm text-grey-100">
-              <code>{`curl -X POST https://mozaic-mcp.m14i.com/mcp/list-tools \\
-  -H "Authorization: Bearer YOUR_TOKEN" \\
-  -H "Content-Type: application/json"`}</code>
-            </pre>
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold text-grey-900 dark:text-grey-000 mb-2">Full: list tools</h3>
+              <CodeBlock>{`curl -X POST https://mozaic-mcp.m14i.com/mcp/list-tools \\
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "Content-Type: application/json"`}</CodeBlock>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-grey-900 dark:text-grey-000 mb-2">Light: call a tool</h3>
+              <CodeBlock>{`curl -X POST https://mozaic-mcp.m14i.com/mcp/light/call-tool \\
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{"name":"search_icons","arguments":{"query":"arrow","limit":5}}'`}</CodeBlock>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-grey-900 dark:text-grey-000 mb-2">Light: JSON-RPC tools/list</h3>
+              <CodeBlock>{`curl -X POST https://mozaic-mcp.m14i.com/mcp/light \\
+  -H "Authorization: Bearer $TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'`}</CodeBlock>
+            </div>
           </div>
         </section>
 
         {/* Response Example */}
         <section className="bg-white dark:bg-grey-800 rounded-xl p-6 shadow-sm border border-grey-200 dark:border-grey-700">
           <h2 className="text-2xl font-bold text-grey-900 dark:text-grey-000 mb-4">
-            Example Response (19 MCP Tools)
+            Full list-tools response (19 tools)
           </h2>
           <div className="bg-grey-900 dark:bg-grey-950 rounded-lg p-4 overflow-x-auto max-h-96 overflow-y-auto">
             <pre className="text-xs text-grey-100">
@@ -164,7 +226,7 @@ export default function PublicAPI() {
     },
     {
       "name": "generate_webcomponent",
-      "description": "Generate ready-to-use Web Component code using Mozaic Design System (@adeo/mozaic-web-components)."
+      "description": "Generate ready-to-use Web Component code using Mozaic Design System (@mozaic-ds/web-components)."
     },
     {
       "name": "get_webcomponent_info",

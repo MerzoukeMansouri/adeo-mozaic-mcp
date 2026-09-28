@@ -1,75 +1,66 @@
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#5C57E0'}}}%%
 ---
-title: Mozaic MCP Server - Complete Architecture (2026-09-02)
+title: Mozaic MCP Server - Complete Architecture (2026-09-28)
 ---
 flowchart TB
     %% Main Architecture
-    subgraph Client["Claude Desktop / MCP Client"]
-        CD[Claude Desktop]
+    subgraph Clients["Clients"]
+        AG[Coding agents<br/>Claude Code, Codex, Cursor, Copilot, ...]
+        WEB[Web tools, e.g. v0]
     end
 
-    subgraph MCP["Mozaic MCP Server"]
-        direction TB
-        Server[MCP Server<br/>src/index.ts]
-
-        subgraph Tools["MCP Tools"]
-            direction LR
-            T1[get_design_tokens]
-            T2[get_component_info]
-            T3[list_components]
-            T4[generate_vue_component]
-            T5[generate_react_component]
-            T6[search_documentation]
-            T7[get_css_utility]
-            T8[list_css_utilities]
-            T9[get_icon]
-            T10[search_icons]
-            T11[get_install_info]
-        end
-
-        Server --> Tools
+    subgraph SkillsG["Agent Skills (8)"]
+        SK7[7 skills: bash + sqlite3]
+        SKSG[mozaic-style-guide: MCP tools]
     end
 
-    subgraph DataLayer["Data Layer"]
+    subgraph MCP["MCP server (stdio) - src/index.ts"]
         direction TB
+        Tools[19 MCP tools]
         Queries[db/queries.ts]
-        DB[(SQLite Database<br/>data/mozaic.db)]
-        Queries --> DB
+        Tools --> Queries
     end
 
-    subgraph Parsers["Parsers"]
-        direction LR
-        P1[tokens-parser]
-        P2[vue-parser]
-        P3[react-parser]
-        P4[docs-parser]
-        P5[scss-parser]
-        P6[icon-parser]
+    subgraph Http["NestJS HTTP server - src/main.ts"]
+        MCPR[POST /mcp]
+        LIGHT[POST /mcp/light]
     end
 
-    subgraph Sources["Source Repositories (ADEO)"]
+    DB[(data/mozaic.db)]
+    HOMEDB[(~/.mozaic/mozaic.db)]
+    BI[scripts/build-index.ts<br/>src/parsers/]
+
+    subgraph Sources["Sources"]
         direction LR
         DS[mozaic-design-system]
         VUE[mozaic-vue]
         REACT[mozaic-react]
+        WCR[mozaic-web-components]
+        FTLR[mozaic-freemarker]
+        SGS[style-guides/]
     end
 
     subgraph Stats["Current Statistics"]
         direction TB
         S1["Tokens: 586"]
-        S2["Components: 187"]
-        S3["Vue: 75 + 312 examples"]
+        S2["Components: 191"]
+        S3["Vue: 79 + 326 examples"]
         S4["React: 39 + 60 examples"]
+        S8["Web Components: 33 / Freemarker: 40"]
         S5["Icons: 1473"]
         S6["CSS Utilities: 6 (505 classes)"]
-        S7["Documentation: 307 pages"]
+        S7["Documentation: 309 pages"]
+        S9["Style Guides: 16"]
     end
 
     %% Connections
-    CD <-->|"stdio"| Server
-    Tools --> Queries
-
-    DS --> P1 & P4 & P5 & P6
-    VUE --> P2
-    REACT --> P3
-    P1 & P2 & P3 & P4 & P5 & P6 -.->|"build"| DB
+    AG --> SkillsG
+    AG <-->|"stdio"| MCP
+    SK7 --> HOMEDB
+    SKSG --> MCP
+    WEB --> Http
+    MCPR -->|"proxy"| MCP
+    LIGHT --> DB
+    Queries --> DB
+    DB -.->|"mozaic-db"| HOMEDB
+    Sources --> BI -.->|"build"| DB

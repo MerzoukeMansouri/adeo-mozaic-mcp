@@ -51,6 +51,16 @@ const features = [
     color: "secondary-purple",
   },
   {
+    title: "Web Components & Freemarker",
+    desc: "Framework-agnostic native Web Components (33) and server-side Freemarker macros (40), with generators and usage details.",
+    color: "secondary-blue",
+  },
+  {
+    title: "Style Guides",
+    desc: "16 composed screens captured from live ADEO apps, each with a screenshot and the component slugs it uses.",
+    color: "secondary-purple",
+  },
+  {
     title: "Full-Text Search",
     desc: "Search across 309 documentation pages with FTS5-powered full-text search for installation guides, usage, and best practices.",
     color: "primary-01",
@@ -65,7 +75,7 @@ function Home() {
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-01-100 dark:bg-primary-01-900/30 rounded-full mb-6">
           <span className="w-2 h-2 bg-primary-01-500 rounded-full animate-pulse"></span>
           <span className="text-sm font-medium text-primary-01-700 dark:text-primary-01-400">
-            MCP Server for AI Assistants
+            MCP Server + Agent Skills for any coding agent
           </span>
         </div>
 

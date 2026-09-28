@@ -15,10 +15,12 @@ flowchart LR
         T_Props["composite properties: 15"]
     end
 
-    subgraph Components["Components: 187"]
+    subgraph Components["Components: 191"]
         direction TB
-        Vue["Vue: 75"]
+        Vue["Vue: 79"]
         React["React: 39"]
+        WComp["Web Components: 33"]
+        Ftl["Freemarker: 40"]
     end
 
     subgraph Icons["Icons: 1473"]
@@ -35,17 +37,23 @@ flowchart LR
         CssClasses["505 classes"]
     end
 
-    subgraph Examples["Examples: 372"]
+    subgraph Examples["Examples: 392"]
         direction TB
-        VueEx["Vue: 312"]
+        VueEx["Vue: 326"]
         ReactEx["React: 60"]
+        WcEx["Web Components: 6"]
     end
 
-    subgraph Docs["Documentation: 307"]
+    subgraph Docs["Documentation: 309"]
         direction TB
         DSDoc["Design System: 220"]
-        VueDoc["Vue Storybook: 84"]
+        VueDoc["Vue Storybook: 86"]
         ReactDoc["React Storybook: 3"]
     end
 
-    Tokens --> Components --> Icons --> CssUtils --> Examples --> Docs
+    subgraph StyleGuides["Style Guides: 16"]
+        direction TB
+        SGNote["composed UI patterns"]
+    end
+
+    Tokens --> Components --> Icons --> CssUtils --> Examples --> Docs --> StyleGuides

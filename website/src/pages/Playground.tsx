@@ -719,7 +719,7 @@ function Playground() {
             Test It!
           </h1>
           <p className="text-lg text-grey-600 dark:text-grey-400">
-            Interactive playground to test all 14 MCP tools. The SQLite database runs directly in your browser using WebAssembly.
+            Interactive playground covering 14 of the 19 MCP tools (Freemarker and style-guide tools are not included). The SQLite database runs directly in your browser using WebAssembly.
           </p>
         </div>
         <Flag variant="solid" theme="primary">Live Demo</Flag>

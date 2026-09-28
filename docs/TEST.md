@@ -3,16 +3,16 @@
 ## Quick Start
 
 ```bash
-pnpm test            # Run unit tests
+pnpm test            # Run all tests (vitest, 226 tests in 9 files)
 pnpm test:coverage   # Run tests with coverage report
 pnpm database:sanity # Run database sanity checks
 pnpm lint            # Run ESLint
 pnpm format:check    # Check Prettier formatting
 ```
 
-## Unit Tests
+## Tests
 
-Unit tests validate the parser logic for extracting data from Vue, React, documentation, tokens, and SCSS source files.
+Parser unit tests, MCP tool integration tests (against `data/mozaic.db`), skill script tests, and database sanity tests. Skill script tests need `sqlite3` and `jq` installed.
 
 ### Run Tests
 
@@ -33,8 +33,10 @@ Coverage report generated at `coverage/index.html`.
 | `src/parsers/__tests__/docs-parser.test.ts` | Documentation/MDX parsing |
 | `src/parsers/__tests__/scss-parser.test.ts` | CSS utility class generation |
 | `src/parsers/__tests__/tokens-parser.test.ts` | Design token parsing |
+| `src/parsers/__tests__/icons-parser.test.ts` | Icon parsing |
 | `src/__tests__/sanity-check.test.ts` | Database integrity checks |
 | `src/__tests__/tools.integration.test.ts` | MCP tool integration tests |
+| `src/__tests__/skills-scripts.test.ts` | Skills' bash scripts (sqlite3/jq) |
 
 ### What's Tested
 
@@ -81,6 +83,9 @@ Coverage report generated at `coverage/index.html`.
 - `list_components` - Component listing, category filtering
 - `get_css_utility` - Utility classes, examples
 - `list_css_utilities` - Utility listing, category filtering
+- `list_style_guides` / `get_style_guide` - Style guide listing and image output
+- `get_install_info` - Install instructions
+- `generate_webcomponent`, `get_webcomponent_info`, `list_webcomponents` - Web Components
 
 ## Sanity Check
 
@@ -134,14 +139,7 @@ Husky runs lint-staged on commit, which:
 
 ## CI/CD
 
-GitHub Actions runs on push/PR to `main`:
+`.github/workflows/test.yml` runs on push/PR to `main` (Node 25, pnpm 9):
 
-```yaml
-# .github/workflows/test.yml
-jobs:
-  lint:     # pnpm lint && pnpm format:check
-  test:     # pnpm test:coverage
-  sanity:   # pnpm database:sanity
-```
-
-All jobs run in parallel. The database (`data/mozaic.db`) must be committed for sanity checks to pass.
+- `lint` job: `pnpm lint` + `pnpm format:check`
+- `test` job: installs `sqlite3`/`jq`, rebuilds the DB with `pnpm build` only if the `MOZAIC_REPOS_TOKEN` secret is set (otherwise uses the committed `data/mozaic.db`), then `pnpm database:sanity` and `pnpm test:coverage`

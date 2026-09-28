@@ -2,46 +2,37 @@
 title: Mozaic MCP Server - Architecture Overview
 ---
 flowchart TB
-    subgraph Client["Claude Desktop / MCP Client"]
-        CD[Claude Desktop]
+    subgraph Agents["Coding agents / MCP clients"]
+        AG[Claude Code, Codex, Cursor,<br/>Copilot, Gemini CLI, ...]
     end
 
-    subgraph MCP["Mozaic MCP Server"]
-        direction TB
-        Server[MCP Server<br/>src/index.ts]
+    WEB[Web tools<br/>e.g. v0]
 
-        subgraph Tools["MCP Tools"]
-            T1[get_design_tokens]
-            T2[get_component_info]
-            T3[list_components]
-            T4[generate_vue_component]
-            T5[generate_react_component]
-            T6[search_documentation]
-            T7[get_css_utility]
-            T8[list_css_utilities]
-            T9[get_icon]
-            T10[search_icons]
-            T11[get_install_info]
-        end
-
-        Server --> Tools
+    subgraph Skills["Agent Skills (8) - skills/&lt;name&gt;/SKILL.md"]
+        SK7[7 builder/reference skills<br/>bash scripts + sqlite3]
+        SKSG[mozaic-style-guide<br/>uses MCP tools]
     end
 
-    subgraph Data["Data Layer"]
-        DB[(SQLite Database<br/>data/mozaic.db)]
+    subgraph Stdio["MCP server (stdio) - src/index.ts"]
+        Tools[19 MCP tools<br/>src/tools/]
         Queries[db/queries.ts]
+        Tools --> Queries
     end
 
-    subgraph Sources["Source Repositories"]
-        DS[mozaic-design-system<br/>Tokens + Docs]
-        VUE[mozaic-vue<br/>Vue Components]
-        REACT[mozaic-react<br/>React Components]
+    subgraph Http["HTTP server (NestJS) - src/main.ts<br/>Bearer AUTH_TOKEN"]
+        MCPR[POST /mcp<br/>JSON-RPC, 19 tools]
+        LIGHT[POST /mcp/light<br/>5 light tools]
     end
 
-    CD <-->|stdio| Server
-    Tools --> Queries
+    DB[(data/mozaic.db<br/>SQLite)]
+    HOMEDB[(~/.mozaic/mozaic.db<br/>copy via mozaic-db)]
+
+    AG -->|loads| Skills
+    AG <-->|stdio<br/>npx -y mozaic-mcp-server@2| Stdio
+    SK7 -->|sqlite3| HOMEDB
+    SKSG -->|list/get_style_guide| Stdio
+    WEB -->|HTTPS| Http
+    MCPR -->|spawns + proxies| Stdio
+    LIGHT -->|reads directly| DB
     Queries --> DB
-
-    DS -.->|build| DB
-    VUE -.->|build| DB
-    REACT -.->|build| DB
+    DB -.->|packaged| HOMEDB

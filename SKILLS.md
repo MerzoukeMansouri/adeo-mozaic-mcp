@@ -4,7 +4,7 @@ Agent skills for working with the Mozaic Design System, usable by any agent that
 
 ## Overview
 
-**7 Self-Contained Skills** that use **local shell scripts** (~18 scripts total) to query a SQLite database, plus **1 MCP-tool skill** (`mozaic-style-guide`) that calls the MCP server directly to return an image content block.
+**7 Self-Contained Skills** that use **local shell scripts** (22 scripts total, `sqlite3`; some also `jq`) to query a SQLite database, plus **1 MCP-tool skill** (`mozaic-style-guide`) that calls the MCP server directly to return an image content block.
 
 **Architecture Pattern**: Skills provide workflows + data access through bash scripts → local database (or, for `mozaic-style-guide`, through MCP tool calls)
 
@@ -14,13 +14,14 @@ Agent skills for working with the Mozaic Design System, usable by any agent that
 |-------|------|-------------|---------------|
 | `mozaic-vue-builder` | Framework | Interactive Vue 3 component generator | 4 scripts |
 | `mozaic-react-builder` | Framework | Interactive React/TSX component generator | 4 scripts |
-| **`mozaic-webcomponents-builder`** | **Framework** | **Interactive native Web Components generator** | **4 scripts** |
+| `mozaic-webcomponents-builder` | Framework | Interactive native Web Components generator | 4 scripts |
+| `mozaic-freemarker-builder` | Framework | Interactive Freemarker macro generator | 4 scripts |
 | `mozaic-design-tokens` | Agnostic | Design tokens and styling expert | 2 scripts |
 | `mozaic-css-utilities` | Agnostic | CSS utility classes and layouts | 2 scripts |
 | `mozaic-icons` | Both | Icon search and integration | 2 scripts |
 | `mozaic-style-guide` | Agnostic | Composed-pattern catalog (compliance/reference layer) | MCP tools (no scripts) |
 
-**Total**: 8 skills; 7 self-contained with 18 shell scripts querying `~/.mozaic/mozaic.db`, 1 (`mozaic-style-guide`) calling MCP tools directly
+**Total**: 8 skills; 7 self-contained with 22 shell scripts querying `~/.mozaic/mozaic.db`, 1 (`mozaic-style-guide`) calling MCP tools directly
 
 ---
 
@@ -139,7 +140,34 @@ Skill: Proposes mozaic-input + mozaic-button → Generates HTML with imports and
 
 ---
 
-## Skill 4: mozaic-design-tokens
+## Skill 4: mozaic-freemarker-builder
+
+**Location**: `skills/mozaic-freemarker-builder/SKILL.md`
+
+### Purpose
+Interactive assistant for building server-side templates with Freemarker macros using Mozaic Design System.
+
+### Shell Scripts
+- `list-components.sh` - Browse Freemarker macros by category
+- `get-component.sh` - Get macro configuration options
+- `search-components.sh` - Search macros by name or description
+- `generate-component.sh` - Generate Freemarker macro code
+
+### Key Features
+- Browse Freemarker macros by category
+- Configuration object examples
+- Import statements and macro invocation
+- Nested content handling
+- Maven/Java integration examples
+- i18n locale support
+
+### Use When
+- Server-side rendered pages with Freemarker (.ftl) templates
+- Java/Spring projects using Mozaic macros
+
+---
+
+## Skill 5: mozaic-design-tokens
 
 **Location**: `skills/mozaic-design-tokens/SKILL.md`
 
@@ -181,7 +209,7 @@ Skill: Returns colors in requested format (SCSS/CSS/JS) with usage examples
 
 ---
 
-## Skill 5: mozaic-css-utilities
+## Skill 6: mozaic-css-utilities
 
 **Location**: `skills/mozaic-css-utilities/SKILL.md`
 
@@ -223,35 +251,27 @@ Skill: Returns Flexy grid HTML with responsive breakpoints
 
 ---
 
-## Skill 6: mozaic-icons
+## Skill 7: mozaic-icons
 
 **Location**: `skills/mozaic-icons/SKILL.md`
 
 ### Purpose
 Icon search and integration for Vue & React applications.
 
-### MCP Tools
 ### Shell Scripts
 - `search-icons.sh` - Search icons by name, type, or size
 - `get-icon.sh` - Get icon SVG and framework code (Vue/React)
 
 ### Key Features
 - Search icons by keyword
-- Browse by category (navigation, media, social, commerce, etc.)
+- Browse by type (navigation, media, payment, social, etc.)
 - Filter by size (16, 24, 32, 48, 64)
 - Generate Vue or React code
 - Raw SVG output
 - Accessibility guidance
 
-### Icon Categories
-- Navigation (arrows, chevrons, menu)
-- Media (play, pause, volume)
-- Actions (edit, delete, save)
-- Social (Facebook, Twitter, Instagram)
-- Commerce (cart, payment, shipping)
-- Interface (user, notification, calendar)
-- Communication (email, message, phone)
-- Files (document, image, video)
+### Icon Types
+1,473 icons (354 unique) across 15 types: device, instruction, logotypes, media, navigation, payment, product, project, promise, service, social, store, universe, user, various.
 
 ### Example Usage
 ```
@@ -267,7 +287,7 @@ Skill: Shows cart icons → User selects size/framework → Generates code
 
 ---
 
-## Skill 7: mozaic-style-guide
+## Skill 8: mozaic-style-guide
 
 **Location**: `skills/mozaic-style-guide/SKILL.md`
 
@@ -401,41 +421,21 @@ Skills work well together:
 
 ---
 
-## Benefits of This Architecture
-
-✅ **No Code Duplication** - Skills use existing MCP tools
-✅ **Clear Separation** - Vue vs React vs Agnostic
-✅ **Single Source of Truth** - Database stays in MCP server
-✅ **Best Practice** - Follows official Anthropic guidance
-✅ **Maintainable** - Update MCP server, all skills benefit
-✅ **Interactive** - Skills provide guided workflows
-✅ **Shareable** - Markdown files easy to distribute
-
----
-
 ## Development
 
 ### File Structure
-Each skill follows this structure:
+Each skill follows the [Agent Skills spec](https://agentskills.io/specification):
 ```markdown
 ---
-name: skill-name
-description: Brief description
-version: 1.0.0
+name: mozaic-vue-builder          # must match the folder name
+description: ...                  # what it does and when to use it
+compatibility: Requires bash, sqlite3 and jq, ...
+allowed-tools: Bash
+metadata:
+  version: "2.0.0"
 ---
 
-# Skill Name
-
-[Overview]
-
-## What This Skill Does
-## MCP Tools Used
-## When to Use This Skill
-## Interactive Workflow
-## Common Use Cases
-## Best Practices
-## Commands
-## Example Session
+# Skill instructions (workflow, scripts to run, examples)
 ```
 
 ### Adding New Skills
@@ -450,44 +450,10 @@ version: 1.0.0
 
 ## Resources
 
-- **MCP Server**: `mozaic-mcp-server/`
-- **Database**: `data/mozaic.db`
-- **Website**: `website/` (skill playground)
-- **Documentation**: Check MCP server README
+- **Skills**: `skills/<name>/` in this repo
+- **Database**: `data/mozaic.db` (built by `pnpm build`), installed for skills at `~/.mozaic/mozaic.db`
+- **Website**: https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/skills
+- **MCP server**: [README.md](./README.md)
+- **Agent Skills spec**: https://agentskills.io/specification
 
----
-
-## Support
-
-For issues or questions:
-- MCP Server: Check `mozaic-mcp-server/README.md`
-- Skills: This document
-- Agent Skills spec: https://agentskills.io/specification
-
----
-
-**Created**: March 23, 2026
-**Author**: Mozaic MCP Server Team
 **License**: MIT
-
-## Skill 4: mozaic-freemarker-builder
-
-**Location**: `skills/mozaic-freemarker-builder/SKILL.md`
-
-### Purpose
-Interactive assistant for building server-side templates with Freemarker macros using Mozaic Design System.
-
-### Shell Scripts
-- `list-components.sh` - Browse Freemarker macros by category
-- `get-component.sh` - Get macro configuration options
-- `search-components.sh` - Search macros by name or description
-- `generate-component.sh` - Generate Freemarker macro code
-
-### Key Features
-- Browse Freemarker macros by category
-- Configuration object examples
-- Import statements and macro invocation
-- Nested content handling
-- Maven/Java integration examples
-- i18n locale support
-

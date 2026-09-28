@@ -11,108 +11,43 @@ MCP server and agent skills for the [Mozaic Design System](https://mozaic.adeo.c
 
 ## Overview
 
-This package provides two complementary tools for working with the Mozaic Design System in AI assistants:
+This package provides two complementary tools for working with the Mozaic Design System in coding agents:
 
 - **🤖 Agent Skills** - 8 interactive skills for guided component building and design token usage
-- **🔌 MCP Server** - Model Context Protocol server with 17 tools for programmatic access to Mozaic resources
+- **🔌 MCP Server** - Model Context Protocol server with 19 tools for programmatic access to Mozaic resources
 
 ## HTTP API
 
-Public MCP server available at **https://mozaic-mcp.m14i.com**
+> **Coding agents should use the local stdio server** (`npx -y mozaic-mcp-server@2`, see [Quick Start](#quick-start)). The HTTP API is a separate, token-protected server for web tools (e.g. v0) that cannot spawn a local process.
 
-**Endpoints:**
-- `GET /health` - Health check
-- `POST /mcp/list-tools` - List available tools
-- `POST /mcp/call-tool` - Call a specific tool
-- `GET /api` - [Swagger documentation](https://mozaic-mcp.m14i.com/api)
+Public server: **https://mozaic-mcp.m14i.com** ([Swagger](https://mozaic-mcp.m14i.com/api))
 
-**Authentication:** Bearer token required. [Contact me](https://adeo-tech-community.slack.com/archives/D05E2CXR8TB) on Slack for access.
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/health` | Health check (public) |
+| GET | `/api` | Swagger UI (public) |
+| POST | `/mcp` | JSON-RPC 2.0 MCP endpoint, full 19 tools |
+| GET | `/mcp/info` | Server info |
+| POST | `/mcp/list-tools` | List the 19 tools |
+| POST | `/mcp/call-tool` | Call a tool |
+| POST | `/mcp/light` | JSON-RPC 2.0 "MCP Light" endpoint (`initialize`, `initialized`, `tools/list`, `tools/call`) |
+| POST | `/mcp/light/list-tools` | List the 5 light tools |
+| POST | `/mcp/light/call-tool` | Call a light tool |
 
-**Example:**
+**Full vs light:** the full endpoints proxy to a spawned stdio MCP server and expose all 19 tools. The light endpoints read SQLite directly (no subprocess, faster) and expose only 5 tools: `get_design_tokens`, `list_css_utilities`, `get_css_utility`, `search_icons`, `get_icon`.
+
+**Authentication:** `Authorization: Bearer <token>` on every route except `/health` and `/api`. [Contact me](https://adeo-tech-community.slack.com/archives/D05E2CXR8TB) on Slack for a token.
+
+**Call a tool:** body is `{"name": "<tool>", "arguments": {...}}`.
+
 ```bash
-curl -X POST https://mozaic-mcp.m14i.com/mcp/list-tools \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json"
+curl -X POST https://mozaic-mcp.m14i.com/mcp/light/call-tool \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"search_icons","arguments":{"query":"arrow","limit":5}}'
 ```
 
-<details>
-<summary>Example Response (17 MCP Tools)</summary>
-
-```json
-{
-  "tools": [
-    {
-      "name": "get_design_tokens",
-      "description": "Get Mozaic design tokens with CSS/SCSS variables. Categories: colors (brand, semantic, component), typography (font sizes, weights, line heights), spacing (magic unit scale), shadows, borders, screens (breakpoints), grid (gutters)."
-    },
-    {
-      "name": "get_component_info",
-      "description": "Get Vue/React component details: props (types, defaults, required), slots, events, and code examples."
-    },
-    {
-      "name": "list_components",
-      "description": "List Mozaic Vue/React components by category."
-    },
-    {
-      "name": "generate_vue_component",
-      "description": "Generate ready-to-use Vue 3 code with Mozaic components (@mozaic-ds/vue-3)."
-    },
-    {
-      "name": "generate_react_component",
-      "description": "Generate ready-to-use React/TSX code with Mozaic components (@mozaic-ds/react)."
-    },
-    {
-      "name": "search_documentation",
-      "description": "Search Mozaic Design System documentation for installation guides, component usage, configuration, styling, tokens, patterns, and best practices."
-    },
-    {
-      "name": "get_css_utility",
-      "description": "Get CSS utility classes and examples for Mozaic layout and spacing utilities."
-    },
-    {
-      "name": "list_css_utilities",
-      "description": "List Mozaic CSS-only utilities (no framework needed)."
-    },
-    {
-      "name": "search_icons",
-      "description": "Search Mozaic Design System icons by name or type."
-    },
-    {
-      "name": "get_icon",
-      "description": "Get a specific Mozaic icon by name with SVG markup and ready-to-use code for React/Vue."
-    },
-    {
-      "name": "get_install_info",
-      "description": "Get installation commands and import statements for a Mozaic component."
-    },
-    {
-      "name": "generate_webcomponent",
-      "description": "Generate ready-to-use Web Component code using Mozaic Design System (@adeo/mozaic-web-components)."
-    },
-    {
-      "name": "get_webcomponent_info",
-      "description": "Get detailed information about a Mozaic Web Component including attributes, slots, events, CSS custom properties, and usage examples."
-    },
-    {
-      "name": "list_webcomponents",
-      "description": "List available Mozaic Web Components by category."
-    },
-    {
-      "name": "generate_freemarker",
-      "description": "Generate ready-to-use Freemarker macro code with import statements and configuration examples for Mozaic components."
-    },
-    {
-      "name": "get_freemarker_info",
-      "description": "Get detailed information about a Freemarker component including configuration options, CSS classes, and usage examples."
-    },
-    {
-      "name": "list_freemarker",
-      "description": "List available Mozaic Freemarker macros by category."
-    }
-  ]
-}
-```
-</details>
+**Self-hosting env vars:** `PORT` (3000), `AUTH_TOKEN`, `DATABASE_PATH` (`/app/data/mozaic.db`), `MCP_SERVER_PATH` (`/app/dist/index.js`), `MCP_DEBUG`. See [DEPLOYMENT.md](./DEPLOYMENT.md).
 
 ### What's Included
 
@@ -159,7 +94,7 @@ npx add-mcp mozaic-mcp-server@2 --name mozaic           # MCP server
 
 ### Try Before Installing
 
-Test the MCP tools directly in your browser without installation:
+Test 14 of the 19 MCP tools directly in your browser (all except Freemarker and style-guide tools), without installation:
 
 **[🎮 Open MCP Playground](https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/playground)**
 
@@ -188,7 +123,7 @@ Skills follow the [Agent Skills](https://agentskills.io/specification) format (`
 User: "I need a login form with Mozaic"
 ```
 
-The agent activates the appropriate skill (Vue or React builder) and guide you through:
+The agent activates the appropriate skill (e.g. Vue or React builder) and guides you through:
 1. Component selection
 2. Props configuration
 3. Code generation
@@ -239,6 +174,8 @@ The agent activates the appropriate skill (Vue or React builder) and guide you t
 }
 ```
 
+VS Code uses a `servers` key in `.vscode/mcp.json`; Codex uses `[mcp_servers.mozaic]` in `.codex/config.toml`.
+
 The server is also published to the [MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.MerzoukeMansouri/mozaic`.
 
 ## Usage Examples
@@ -266,7 +203,7 @@ When configured, the agent can use MCP tools directly:
 ```
 You: "What design tokens are available?"
 Agent: [calls get_design_tokens tool]
-        Found 586 tokens across 7 categories...
+        Found 586 tokens across 8 categories...
 ```
 
 ```
@@ -291,33 +228,17 @@ npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools [command] [-g] [-a <agen
 ## Architecture
 
 ```
-┌─────────────────────────────────────┐
-│   Any MCP client / coding agent     │
-│                                     │
-│   ┌─────────────┐  ┌─────────────┐ │
-│   │   Skills    │  │ MCP Server  │ │
-│   │  (8 total)  │  │ (19 tools)  │ │
-│   └─────────────┘  └─────────────┘ │
-│          │                │         │
-└──────────┼────────────────┼─────────┘
-           │                │
-           ▼                ▼
-    ┌──────────────────────────┐
-    │  Shell Scripts (22)      │
-    │  ↓ sqlite3 queries       │
-    └──────────────────────────┘
-               ▼
-    ┌──────────────────────────┐
-    │  SQLite Database         │
-    │  ~/.mozaic/mozaic.db     │
-    │                          │
-    │  • 586 tokens            │
-    │  • 191 components        │
-    │  • 1,473 icons           │
-    │  • 309 docs              │
-    │  • 16 style guides       │
-    └──────────────────────────┘
+            Any coding agent
+     ┌──────────────┴──────────────┐
+     ▼                             ▼
+ Skills (8)                  MCP server (19 tools, stdio)
+ 22 shell scripts + sqlite3  npx -y mozaic-mcp-server@2
+     │                             │
+     ▼                             ▼
+ ~/.mozaic/mozaic.db         data/mozaic.db (packaged)
 ```
+
+Both are the same SQLite database: 586 tokens, 191 components, 1,473 icons, 309 docs, 16 style guides. `mozaic-style-guide` has no scripts; it calls the MCP server's style-guide tools.
 
 ## File Locations
 
@@ -339,7 +260,7 @@ npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools [command] [-g] [-a <agen
 ```bash
 # Clone the repository
 git clone https://github.com/MerzoukeMansouri/adeo-mozaic-mcp.git
-cd mozaic-mcp-server
+cd adeo-mozaic-mcp
 
 # Install dependencies
 pnpm install
@@ -359,45 +280,37 @@ pnpm start:debug
 ```
 mozaic-mcp-server/
 ├── src/                    # TypeScript source code
-│   ├── index.ts           # MCP server entry point
+│   ├── index.ts           # stdio MCP server entry point
+│   ├── main.ts            # NestJS HTTP server entry point
 │   ├── tools/             # MCP tool implementations
-│   └── database/          # Database utilities
+│   ├── mcp/               # HTTP controllers (full + light)
+│   ├── parsers/           # Source repo parsers
+│   └── db/                # Schema and queries
 ├── skills/                # Agent Skills (SKILL.md)
 │   ├── mozaic-vue-builder/
-│   │   ├── skill.md       # Skill instructions
-│   │   └── scripts/       # Shell scripts (4)
+│   │   ├── SKILL.md       # Skill instructions
+│   │   └── scripts/       # Shell scripts
 │   └── ...                # Other skills
 ├── scripts/               # Build and utility scripts
 │   ├── build-index.ts     # Database builder
+│   ├── sanity-check.ts    # Database sanity check
 │   └── generate-docs.ts   # Documentation generator
 ├── data/                  # Generated database
 │   └── mozaic.db
-├── repos/                 # Mozaic Design System repositories (git submodules)
-│   ├── mozaic-design-system/
-│   ├── mozaic-vue/
-│   └── mozaic-react/
-├── bin/                   # CLI entry points
-│   └── install.js         # Installation CLI
+├── repos/                 # Source repos, cloned by `pnpm build` (gitignored)
+├── style-guides/          # Hand-authored patterns (meta.json + screenshot.png)
+├── bin/                   # CLI entry points (install.js, mozaic-db.js, ...)
 └── website/               # Documentation website
 ```
 
 ### Building the Database
 
-The SQLite database is built from the Mozaic Design System repositories:
+`pnpm build` compiles TypeScript, then clones (or pulls) the source repos into `repos/` and builds `data/mozaic.db`:
+- `adeo/mozaic-design-system` (public): tokens, icons, docs
+- `adeo/mozaic-vue`, `mozaic-react`, `mozaic-web-components`, `mozaic-freemarker` (private, need GitHub access)
+- `style-guides/<slug>/` (in this repo)
 
-```bash
-# Update submodules
-git submodule update --init --recursive
-
-# Build database
-pnpm build
-```
-
-This indexes:
-- Design tokens from `mozaic-design-system/packages/tokens`
-- Components from `mozaic-vue` and `mozaic-react`
-- Icons from `mozaic-design-system/packages/icons`
-- Documentation from all repositories
+Check it with `pnpm database:sanity`.
 
 ## Contributing
 
@@ -431,7 +344,7 @@ We use semantic versioning with conventional commits:
 ### Related Resources
 - **Mozaic Design System**: https://mozaic.adeo.cloud/
 - **MCP Protocol**: https://modelcontextprotocol.io/
-- **Claude Code**: https://code.claude.com/
+- **Agent Skills spec**: https://agentskills.io/specification
 
 ## License
 

@@ -15,10 +15,10 @@ const skills = [
       "Installation commands"
     ],
     tools: [
-      "mcp__mozaic__list_components",
-      "mcp__mozaic__get_component_info",
-      "mcp__mozaic__generate_vue_component",
-      "mcp__mozaic__get_install_info"
+      "list-components.sh",
+      "get-component.sh",
+      "generate-component.sh",
+      "get-install-info.sh"
     ]
   },
   {
@@ -35,10 +35,10 @@ const skills = [
       "Installation + TypeScript config"
     ],
     tools: [
-      "mcp__mozaic__list_components",
-      "mcp__mozaic__get_component_info",
-      "mcp__mozaic__generate_react_component",
-      "mcp__mozaic__get_install_info"
+      "list-components.sh",
+      "get-component.sh",
+      "generate-component.sh",
+      "get-install-info.sh"
     ]
   },
   {
@@ -55,10 +55,10 @@ const skills = [
       "CSS custom properties for theming"
     ],
     tools: [
-      "mcp__mozaic__list_webcomponents",
-      "mcp__mozaic__get_webcomponent_info",
-      "mcp__mozaic__generate_webcomponent",
-      "mcp__mozaic__get_install_info"
+      "list-components.sh",
+      "search-components.sh",
+      "get-component.sh",
+      "generate-component.sh"
     ]
   },
   {
@@ -75,10 +75,10 @@ const skills = [
       "Maven/Java integration examples"
     ],
     tools: [
-      "mcp__mozaic__list_freemarker",
-      "mcp__mozaic__get_freemarker_info",
-      "mcp__mozaic__generate_freemarker",
-      "mcp__mozaic__get_install_info"
+      "list-components.sh",
+      "search-components.sh",
+      "get-component.sh",
+      "generate-component.sh"
     ]
   },
   {
@@ -95,8 +95,8 @@ const skills = [
       "Consistent styling guidance"
     ],
     tools: [
-      "mcp__mozaic__get_design_tokens",
-      "mcp__mozaic__search_documentation"
+      "get-tokens.sh",
+      "search-docs.sh"
     ]
   },
   {
@@ -113,9 +113,8 @@ const skills = [
       "Responsive modifiers"
     ],
     tools: [
-      "mcp__mozaic__list_css_utilities",
-      "mcp__mozaic__get_css_utility",
-      "mcp__mozaic__search_documentation"
+      "list-utilities.sh",
+      "get-utility.sh"
     ]
   },
   {
@@ -132,8 +131,8 @@ const skills = [
       "Accessibility guidance"
     ],
     tools: [
-      "mcp__mozaic__search_icons",
-      "mcp__mozaic__get_icon"
+      "search-icons.sh",
+      "get-icon.sh"
     ]
   },
   {
@@ -150,8 +149,8 @@ const skills = [
       "Framework-agnostic compliance/reference layer"
     ],
     tools: [
-      "mcp__mozaic__list_style_guides",
-      "mcp__mozaic__get_style_guide"
+      "MCP: list_style_guides",
+      "MCP: get_style_guide"
     ]
   }
 ];
@@ -188,7 +187,7 @@ function Skills() {
 
         <p className="text-lg md:text-xl text-grey-600 dark:text-grey-300 max-w-3xl mx-auto mb-8 leading-relaxed">
           8 interactive skills that provide guided workflows for building applications with Mozaic Design System.
-          Skills work with the MCP server to provide procedural knowledge and best practices.
+          Seven query the Mozaic SQLite database through bundled shell scripts (no MCP server needed); mozaic-style-guide uses the MCP server named <code>mozaic</code>.
         </p>
 
         <div className="flex flex-wrap justify-center gap-4">
@@ -259,7 +258,7 @@ function Skills() {
           {/* Key Point */}
           <div className="mt-8 p-4 bg-primary-01-50 dark:bg-primary-01-900/10 rounded-lg border-l-4 border-primary-01-500">
             <p className="text-sm text-grey-700 dark:text-grey-300">
-              <strong className="text-primary-01-600 dark:text-primary-01-400">Direct Access:</strong> Skills use shell scripts to query the SQLite database directly via sqlite3 commands, providing guided workflows for building with Mozaic Design System.
+              <strong className="text-primary-01-600 dark:text-primary-01-400">Direct Access:</strong> 7 skills use 22 bundled shell scripts to query the SQLite database via sqlite3 (some use jq). The database is installed to ~/.mozaic/mozaic.db on first run (override with MOZAIC_DB_PATH). Only mozaic-style-guide needs the MCP server, which must be named <code>mozaic</code>.
             </p>
           </div>
         </div>
@@ -324,12 +323,12 @@ function Skills() {
 
                     <div>
                       <h4 className="text-sm font-semibold text-grey-900 dark:text-grey-000 mb-2">
-                        MCP Tools Used
+                        Scripts / Tools Used
                       </h4>
                       <ul className="space-y-1">
                         {skill.tools.map((tool, idx) => (
                           <li key={idx} className="text-xs font-mono text-grey-500 dark:text-grey-400">
-                            {tool.replace('mcp__mozaic__', '')}
+                            {tool}
                           </li>
                         ))}
                       </ul>

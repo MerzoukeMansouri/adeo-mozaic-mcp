@@ -2,23 +2,44 @@ const repositories = [
   {
     name: "mozaic-design-system",
     url: "https://github.com/adeo/mozaic-design-system",
-    description: "Design tokens, documentation, styles, and icons",
-    branch: "main",
-    indexed: ["Design tokens", "Documentation (MDX)", "CSS utilities", "Icons"],
+    description: "Design tokens, documentation, styles, and icons (public)",
+    branch: "master",
+    indexed: ["586 design tokens", "220 docs (MDX)", "6 CSS utilities", "1,473 icons"],
   },
   {
     name: "mozaic-vue",
-    url: "https://github.com/nicmusic/mozaic-vue",
-    description: "Vue 3 components for Mozaic Design System",
+    url: "https://github.com/adeo/mozaic-vue",
+    description: "Vue 3 components (private)",
     branch: "main",
-    indexed: ["52 Vue components", "Props, slots, events", "Storybook docs"],
+    indexed: ["79 Vue components", "Props, slots, events", "86 Storybook docs"],
   },
   {
     name: "mozaic-react",
-    url: "https://github.com/nicmusic/mozaic-react",
-    description: "React components for Mozaic Design System",
+    url: "https://github.com/adeo/mozaic-react",
+    description: "React components (private)",
+    branch: "master",
+    indexed: ["39 React components", "Props, callbacks", "3 Storybook docs"],
+  },
+  {
+    name: "mozaic-web-components",
+    url: "https://github.com/adeo/mozaic-web-components",
+    description: "Native Web Components (private)",
     branch: "main",
-    indexed: ["39 React components", "Props, callbacks", "Storybook docs"],
+    indexed: ["33 Web Components", "Attributes, slots, events"],
+  },
+  {
+    name: "mozaic-freemarker",
+    url: "https://github.com/adeo/mozaic-freemarker",
+    description: "Freemarker macros (private)",
+    branch: "master",
+    indexed: ["40 Freemarker macros", "Configuration options"],
+  },
+  {
+    name: "style-guides",
+    url: "https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/tree/main/style-guides",
+    description: "Hand-authored composed screens captured from live ADEO apps (meta.json + screenshot.png)",
+    branch: "main",
+    indexed: ["16 style guides", "9 categories", "Sites: elo, sop"],
   },
 ];
 
@@ -31,6 +52,11 @@ const npmPackages = [
   {
     name: "@mozaic-ds/react",
     description: "React components",
+    version: "^1.x",
+  },
+  {
+    name: "@mozaic-ds/web-components",
+    description: "Native Web Components",
     version: "^1.x",
   },
   {

@@ -10,15 +10,9 @@
 - [Architecture](#architecture)
   - [Recommended Stack](#recommended-stack)
   - [Project Structure](#project-structure)
-- [MCP Tools](#mcp-tools-to-implement)
-  - [get_design_tokens](#1-get_design_tokens)
-  - [get_component_info](#2-get_component_info)
-  - [list_components](#3-list_components)
-  - [generate_component](#4-generate_component)
-  - [search_documentation](#5-search_documentation)
-  - [get_css_utility](#6-get_css_utility)
-  - [list_css_utilities](#7-list_css_utilities)
-- [Shipped Additions](#shipped-additions-post-planning)
+- [MCP Tools (current, 19)](#mcp-tools-current)
+- [HTTP Server](#http-server-nestjs)
+- [Original Plan: Tool Specs (historical)](#original-plan-tool-specs-historical)
 - [Data Extraction Strategy](#data-extraction-strategy)
   - [Phase 1: Clone Repositories](#phase-1-clone-and-parse-repositories)
   - [Phase 2: Extract Tokens](#phase-2-extract-design-tokens)
@@ -26,20 +20,17 @@
   - [Phase 4: Extract Documentation](#phase-4-extract-documentation)
 - [SQLite Database Schema](#sqlite-database-schema)
 - [Building the Database](#building-and-refreshing-the-database)
-- [Build-Time Indexing Script](#build-time-indexing-script)
-- [MCP Server Implementation](#mcp-server-implementation)
-- [Component List](#component-list-to-index)
-- [Deployment Options](#deployment-options)
+- [Running Locally](#running-locally)
+- [CI/CD](#cicd)
 - [Debugging](#debugging)
-- [Testing Checklist](#testing-checklist)
-- [Next Steps](#next-steps)
+- [Testing](#testing)
 - [Resources](#resources)
 
 ---
 
 ## Project Overview
 
-An MCP (Model Context Protocol) server that exposes the **Mozaic Design System** (by ADEO) to Claude and other AI assistants. The MCP server provides intelligent access to design tokens, component documentation, code examples, and code generation capabilities.
+An MCP (Model Context Protocol) server that exposes the **Mozaic Design System** (by ADEO) to any MCP-capable coding agent (Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, ...). The repo also ships 8 [Agent Skills](https://agentskills.io/specification) (`skills/<name>/SKILL.md`, see [SKILLS.md](../SKILLS.md)). The MCP server provides intelligent access to design tokens, component documentation, code examples, and code generation capabilities.
 
 ## Source Repositories
 
@@ -50,10 +41,12 @@ An MCP (Model Context Protocol) server that exposes the **Mozaic Design System**
 | **Main Design System**   | `https://github.com/adeo/mozaic-design-system` | Core tokens, styles, icons, documentation |
 | **Vue Implementation**   | `https://github.com/adeo/mozaic-vue`           | Vue.js component library                  |
 | **React Implementation** | `https://github.com/adeo/mozaic-react`         | React component library                   |
-| **Web Components**       | `@adeo/mozaic-web-components`                  | Native/framework-agnostic Web Components  |
-| **Freemarker**           | `mozaic-freemarker` (see `repos/`)             | Freemarker macros for server-side templates |
+| **Web Components**       | `https://github.com/adeo/mozaic-web-components` | Native/framework-agnostic Web Components |
+| **Freemarker**           | `https://github.com/adeo/mozaic-freemarker`    | Freemarker macros for server-side templates |
 | **Documentation Site**   | `https://mozaic.adeo.cloud/`                   | Official documentation                    |
 | **Vue Storybook**        | `https://adeo.github.io/mozaic-vue/`           | Vue component demos                       |
+
+Only `mozaic-design-system` is public; the Vue, React, Web Components and Freemarker repos are private (CI uses the `MOZAIC_REPOS_TOKEN` secret).
 
 ### NPM Packages
 
@@ -69,7 +62,7 @@ An MCP (Model Context Protocol) server that exposes the **Mozaic Design System**
 
 ### Hand-Authored Sources
 
-Every source above is a vendored repo under `repos/` that `build-index.ts` parses. The **style guide catalog** is the one exception: it has no upstream repo to parse, so its content is authored directly in this repository.
+Every source above is cloned into `repos/` (gitignored) and parsed by `build-index.ts`. The **style guide catalog** is the one exception: it has no upstream repo to parse, so its content is authored directly in this repository.
 
 ```
 style-guides/<slug>/
@@ -90,10 +83,11 @@ style-guides/<slug>/
 
 ### Recommended Stack
 
-- **Runtime**: Node.js 25+ (required for Claude Desktop compatibility)
+- **Runtime**: Node.js 25+ (CI uses Node 25 and pnpm 9)
 - **Language**: TypeScript
 - **Database**: SQLite (simple, portable, zero-config)
-- **MCP SDK**: `@modelcontextprotocol/sdk`
+- **MCP SDK**: `@modelcontextprotocol/sdk` (stdio transport)
+- **HTTP server**: NestJS (`src/main.ts`), see [DEPLOYMENT.md](../DEPLOYMENT.md)
 
 ### Project Structure
 
@@ -127,13 +121,17 @@ mozaic-mcp-server/
 │   │   ├── get-install-info.ts
 │   │   ├── search-documentation.ts
 │   │   ├── get-css-utility.ts
-│   │   └── list-css-utilities.ts
+│   │   ├── list-css-utilities.ts
+│   │   ├── list-style-guides.ts
+│   │   └── get-style-guide.ts
+│   ├── __tests__/             # Integration, skills-scripts and sanity tests
 │   ├── db/
 │   │   ├── schema.ts         # SQLite schema
 │   │   └── queries.ts        # Database queries
 │   └── parsers/
 │       ├── tokens-parser.ts  # Orchestrates all token parsers
 │       ├── tokens/           # Split token parsers
+│       │   ├── index.ts
 │       │   ├── types.ts      # Shared types (Token, TokenProperty)
 │       │   ├── color-parser.ts
 │       │   ├── spacing-parser.ts
@@ -144,11 +142,21 @@ mozaic-mcp-server/
 │       │   └── grid-parser.ts
 │       ├── vue-parser.ts     # Parse Vue components
 │       ├── react-parser.ts   # Parse React components
+│       ├── web-components-parser.ts
+│       ├── freemarker-parser.ts
+│       ├── icons-parser.ts
 │       ├── docs-parser.ts    # Parse markdown documentation
-│       └── scss-parser.ts    # Parse CSS utilities (Flexy, Margin, etc.)
+│       ├── scss-parser.ts    # Parse CSS utilities (Flexy, Margin, etc.)
+│       └── __tests__/        # Parser unit tests
 ├── scripts/
-│   ├── build-index.ts        # Build-time indexing script
+│   ├── build-index.ts        # Clones repos/ and builds data/mozaic.db
+│   ├── sanity-check.ts       # pnpm database:sanity
+│   ├── docker-build.sh       # Docker image build for the HTTP server
 │   └── generate-docs.ts      # Generate documentation & diagrams
+├── skills/                   # 8 Agent Skills (SKILL.md + scripts/)
+├── style-guides/             # Hand-authored patterns (meta.json + screenshot.png)
+├── bin/                      # CLIs: adeo-mozaic-install-tools, mozaic-skills, mozaic-db
+├── website/                  # Docs site + browser playground (GitHub Pages)
 ├── data/
 │   └── mozaic.db             # SQLite database (generated)
 ├── docs/
@@ -160,9 +168,40 @@ mozaic-mcp-server/
 
 ---
 
-## MCP Tools to Implement
+## MCP Tools (current)
 
-> Since this section was drafted, Web Components, Freemarker, and icon tools shipped too. See [Shipped Additions](#shipped-additions-post-planning) below for what actually exists; keep both in sync when adding tools.
+19 tools, registered in `src/index.ts` (one file per tool in `src/tools/`):
+
+| Group | Tools |
+| ----- | ----- |
+| Tokens | `get_design_tokens` |
+| Components (Vue/React) | `get_component_info`, `list_components`, `generate_vue_component`, `generate_react_component` |
+| Web Components | `generate_webcomponent`, `get_webcomponent_info`, `list_webcomponents` |
+| Freemarker | `generate_freemarker`, `get_freemarker_info`, `list_freemarker` |
+| Docs | `search_documentation` |
+| CSS utilities | `get_css_utility`, `list_css_utilities` |
+| Icons | `search_icons`, `get_icon` |
+| Style guides | `list_style_guides` (filter by category/site), `get_style_guide` (returns a PNG image block + linked component slugs) |
+| Install | `get_install_info` |
+
+The browser playground (`website/`) implements 14 of them (not the Freemarker and style-guide tools).
+
+## HTTP Server (NestJS)
+
+`src/main.ts` boots a separate, token-protected HTTP app for web tools (e.g. v0). Agents should use the stdio server. Bearer `AUTH_TOKEN` on all routes except `/health` and `/api`:
+
+- `GET /health`, `GET /api` (Swagger)
+- `POST /mcp` (JSON-RPC 2.0), `GET /mcp/info`, `POST /mcp/list-tools`, `POST /mcp/call-tool`: all 19 tools, proxied to a spawned stdio server
+- `POST /mcp/light` (JSON-RPC 2.0), `POST /mcp/light/list-tools`, `POST /mcp/light/call-tool`: 5 tools (`get_design_tokens`, `list_css_utilities`, `get_css_utility`, `search_icons`, `get_icon`) read directly from SQLite, no subprocess
+- `call-tool` body: `{"name": "...", "arguments": {...}}`
+
+Env vars and deployment: [DEPLOYMENT.md](../DEPLOYMENT.md).
+
+---
+
+## Original Plan: Tool Specs (historical)
+
+> The original planning spec, kept for context. Schemas below may differ from the shipped tools; `src/index.ts` is the source of truth.
 
 ### 1. `get_design_tokens`
 
@@ -373,46 +412,11 @@ List available CSS-only utilities by category.
 
 ---
 
-## Shipped Additions (post-planning)
-
-Tools and integrations added after the original plan above, not yet reflected in the numbered spec:
-
-| Tool                    | Purpose                                                                 |
-| ----------------------- | ------------------------------------------------------------------------ |
-| `generate_webcomponent` | Generate native Web Component HTML using `@adeo/mozaic-web-components`   |
-| `get_webcomponent_info` | Get a Web Component's attributes, slots, events, CSS custom properties   |
-| `list_webcomponents`    | List Web Components by category                                        |
-| `generate_freemarker`   | Generate Freemarker macro usage code                                    |
-| `get_freemarker_info`   | Get a Freemarker macro's parameters and usage                          |
-| `list_freemarker`       | List available Freemarker macros                                       |
-| `get_icon`              | Get an icon's SVG/metadata by name                                     |
-| `search_icons`          | Search icons by name or type                                            |
-| `get_install_info`      | Get install/setup instructions (npx installer, skills, MCP modes)       |
-| `list_style_guides`     | List style guide patterns, filter by category and/or site (no full-text search) |
-| `get_style_guide`       | Get a pattern's screenshot (base64 image content block) + linked component slugs |
-
-**HTTP server (NestJS):** alongside the stdio MCP server (`src/index.ts`), `src/main.ts` boots a NestJS HTTP app exposing:
-
-- `POST /mcp` — full MCP tool set over HTTP, for web/v0 clients (CORS-enabled for `v0.dev`)
-- `POST /mcp/light` — lightweight JSON-RPC 2.0 endpoint (including `initialize`) exposing a reduced set of token/CSS-utility/icon tools without the full component/doc database
-- `GET /api` — Swagger docs, `GET /health` — health check
-- Bearer-token auth via `src/auth/auth.guard.ts`
-
----
-
 ## Data Extraction Strategy
 
 ### Phase 1: Clone and Parse Repositories
 
-```bash
-# Clone repositories
-git clone https://github.com/adeo/mozaic-design-system.git
-git clone https://github.com/adeo/mozaic-vue.git
-git clone https://github.com/adeo/mozaic-react.git
-
-# Install dependencies to access built tokens
-cd mozaic-design-system && yarn install && yarn tokens:build
-```
+`pnpm build` (`scripts/build-index.ts`) clones or pulls the 5 source repos into `repos/` (shallow clones); no manual clone or token build is needed.
 
 ### Phase 2: Extract Design Tokens
 
@@ -546,6 +550,8 @@ mozaic-design-system/src/docs/
 ---
 
 ## SQLite Database Schema
+
+Excerpt; `src/db/schema.ts` is the source of truth. It also defines an `icons` table (name, icon_name, type, size, view_box, paths) with `icons_fts`.
 
 ```sql
 -- Design Tokens (enhanced with subcategory, multiple value formats)
@@ -719,488 +725,94 @@ CREATE INDEX idx_style_guides_site ON style_guides(site);
 
 ## Building and Refreshing the Database
 
-### How the Database is Created
-
-The Mozaic MCP Server uses a SQLite database (`data/mozaic.db`) that contains all the design tokens, component information, and documentation. This database is built from the official Mozaic repositories.
-
-### Available Scripts
-
-To build or refresh the database, run:
-
 ```bash
-pnpm build
+pnpm build             # tsc + scripts/build-index.ts
+pnpm database:sanity   # scripts/sanity-check.ts
 ```
 
-This script will:
+`build-index.ts`:
 
-1. **Clone repositories** from GitHub (or update them if they already exist):
-   - `https://github.com/adeo/mozaic-design-system`
-   - `https://github.com/adeo/mozaic-vue`
-   - `https://github.com/adeo/mozaic-react`
-2. **Extract and parse data**:
-   - Design tokens from JSON files
-   - Component props, slots/children, events, and examples (Vue and React)
-   - Documentation from Markdown/MDX files
-3. **Create a fresh SQLite database** at `data/mozaic.db`
-   - The existing database is deleted and rebuilt from scratch
-   - This ensures data consistency and removes any stale entries
+1. Clones or pulls the 5 source repos into `repos/` (the 4 private ones need GitHub access)
+2. Parses tokens, Vue/React/Web Components/Freemarker components, icons, CSS utilities, docs, and `style-guides/`
+3. Recreates `data/mozaic.db` from scratch
+
+There is no fallback dataset: a missing repo or an empty parse result fails the build.
 
 ### Database Contents
 
-The database includes:
+- **Tokens**: 586 (color 482, typography 60, spacing 19, screen 12, grid 4, border 3, radius 3, shadow 3)
+- **Components**: 191 (Vue 79, React 39, Web Components 33, Freemarker 40; 137 distinct slugs)
+- **Icons**: 1,473 (354 unique, 15 types, sizes 16/24/32/48/64)
+- **CSS utilities**: 6 (Flexy, Container, Margin, Padding, Ratio, Scroll)
+- **Docs**: 309 (220 design-system, 86 Vue Storybook, 3 React Storybook)
+- **Style guides**: 16
 
-- **Design Tokens**: 580+ tokens organized by category and subcategory
-  - Colors (480+): Organized by component/purpose (button, primary, badge, etc.)
-  - Spacing (19): Magic Unit system (mu025 to mu1000)
-  - Typography (60): Font sizes and line heights
-  - Shadows (3): With composite properties (x, y, blur, spread, opacity)
-  - Borders (3): Border widths
-  - Radius (3): Border radius values
-  - Screens (12): Breakpoint definitions
-- **Components**: 90+ Mozaic components with their props, slots/children, events, and code examples for Vue and React
-- **Documentation**: 240+ searchable documentation pages with full-text search support
+### Where the Database Is Used
 
-### Fallback Behavior
-
-If the GitHub repositories are unavailable or cannot be cloned, the build script will use fallback data to ensure a minimal working dataset:
-
-- 23 sample design tokens
-- 42 pre-defined Mozaic components (Vue and React compatible)
-- 7 default documentation entries
-
-### Database Location
-
-The SQLite database file is stored at:
-
-```
-data/mozaic.db
-```
-
-Additional SQLite files may be present:
-
-- `data/mozaic.db-wal` - Write-Ahead Log (for performance)
-- `data/mozaic.db-shm` - Shared memory file (for concurrency)
+- `data/mozaic.db`: shipped in the npm package, read by the stdio MCP server and the HTTP server
+- `~/.mozaic/mozaic.db` (override `MOZAIC_DB_PATH`): copy used by the skills' scripts, installed by `npx -y -p mozaic-mcp-server@2 mozaic-db`
 
 ---
 
-## Build-Time Indexing Script
+## Running Locally
 
-```typescript
-// scripts/build-index.ts
-import { parseTokens } from "../src/parsers/tokens-parser";
-import { parseVueComponents } from "../src/parsers/vue-parser";
-import { parseReactComponents } from "../src/parsers/react-parser";
-import { parseDocumentation } from "../src/parsers/docs-parser";
-import {
-  initDatabase,
-  insertTokens,
-  insertComponents,
-  insertDocs,
-} from "../src/db/queries";
-
-async function buildIndex() {
-  console.log("🔧 Building Mozaic MCP index...");
-
-  // Initialize SQLite database
-  const db = await initDatabase("./data/mozaic.db");
-
-  // Parse and index design tokens
-  console.log("📦 Parsing design tokens...");
-  const tokens = await parseTokens(
-    "./repos/mozaic-design-system/packages/tokens"
-  );
-  await insertTokens(db, tokens);
-  console.log(`   ✓ Indexed ${tokens.length} tokens`);
-
-  // Parse and index Vue components
-  console.log("🧩 Parsing Vue components...");
-  const vueComponents = await parseVueComponents(
-    "./repos/mozaic-vue/src/components"
-  );
-  await insertComponents(db, vueComponents);
-  console.log(`   ✓ Indexed ${vueComponents.length} Vue components`);
-
-  // Parse and index React components
-  console.log("⚛️ Parsing React components...");
-  const reactComponents = await parseReactComponents(
-    "./repos/mozaic-react/src/components"
-  );
-  await insertComponents(db, reactComponents);
-  console.log(`   ✓ Indexed ${reactComponents.length} React components`);
-
-  // Parse and index documentation
-  console.log("📚 Parsing documentation...");
-  const docs = await parseDocumentation(
-    "./repos/mozaic-design-system/src/docs"
-  );
-  await insertDocs(db, docs);
-  console.log(`   ✓ Indexed ${docs.length} documentation pages`);
-
-  console.log("✅ Index build complete!");
-}
-
-buildIndex().catch(console.error);
-```
-
----
-
-## MCP Server Implementation
-
-```typescript
-// src/index.ts
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { z } from "zod";
-import Database from "better-sqlite3";
-
-const db = new Database("./data/mozaic.db", { readonly: true });
-
-const server = new McpServer({
-  name: "mozaic-design-system",
-  version: "1.0.0",
-});
-
-// Register tools using server.tool() with Zod schemas
-server.tool(
-  "get_design_tokens",
-  "Get Mozaic design tokens with CSS/SCSS variables",
-  {
-    category: z.enum(["colors", "typography", "spacing", "shadows", "borders", "screens", "grid", "all"])
-      .describe("Token category to retrieve"),
-    format: z.enum(["json", "scss", "css", "js"]).default("json")
-      .describe("Output format"),
-  },
-  async (args) => handleGetDesignTokens(db, args)
-);
-
-server.tool(
-  "get_component_info",
-  "Get Vue/React component details: props, slots, events, and examples",
-  {
-    component: z.string().describe("Component name (e.g., 'button', 'modal')"),
-    framework: z.enum(["vue", "react"]).default("vue")
-      .describe("Framework for code examples"),
-  },
-  async (args) => handleGetComponentInfo(db, args)
-);
-
-server.tool(
-  "list_components",
-  "List Mozaic Vue/React components by category",
-  {
-    category: z.enum(["form", "navigation", "feedback", "layout", "data-display", "action", "all"])
-      .default("all")
-      .describe("Component category filter"),
-  },
-  async (args) => handleListComponents(db, args)
-);
-
-server.tool(
-  "generate_vue_component",
-  "Generate ready-to-use Vue 3 code with Mozaic components",
-  {
-    component: z.string().describe("Component to generate"),
-    props: z.record(z.unknown()).optional().describe("Props to apply"),
-    children: z.string().optional().describe("Slot content"),
-  },
-  async (args) => handleGenerateVueComponent(db, args)
-);
-
-server.tool(
-  "generate_react_component",
-  "Generate ready-to-use React/TSX code with Mozaic components",
-  {
-    component: z.string().describe("Component to generate"),
-    props: z.record(z.unknown()).optional().describe("Props to apply"),
-    children: z.string().optional().describe("Children content"),
-  },
-  async (args) => handleGenerateReactComponent(db, args)
-);
-
-server.tool(
-  "search_documentation",
-  "Search Mozaic Design System documentation",
-  {
-    query: z.string().describe("Search query"),
-    limit: z.number().default(5).describe("Maximum results"),
-  },
-  async (args) => handleSearchDocumentation(db, args)
-);
-
-server.tool(
-  "get_css_utility",
-  "Get CSS utility classes for Mozaic layout/spacing utilities",
-  {
-    name: z.string().describe("Utility name (e.g., 'flexy', 'margin')"),
-    includeClasses: z.boolean().default(true).describe("Include CSS class names"),
-  },
-  async (args) => handleGetCssUtility(db, args)
-);
-
-server.tool(
-  "list_css_utilities",
-  "List Mozaic CSS-only utilities",
-  {
-    category: z.enum(["layout", "utility", "all"]).default("all")
-      .describe("Filter by category"),
-  },
-  async (args) => handleListCssUtilities(db, args)
-);
-
-// Start server
-async function main() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-}
-
-main();
-```
-
----
-
-## Component List to Index
-
-Based on the Mozaic documentation, index these components:
-
-### Form Components
-
-- `MAutocomplete` - Autocomplete input
-- `MCheckbox` - Checkbox input
-- `MDatepicker` - Date picker
-- `MDropdown` - Dropdown select
-- `MField` - Form field wrapper
-- `MFileUploader` - File upload
-- `MPasswordInput` - Password input
-- `MPhoneNumberInput` - Phone number input
-- `MQuantitySelector` - Quantity selector
-- `MRadio` - Radio button
-- `MSelect` - Select dropdown
-- `MTextArea` - Text area
-- `MTextInput` - Text input
-- `MToggle` - Toggle switch
-
-### Navigation Components
-
-- `MAccordion` - Accordion
-- `MBreadcrumb` - Breadcrumb
-- `MBuiltInMenu` - Built-in menu
-- `MPagination` - Pagination
-- `MSidebar` - Sidebar
-- `MStepper` - Stepper
-- `MTabs` - Tabs
-
-### Feedback Components
-
-- `MBadge` - Badge
-- `MFlag` - Flag/Banner
-- `MLoader` - Loading indicator
-- `MModal` - Modal dialog
-- `MNotification` - Notification
-- `MProgressBar` - Progress bar
-- `MTooltip` - Tooltip
-
-### Layout Components
-
-- `MCard` - Card
-- `MDivider` - Divider
-- `MLayer` - Layer/Overlay
-
-### Action Components
-
-- `MButton` - Button
-- `MLink` - Link
-- `MOptionButton` - Option button
-- `MOptionCard` - Option card
-
-### Data Display
-
-- `MDataTable` - Data table
-- `MHeading` - Heading
-- `MHero` - Hero section
-- `MListbox` - Listbox
-- `MRatingStars` - Rating stars
-- `MTag` - Tag
-
----
-
-## Deployment Options
-
-### Option 1: Local Development
+Agents run the published server with `npx -y mozaic-mcp-server@2` (install: `npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools`, see [README.md](../README.md)). To test a local build, point your agent's MCP config at it, keeping the name `mozaic`:
 
 ```json
-// claude_desktop_config.json
 {
   "mcpServers": {
     "mozaic": {
       "command": "node",
-      "args": ["path/to/mozaic-mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/adeo-mozaic-mcp/dist/index.js"]
     }
   }
 }
 ```
 
-### Option 2: NPM Package
+---
 
-```bash
-npm publish @your-org/mozaic-mcp-server
-```
+## CI/CD
 
-### Option 3: Docker
+Workflows in `.github/workflows/`:
 
-```dockerfile
-FROM node:25-alpine
-WORKDIR /app
-COPY . .
-RUN npm ci && npm run build
-CMD ["node", "dist/index.js"]
-```
+| Workflow | What it does |
+| -------- | ------------ |
+| `test.yml` | Lint + format check; test job rebuilds the DB only if the `MOZAIC_REPOS_TOKEN` secret is set, then runs sanity check + tests |
+| `refresh-db.yml` | Daily 04:00 UTC rebuild (temporary); commits `data/mozaic.db` if changed, which triggers a release |
+| `release.yml` | semantic-release on `main` |
+| `publish.yml` | On GitHub release: npm publish with provenance, then MCP Registry publish (`mcp-publisher`, GitHub OIDC) |
+| `deploy-docs.yml` | Deploys `website/` to GitHub Pages |
 
 ---
 
 ## Debugging
 
-### Enable Debug Mode
-
-The MCP server supports a `--debug` flag that logs all server activity to a file. This is useful for troubleshooting issues with Claude Desktop.
-
-**Enable debug mode in Claude Desktop config:**
-
-```json
-// claude_desktop_config.json
-{
-  "mcpServers": {
-    "mozaic": {
-      "command": "node",
-      "args": ["path/to/mozaic-mcp-server/dist/index.js", "--debug"]
-    }
-  }
-}
-```
-
-**Or run manually:**
+The stdio server accepts `--debug`, which logs startup, DB init, tool calls and errors to `mcp-server.log` at the package root:
 
 ```bash
-# Start with debug logging
-pnpm start:debug
-
-# Or directly
-node dist/index.js --debug
+pnpm start:debug        # or: node dist/index.js --debug
 ```
 
-### Log File Location
+Add `"--debug"` to the `args` of your agent's MCP config to debug a real session.
 
-When debug mode is enabled, logs are written to:
+### Common Issues
 
-```
-mcp-server.log
-```
-
-This file is located in the project root directory.
-
-### Log Contents
-
-The debug log includes:
-
-- Server startup events
-- Database initialization status
-- Tool calls with input parameters
-- Tool results (content length)
-- Any errors encountered
-
-**Example log output:**
-
-```
-[2024-12-14T02:30:00.000Z] === MCP Server Starting ===
-[2024-12-14T02:30:00.001Z] Debug mode enabled: {"DEBUG":true,"argv":["node","dist/index.js","--debug"]}
-[2024-12-14T02:30:00.002Z] Database path: {"dbPath":"/path/to/data/mozaic.db"}
-[2024-12-14T02:30:00.010Z] Initializing database: {"path":"/path/to/data/mozaic.db"}
-[2024-12-14T02:30:00.015Z] Database initialized successfully
-[2024-12-14T02:30:00.020Z] Connecting to stdio transport
-[2024-12-14T02:30:00.025Z] Server connected and ready
-[2024-12-14T02:30:05.100Z] Tool called: get_design_tokens: {"category":"colors","format":"json"}
-[2024-12-14T02:30:05.150Z] Tool result: get_design_tokens: {"contentLength":1}
-```
-
-### Troubleshooting Common Issues
-
-#### Node.js Version Mismatch
-
-If you see an error like:
-
-```
-NODE_MODULE_VERSION X. This version of Node.js requires NODE_MODULE_VERSION Y.
-```
-
-This means the `better-sqlite3` native module was compiled for a different Node.js version than Claude Desktop uses.
-
-**Solution:**
-
-1. Check your Node version matches Claude Desktop (currently Node 25):
-
-   ```bash
-   node --version  # Should show v25.x.x
-   ```
-
-2. Reinstall dependencies:
-
-   ```bash
-   rm -rf node_modules pnpm-lock.yaml
-   pnpm install
-   pnpm build
-   ```
-
-3. Restart Claude Desktop
-
-#### Database Not Found
-
-If you see:
-
-```
-Database not found at /path/to/data/mozaic.db
-```
-
-**Solution:**
-
-Run the database build script:
-
-```bash
-pnpm build
-```
-
-#### MCP Server Not Connecting
-
-1. Check the log file for errors
-2. Verify the path in `claude_desktop_config.json` is correct
-3. Ensure the `dist/` folder exists (run `pnpm build`)
-4. Restart Claude Desktop after config changes
+- **`NODE_MODULE_VERSION` mismatch**: `better-sqlite3` was built for another Node version. Use Node 25 and run `pnpm rebuild` (or reinstall `node_modules`).
+- **`Database not found at .../data/mozaic.db`**: run `pnpm build`.
+- **Server not connecting**: check `mcp-server.log`, the path in your MCP config, that `dist/` exists, then restart the agent.
 
 ---
 
-## Testing Checklist
+## Testing
 
-- [ ] `get_design_tokens` returns correct color values
-- [ ] `get_component_info` returns props, slots, events for MButton
-- [ ] `list_components` returns all 40+ components
-- [ ] `generate_component` produces valid Vue/React code
-- [ ] `search_documentation` returns relevant results
-- [ ] SQLite database is portable and self-contained
-- [ ] MCP server starts without errors
-- [ ] Claude can successfully call all tools
-
----
-
-## Next Steps
-
-1. **Clone this spec** and start implementing the parsers
-2. **Run the build script** to generate the SQLite index
-3. **Test locally** with Claude Desktop
-4. **Iterate** based on what queries are most useful
+See [TEST.md](./TEST.md): `pnpm test` (vitest), `pnpm database:sanity`.
 
 ---
 
 ## Resources
 
 - [MCP SDK Documentation](https://modelcontextprotocol.io/docs)
+- [Agent Skills spec](https://agentskills.io/specification)
 - [Mozaic Documentation](https://mozaic.adeo.cloud/)
 - [Style Dictionary](https://amzn.github.io/style-dictionary/) (token build tool used by Mozaic)
-- [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) (recommended SQLite library)
+- [better-sqlite3](https://github.com/WiseLibs/better-sqlite3)

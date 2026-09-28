@@ -22,8 +22,12 @@ interface DbStats {
   documentation: number;
   vueComponents: number;
   reactComponents: number;
+  wcComponents: number;
+  freemarkerComponents: number;
   vueExamples: number;
   reactExamples: number;
+  wcExamples: number;
+  styleGuides: number;
   vueDocs: number;
   reactDocs: number;
   designSystemDocs: number;
@@ -56,6 +60,18 @@ function getDbStats(): DbStats | null {
   const reactComponents = db
     .prepare("SELECT COUNT(*) as count FROM components WHERE frameworks LIKE '%react%'")
     .get() as { count: number };
+
+  const count = (sql: string): number => (db.prepare(sql).get() as { count: number }).count;
+  const wcComponents = count(
+    "SELECT COUNT(*) as count FROM components WHERE frameworks LIKE '%webcomponents%'"
+  );
+  const freemarkerComponents = count(
+    "SELECT COUNT(*) as count FROM components WHERE frameworks LIKE '%freemarker%'"
+  );
+  const wcExamples = count(
+    "SELECT COUNT(*) as count FROM component_examples WHERE framework = 'webcomponents'"
+  );
+  const styleGuides = count("SELECT COUNT(*) as count FROM style_guides");
 
   const vueExamples = db
     .prepare("SELECT COUNT(*) as count FROM component_examples WHERE framework = 'vue'")
@@ -123,8 +139,12 @@ function getDbStats(): DbStats | null {
     documentation: docs.count,
     vueComponents: vueComponents.count,
     reactComponents: reactComponents.count,
+    wcComponents,
+    freemarkerComponents,
     vueExamples: vueExamples.count,
     reactExamples: reactExamples.count,
+    wcExamples,
+    styleGuides,
     vueDocs: vueDocs.count,
     reactDocs: reactDocs.count,
     designSystemDocs: designSystemDocs.count,
@@ -142,138 +162,87 @@ function generateArchitectureDiagram(): string {
 title: Mozaic MCP Server - Architecture Overview
 ---
 flowchart TB
-    subgraph Client["Claude Desktop / MCP Client"]
-        CD[Claude Desktop]
+    subgraph Agents["Coding agents / MCP clients"]
+        AG[Claude Code, Codex, Cursor,<br/>Copilot, Gemini CLI, ...]
     end
 
-    subgraph MCP["Mozaic MCP Server"]
-        direction TB
-        Server[MCP Server<br/>src/index.ts]
+    WEB[Web tools<br/>e.g. v0]
 
-        subgraph Tools["MCP Tools"]
-            T1[get_design_tokens]
-            T2[get_component_info]
-            T3[list_components]
-            T4[generate_vue_component]
-            T5[generate_react_component]
-            T6[search_documentation]
-            T7[get_css_utility]
-            T8[list_css_utilities]
-            T9[get_icon]
-            T10[search_icons]
-            T11[get_install_info]
-        end
-
-        Server --> Tools
+    subgraph Skills["Agent Skills (8) - skills/&lt;name&gt;/SKILL.md"]
+        SK7[7 builder/reference skills<br/>bash scripts + sqlite3]
+        SKSG[mozaic-style-guide<br/>uses MCP tools]
     end
 
-    subgraph Data["Data Layer"]
-        DB[(SQLite Database<br/>data/mozaic.db)]
+    subgraph Stdio["MCP server (stdio) - src/index.ts"]
+        Tools[19 MCP tools<br/>src/tools/]
         Queries[db/queries.ts]
+        Tools --> Queries
     end
 
-    subgraph Sources["Source Repositories"]
-        DS[mozaic-design-system<br/>Tokens + Docs]
-        VUE[mozaic-vue<br/>Vue Components]
-        REACT[mozaic-react<br/>React Components]
+    subgraph Http["HTTP server (NestJS) - src/main.ts<br/>Bearer AUTH_TOKEN"]
+        MCPR[POST /mcp<br/>JSON-RPC, 19 tools]
+        LIGHT[POST /mcp/light<br/>5 light tools]
     end
 
-    CD <-->|stdio| Server
-    Tools --> Queries
+    DB[(data/mozaic.db<br/>SQLite)]
+    HOMEDB[(~/.mozaic/mozaic.db<br/>copy via mozaic-db)]
+
+    AG -->|loads| Skills
+    AG <-->|stdio<br/>npx -y mozaic-mcp-server@2| Stdio
+    SK7 -->|sqlite3| HOMEDB
+    SKSG -->|list/get_style_guide| Stdio
+    WEB -->|HTTPS| Http
+    MCPR -->|spawns + proxies| Stdio
+    LIGHT -->|reads directly| DB
     Queries --> DB
-
-    DS -.->|build| DB
-    VUE -.->|build| DB
-    REACT -.->|build| DB
+    DB -.->|packaged| HOMEDB
 `;
 }
 
 function generateDataFlowDiagram(): string {
   return `---
-title: Data Flow - Index Building
+title: Data Flow - Index Building (scripts/build-index.ts)
 ---
 flowchart LR
-    subgraph Repos["Git Repositories"]
+    subgraph Repos["Vendored repos (repos/)"]
         R1[mozaic-design-system]
         R2[mozaic-vue]
         R3[mozaic-react]
         R4[mozaic-web-components]
         R5[mozaic-freemarker]
     end
+    R6[style-guides/&lt;slug&gt;/<br/>meta.json + screenshot.png<br/>hand-authored]
 
-    subgraph TokenParsers["Token Parsers"]
-        TP[tokens-parser.ts<br/>orchestrator]
-        TP1[color-parser]
-        TP2[spacing-parser]
-        TP3[shadow-parser]
-        TP4[border-parser]
-        TP5[screen-parser]
-        TP6[typography-parser]
-        TP7[grid-parser]
+    subgraph Parsers["src/parsers/"]
+        P1[tokens-parser<br/>+ tokens/*]
+        P4[docs-parser]
+        P5[scss-parser]
+        P6[icons-parser]
+        P2[vue-parser]
+        P3[react-parser]
+        P7[web-components-parser]
+        P8[freemarker-parser]
     end
 
-    subgraph OtherParsers["Other Parsers"]
-        P2[vue-parser.ts]
-        P3[react-parser.ts]
-        P4[docs-parser.ts]
-        P5[scss-parser.ts]
-        P6[icon-parser.ts]
-        P7[web-components-parser.ts]
-        P8[freemarker-parser.ts]
+    BI[scripts/build-index.ts]
+
+    subgraph DB["data/mozaic.db"]
+        T1[(tokens<br/>token_properties)]
+        T2[(components<br/>props, slots, events,<br/>examples, css_classes)]
+        T3[(documentation<br/>docs_fts)]
+        T4[(css_utilities<br/>classes, examples)]
+        T5[(icons<br/>icons_fts)]
+        T6[(style_guides)]
     end
 
-    subgraph Data["Extracted Data"]
-        D1[Design Tokens<br/>colors, spacing, typography,<br/>shadows, borders, screens, grid]
-        D2[Vue Components<br/>props, slots, events, examples]
-        D4V[Vue Storybook Docs<br/>Getting Started, Usage]
-        D4R[React Storybook Docs<br/>Getting Started, Usage]
-        D3[React Components<br/>props, callbacks, examples]
-        D4[Documentation<br/>MDX content, frontmatter]
-        D5[CSS Utilities<br/>Flexy, Margin, Padding, etc.]
-        D6[Icons<br/>SVG icons with metadata]
-        D7[Web Components<br/>attributes, slots, events, examples]
-        D8[Freemarker Macros<br/>params, examples]
-    end
-
-    subgraph DB["SQLite Database"]
-        T1[(tokens)]
-        T1P[(token_properties)]
-        T1F[(tokens_fts)]
-        T2[(components)]
-        T3[(component_props)]
-        T4[(component_slots)]
-        T5[(component_events)]
-        T6[(component_examples)]
-        T7[(documentation)]
-        T8[(docs_fts)]
-        CU[(css_utilities)]
-        CUC[(css_utility_classes)]
-        CUE[(css_utility_examples)]
-        IC[(icons)]
-    end
-
-    R1 --> TP
-    TP --> TP1 & TP2 & TP3 & TP4 & TP5 & TP6 & TP7
-    TP1 & TP2 & TP3 & TP4 & TP5 & TP6 & TP7 --> D1
-    D1 --> T1
-    T1 --> T1P & T1F
-
-    R1 --> P4 --> D4 --> T7 --> T8
-    R1 --> P5 --> D5 --> CU
-    CU --> CUC & CUE
-    R2 --> P4 --> D4V --> T7
-    R3 --> P4 --> D4R --> T7
-    R2 --> P2 --> D2 --> T2
-    R3 --> P3 --> D3 --> T2
-
-    D2 --> T3 & T4 & T5 & T6
-    D3 --> T3 & T5 & T6
-    R1 --> P6 --> D6 --> IC
-
-    R4 --> P7 --> D7 --> T2
-    D7 --> T3 & T4 & T5 & T6
-    R5 --> P8 --> D8 --> T2
-    D8 --> T3 & T6
+    R1 --> P1 & P4 & P5 & P6
+    R2 --> P2 & P4
+    R3 --> P3 & P4
+    R4 --> P7
+    R5 --> P8
+    Parsers --> BI
+    R6 --> BI
+    BI --> T1 & T2 & T3 & T4 & T5 & T6
 `;
 }
 
@@ -308,12 +277,6 @@ erDiagram
         string value_unit
     }
 
-    tokens_fts {
-        string name
-        string path
-        string description
-    }
-
     components {
         int id PK
         string name UK
@@ -329,7 +292,7 @@ erDiagram
         string name
         string type
         string default_value
-        bool required
+        int required
         string options
         string description
     }
@@ -355,6 +318,14 @@ erDiagram
         string framework
         string title
         string code
+        string description
+    }
+
+    component_css_classes {
+        int id PK
+        int component_id FK
+        string class_name
+        string description
     }
 
     css_utilities {
@@ -381,24 +352,31 @@ erDiagram
     documentation {
         int id PK
         string title
-        string path UK
+        string path
         string content
         string category
-        string keywords
-    }
-
-    docs_fts {
-        string title
-        string content
         string keywords
     }
 
     icons {
         int id PK
         string name UK
+        string icon_name
         string type
-        string svg
-        string keywords
+        int size
+        string view_box
+        string paths
+    }
+
+    style_guides {
+        int id PK
+        string slug UK
+        string name
+        string category
+        string site
+        string description
+        string components
+        string image_path
     }
 
     tokens ||--o{ token_properties : has
@@ -406,6 +384,7 @@ erDiagram
     components ||--o{ component_slots : has
     components ||--o{ component_events : has
     components ||--o{ component_examples : has
+    components ||--o{ component_css_classes : has
     css_utilities ||--o{ css_utility_classes : has
     css_utilities ||--o{ css_utility_examples : has
 `;
@@ -413,58 +392,53 @@ erDiagram
 
 function generateToolsDiagram(): string {
   return `---
-title: MCP Tools
+title: MCP Tools (19)
 ---
-flowchart TB
-    subgraph TokenTools["Design Token Tools"]
+flowchart LR
+    subgraph Tokens["Design Tokens"]
         GT[get_design_tokens]
-        GT -->|category| GTO1[colors]
-        GT -->|category| GTO2[typography]
-        GT -->|category| GTO3[spacing]
-        GT -->|category| GTO4[shadows]
-        GT -->|category| GTO5[borders]
-        GT -->|category| GTO6[screens]
-        GT -->|category| GTO7[grid]
-        GT -->|format| GTF1[json/scss/css/js]
     end
 
-    subgraph ComponentTools["Component Tools"]
+    subgraph Components["Components (Vue / React)"]
         GC[get_component_info]
         LC[list_components]
         GVC[generate_vue_component]
         GRC[generate_react_component]
-
-        GC -->|input| GCI[component name + framework]
-        LC -->|filter| LCF[category filter]
-        GVC -->|input| GVCI[component + props + children]
-        GRC -->|input| GRCI[component + props + children]
     end
 
-    subgraph CssTools["CSS Utility Tools"]
+    subgraph WC["Web Components"]
+        GWC[generate_webcomponent]
+        GWCI[get_webcomponent_info]
+        LWC[list_webcomponents]
+    end
+
+    subgraph FTL["Freemarker"]
+        GF[generate_freemarker]
+        GFI[get_freemarker_info]
+        LF[list_freemarker]
+    end
+
+    subgraph Docs["Documentation"]
+        SD[search_documentation<br/>FTS5]
+    end
+
+    subgraph Css["CSS Utilities"]
         GCU[get_css_utility]
         LCU[list_css_utilities]
-
-        GCU -->|input| GCUI[utility name]
-        LCU -->|filter| LCUF[layout / utility]
     end
 
-    subgraph DocTools["Documentation Tools"]
-        SD[search_documentation]
-        SD -->|FTS5| SDR[Full-text search]
-    end
-
-    subgraph IconTools["Icon Tools"]
-        GI[get_icon]
+    subgraph Icons["Icons"]
         SI[search_icons]
-
-        GI -->|input| GII[icon name]
-        SI -->|filter| SIF[type / keyword search]
+        GI[get_icon]
     end
 
-    subgraph InstallTools["Installation Tools"]
-        GIN[get_install_info]
+    subgraph SG["Style Guides"]
+        LSG[list_style_guides]
+        GSG[get_style_guide<br/>returns PNG image]
+    end
 
-        GIN -->|input| GINI[component + framework + pkg manager]
+    subgraph Install["Install"]
+        GIN[get_install_info]
     end
 `;
 }
@@ -475,27 +449,25 @@ title: Request Flow
 ---
 sequenceDiagram
     participant User
-    participant Claude as Claude Desktop
-    participant MCP as MCP Server
+    participant Agent as Coding agent (MCP client)
+    participant MCP as MCP Server (stdio)
     participant DB as SQLite DB
 
-    User->>Claude: "Show me the Button component"
-    Claude->>MCP: get_component_info(component: "button")
+    User->>Agent: "Show me the Button component"
+    Agent->>MCP: get_component_info(component: "button")
     MCP->>DB: SELECT * FROM components WHERE slug = 'button'
     DB-->>MCP: Component data
-    MCP->>DB: SELECT * FROM component_props WHERE component_id = ?
-    DB-->>MCP: Props data
-    MCP->>DB: SELECT * FROM component_examples WHERE component_id = ?
-    DB-->>MCP: Examples data
-    MCP-->>Claude: Formatted component info
-    Claude-->>User: Button component documentation
+    MCP->>DB: SELECT props, slots, events, examples
+    DB-->>MCP: Details
+    MCP-->>Agent: Formatted component info
+    Agent-->>User: Button component documentation
 
-    User->>Claude: "Generate a Vue button with primary theme"
-    Claude->>MCP: generate_vue_component(component: "button", props: {theme: "primary"})
+    User->>Agent: "Generate a Vue button with primary theme"
+    Agent->>MCP: generate_vue_component(component: "button", props: {theme: "primary"})
     MCP->>DB: Get component info for validation
     DB-->>MCP: Component data
-    MCP-->>Claude: Generated Vue code
-    Claude-->>User: Vue component code snippet
+    MCP-->>Agent: Generated Vue code
+    Agent-->>User: Vue component code snippet
 `;
 }
 
@@ -507,77 +479,43 @@ flowchart TB
     subgraph Root["mozaic-mcp-server/"]
         direction TB
 
+        subgraph Bin["bin/"]
+            B1[install.js<br/>adeo-mozaic-install-tools]
+            B2[install-skills.js<br/>mozaic-skills]
+            B3[mozaic-db.js<br/>mozaic-db]
+        end
+
+        subgraph Src["src/"]
+            Index[index.ts<br/>stdio MCP server]
+            Main[main.ts<br/>NestJS HTTP server]
+            McpDir[mcp/<br/>controllers + light]
+            ToolsDir[tools/<br/>19 tools]
+            DbDir[db/<br/>schema.ts, queries.ts]
+            ParsersDir[parsers/<br/>+ tokens/]
+            AuthDir[auth/, config/]
+        end
+
         subgraph Scripts["scripts/"]
             BI[build-index.ts]
             GD[generate-docs.ts]
         end
 
-        subgraph Src["src/"]
-            direction TB
-            Index[index.ts<br/>MCP Server Entry]
-
-            subgraph DbDir["db/"]
-                Schema[schema.ts]
-                Queries[queries.ts]
-            end
-
-            subgraph ParsersDir["parsers/"]
-                TP[tokens-parser.ts]
-                VP[vue-parser.ts]
-                RP[react-parser.ts]
-                DP[docs-parser.ts]
-                SP[scss-parser.ts]
-                IP[icon-parser.ts]
-
-                subgraph TokensDir["tokens/"]
-                    TTypes[types.ts]
-                    TColor[color-parser.ts]
-                    TSpacing[spacing-parser.ts]
-                    TShadow[shadow-parser.ts]
-                    TBorder[border-parser.ts]
-                    TScreen[screen-parser.ts]
-                    TTypo[typography-parser.ts]
-                    TGrid[grid-parser.ts]
-                end
-            end
-
-            subgraph ToolsDir["tools/"]
-                T1[get-design-tokens.ts]
-                T2[get-component-info.ts]
-                T3[list-components.ts]
-                T4[generate-vue-component.ts]
-                T5[generate-react-component.ts]
-                T6[search-documentation.ts]
-                T7[get-css-utility.ts]
-                T8[list-css-utilities.ts]
-                T9[get-icon.ts]
-                T10[search-icons.ts]
-                T11[get-install-info.ts]
-            end
-        end
-
-        subgraph DataDir["data/"]
-            DB[(mozaic.db)]
-        end
-
-        subgraph ReposDir["repos/"]
-            R1[mozaic-design-system/]
-            R2[mozaic-vue/]
-            R3[mozaic-react/]
-        end
-
-        subgraph DocDir["docs/"]
-            MD[doc.md + assets/]
-        end
+        SkillsDir[skills/&lt;name&gt;/SKILL.md<br/>8 Agent Skills]
+        SGDir[style-guides/<br/>meta.json + screenshot]
+        ReposDir[repos/<br/>5 vendored Mozaic repos]
+        DataDir[(data/mozaic.db)]
+        WebDir[website/<br/>docs site + playground]
+        ServerJson[server.json<br/>MCP Registry]
     end
 
-    Index --> ToolsDir
-    ToolsDir --> DbDir
-    DbDir --> DataDir
-    BI --> ParsersDir
-    TP --> TokensDir
-    ParsersDir --> DataDir
-    BI --> ReposDir
+    Index --> ToolsDir --> DbDir --> DataDir
+    Main --> McpDir
+    McpDir -->|proxy| Index
+    McpDir -->|light| DbDir
+    BI --> ParsersDir --> ReposDir
+    BI --> SGDir
+    BI --> DataDir
+    B3 -->|copies to ~/.mozaic| DataDir
 `;
 }
 
@@ -614,6 +552,8 @@ ${stats.tokenCategories.map((c) => `        T_${c.category.replace(/[^a-zA-Z]/g,
         direction TB
         Vue["Vue: ${stats.vueComponents}"]
         React["React: ${stats.reactComponents}"]
+        WComp["Web Components: ${stats.wcComponents}"]
+        Ftl["Freemarker: ${stats.freemarkerComponents}"]
     end
 
     subgraph Icons["Icons: ${stats.icons}"]
@@ -629,10 +569,11 @@ ${stats.iconTypes
         CssClasses["${stats.cssUtilityClasses} classes"]
     end
 
-    subgraph Examples["Examples: ${stats.vueExamples + stats.reactExamples}"]
+    subgraph Examples["Examples: ${stats.vueExamples + stats.reactExamples + stats.wcExamples}"]
         direction TB
         VueEx["Vue: ${stats.vueExamples}"]
         ReactEx["React: ${stats.reactExamples}"]
+        WcEx["Web Components: ${stats.wcExamples}"]
     end
 
     subgraph Docs["Documentation: ${stats.documentation}"]
@@ -642,7 +583,12 @@ ${stats.iconTypes
         ReactDoc["React Storybook: ${stats.reactDocs}"]
     end
 
-    Tokens --> Components --> Icons --> CssUtils --> Examples --> Docs
+    subgraph StyleGuides["Style Guides: ${stats.styleGuides}"]
+        direction TB
+        SGNote["composed UI patterns"]
+    end
+
+    Tokens --> Components --> Icons --> CssUtils --> Examples --> Docs --> StyleGuides
 `;
 }
 
@@ -655,54 +601,40 @@ title: Mozaic MCP Server - Complete Architecture (${timestamp})
 ---
 flowchart TB
     %% Main Architecture
-    subgraph Client["Claude Desktop / MCP Client"]
-        CD[Claude Desktop]
+    subgraph Clients["Clients"]
+        AG[Coding agents<br/>Claude Code, Codex, Cursor, Copilot, ...]
+        WEB[Web tools, e.g. v0]
     end
 
-    subgraph MCP["Mozaic MCP Server"]
-        direction TB
-        Server[MCP Server<br/>src/index.ts]
-
-        subgraph Tools["MCP Tools"]
-            direction LR
-            T1[get_design_tokens]
-            T2[get_component_info]
-            T3[list_components]
-            T4[generate_vue_component]
-            T5[generate_react_component]
-            T6[search_documentation]
-            T7[get_css_utility]
-            T8[list_css_utilities]
-            T9[get_icon]
-            T10[search_icons]
-            T11[get_install_info]
-        end
-
-        Server --> Tools
+    subgraph SkillsG["Agent Skills (8)"]
+        SK7[7 skills: bash + sqlite3]
+        SKSG[mozaic-style-guide: MCP tools]
     end
 
-    subgraph DataLayer["Data Layer"]
+    subgraph MCP["MCP server (stdio) - src/index.ts"]
         direction TB
+        Tools[19 MCP tools]
         Queries[db/queries.ts]
-        DB[(SQLite Database<br/>data/mozaic.db)]
-        Queries --> DB
+        Tools --> Queries
     end
 
-    subgraph Parsers["Parsers"]
-        direction LR
-        P1[tokens-parser]
-        P2[vue-parser]
-        P3[react-parser]
-        P4[docs-parser]
-        P5[scss-parser]
-        P6[icon-parser]
+    subgraph Http["NestJS HTTP server - src/main.ts"]
+        MCPR[POST /mcp]
+        LIGHT[POST /mcp/light]
     end
 
-    subgraph Sources["Source Repositories (ADEO)"]
+    DB[(data/mozaic.db)]
+    HOMEDB[(~/.mozaic/mozaic.db)]
+    BI[scripts/build-index.ts<br/>src/parsers/]
+
+    subgraph Sources["Sources"]
         direction LR
         DS[mozaic-design-system]
         VUE[mozaic-vue]
         REACT[mozaic-react]
+        WCR[mozaic-web-components]
+        FTLR[mozaic-freemarker]
+        SGS[style-guides/]
     end
 `;
 
@@ -714,22 +646,27 @@ flowchart TB
         S2["Components: ${stats.components}"]
         S3["Vue: ${stats.vueComponents} + ${stats.vueExamples} examples"]
         S4["React: ${stats.reactComponents} + ${stats.reactExamples} examples"]
+        S8["Web Components: ${stats.wcComponents} / Freemarker: ${stats.freemarkerComponents}"]
         S5["Icons: ${stats.icons}"]
         S6["CSS Utilities: ${stats.cssUtilities} (${stats.cssUtilityClasses} classes)"]
         S7["Documentation: ${stats.documentation} pages"]
+        S9["Style Guides: ${stats.styleGuides}"]
     end
 `;
   }
 
   diagram += `
     %% Connections
-    CD <-->|"stdio"| Server
-    Tools --> Queries
-
-    DS --> P1 & P4 & P5 & P6
-    VUE --> P2
-    REACT --> P3
-    P1 & P2 & P3 & P4 & P5 & P6 -.->|"build"| DB
+    AG --> SkillsG
+    AG <-->|"stdio"| MCP
+    SK7 --> HOMEDB
+    SKSG --> MCP
+    WEB --> Http
+    MCPR -->|"proxy"| MCP
+    LIGHT --> DB
+    Queries --> DB
+    DB -.->|"mozaic-db"| HOMEDB
+    Sources --> BI -.->|"build"| DB
 `;
 
   return diagram;
@@ -830,8 +767,11 @@ function generateDocMd(stats: DbStats | null): string {
 | **Components** | ${stats.components} |
 | Vue Components | ${stats.vueComponents} |
 | React Components | ${stats.reactComponents} |
+| Web Components | ${stats.wcComponents} |
+| Freemarker Macros | ${stats.freemarkerComponents} |
 | Vue Examples | ${stats.vueExamples} |
 | React Examples | ${stats.reactExamples} |
+| Web Component Examples | ${stats.wcExamples} |
 | **Icons** | ${stats.icons} |
 | **CSS Utilities** | ${stats.cssUtilities} |
 | CSS Utility Classes | ${stats.cssUtilityClasses} |
@@ -839,6 +779,7 @@ function generateDocMd(stats: DbStats | null): string {
 | Design System Docs | ${stats.designSystemDocs} |
 | Vue Storybook Docs | ${stats.vueDocs} |
 | React Storybook Docs | ${stats.reactDocs} |
+| **Style Guides** | ${stats.styleGuides} |
 
 ### Token Categories
 

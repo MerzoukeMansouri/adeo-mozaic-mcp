@@ -28,12 +28,6 @@ erDiagram
         string value_unit
     }
 
-    tokens_fts {
-        string name
-        string path
-        string description
-    }
-
     components {
         int id PK
         string name UK
@@ -49,7 +43,7 @@ erDiagram
         string name
         string type
         string default_value
-        bool required
+        int required
         string options
         string description
     }
@@ -75,6 +69,14 @@ erDiagram
         string framework
         string title
         string code
+        string description
+    }
+
+    component_css_classes {
+        int id PK
+        int component_id FK
+        string class_name
+        string description
     }
 
     css_utilities {
@@ -101,24 +103,31 @@ erDiagram
     documentation {
         int id PK
         string title
-        string path UK
+        string path
         string content
         string category
-        string keywords
-    }
-
-    docs_fts {
-        string title
-        string content
         string keywords
     }
 
     icons {
         int id PK
         string name UK
+        string icon_name
         string type
-        string svg
-        string keywords
+        int size
+        string view_box
+        string paths
+    }
+
+    style_guides {
+        int id PK
+        string slug UK
+        string name
+        string category
+        string site
+        string description
+        string components
+        string image_path
     }
 
     tokens ||--o{ token_properties : has
@@ -126,5 +135,6 @@ erDiagram
     components ||--o{ component_slots : has
     components ||--o{ component_events : has
     components ||--o{ component_examples : has
+    components ||--o{ component_css_classes : has
     css_utilities ||--o{ css_utility_classes : has
     css_utilities ||--o{ css_utility_examples : has
