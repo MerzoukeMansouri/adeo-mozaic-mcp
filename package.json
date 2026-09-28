@@ -1,6 +1,6 @@
 {
   "name": "mozaic-mcp-server",
-  "version": "2.11.0",
+  "version": "2.11.1",
   "mcpName": "io.github.MerzoukeMansouri/mozaic",
   "description": "Mozaic Design System (ADEO) MCP server and agent skills for any coding agent: Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, ...",
   "type": "module",

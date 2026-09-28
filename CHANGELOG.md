@@ -1,3 +1,10 @@
+## [2.11.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.11.0...v2.11.1) (2026-09-28)
+
+
+### Bug Fixes
+
+* **skills:** escape script arguments in SQL and slim SKILL.md files ([a62643d](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/a62643d0bc5c6fd3c26d10fd928798f990b491f9))
+
 ## [2.11.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.10.4...v2.11.0) (2026-09-28)
 
 
