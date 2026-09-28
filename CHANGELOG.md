@@ -1,3 +1,25 @@
+## [2.9.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.8.5...v2.9.0) (2026-09-28)
+
+
+### Features
+
+* **website:** add Style Guides page and refresh stats ([e4a6095](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/e4a6095b5956321ec64b2e49e349c390e7ec5b45))
+
+
+### Bug Fixes
+
+* **style-guides:** install skill, validate component slugs, drop wrong screenshot ([aad0434](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/aad043460ffe1cd9ce4c98ee6bd7e3669023129b))
+
+
+### Continuous Integration
+
+* rebuild database in CI and refresh it daily ([3e16533](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/3e16533d55cae2a340145577fb83c99d93db1db2))
+
+
+### Chores
+
+* stop tracking Playwright MCP snapshots ([bfc29c8](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/bfc29c8762e53a573f66c29ca6e41b3dcf1076ed))
+
 ## [2.8.5](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.8.4...v2.8.5) (2026-09-02)
 
 
