@@ -184,7 +184,7 @@ mozaic-mcp-server/
 | Style guides | `list_style_guides` (filter by category/site), `get_style_guide` (returns a PNG image block + linked component slugs) |
 | Install | `get_install_info` |
 
-The browser playground (`website/`) implements 14 of them (not the Freemarker and style-guide tools).
+The browser playground (`website/`) implements all of them as SQL queries against the same database.
 
 ## HTTP Server (NestJS)
 

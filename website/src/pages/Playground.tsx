@@ -16,7 +16,12 @@ type ToolName =
   | "generate_react_component"
   | "generate_webcomponent"
   | "get_webcomponent_info"
-  | "list_webcomponents";
+  | "list_webcomponents"
+  | "generate_freemarker"
+  | "get_freemarker_info"
+  | "list_freemarker"
+  | "list_style_guides"
+  | "get_style_guide";
 
 interface ToolConfig {
   name: ToolName;
@@ -508,7 +513,7 @@ export default function MyComponent() {
     generateCode: (values, componentData) => {
       if (!componentData) return "<!-- Component not found -->";
 
-      const tagName = `mozaic-${componentData.slug.replace('m-', '')}`;
+      const tagName = componentData.slug;
       let attrsObj: Record<string, unknown> = {};
       try {
         attrsObj = JSON.parse(values.attributes || "{}");
@@ -535,7 +540,7 @@ export default function MyComponent() {
   </${tagName}>
 
   <script type="module">
-    import '@mozaic-ds/web-components/${componentData.slug}';
+    import '@mozaic-ds/web-components/lib/${componentData.slug.replace(/^m-/, "")}/${componentData.name.replace(/ \(Web Component\)$/, "").replace(/^M/, "")}.js';
   </script>
 </body>
 </html>`;
@@ -595,6 +600,180 @@ export default function MyComponent() {
         return "SELECT name, slug, category FROM components WHERE frameworks LIKE '%webcomponents%' ORDER BY category, name LIMIT 50";
       }
       return `SELECT name, slug, category FROM components WHERE frameworks LIKE '%webcomponents%' AND category = '${cat}' ORDER BY name`;
+    },
+  },
+  {
+    name: "generate_freemarker",
+    label: "Generate Freemarker",
+    description: "Generate Freemarker macro code (import + config + call)",
+    isCodeGenerator: true,
+    fields: [
+      {
+        name: "component",
+        label: "Component",
+        type: "text",
+        placeholder: "button",
+        defaultValue: "button",
+      },
+      {
+        name: "config",
+        label: "Config (JSON)",
+        type: "text",
+        placeholder: '{"theme": "primary", "size": "m"}',
+        defaultValue: '{"theme": "primary"}',
+      },
+      {
+        name: "content",
+        label: "Nested Content",
+        type: "text",
+        placeholder: "Click me",
+        defaultValue: "Click me",
+      },
+    ],
+    buildQuery: (values) => {
+      const comp = values.component.toLowerCase().replace(/\s+/g, "-");
+      return `
+        SELECT c.name, c.slug
+        FROM components c
+        WHERE c.frameworks LIKE '%freemarker%' AND (LOWER(c.slug) LIKE '%${comp}%' OR LOWER(c.name) LIKE '%${comp}%')
+        LIMIT 1
+      `;
+    },
+    generateCode: (values, componentData) => {
+      if (!componentData) return "<#-- Component not found -->";
+      const macro = componentData.slug.replace(/-/g, "");
+      const name = componentData.name.replace(/ \(Freemarker\)$/, "");
+      let config: Record<string, unknown> = {};
+      try {
+        config = JSON.parse(values.config || "{}");
+      } catch {
+        config = {};
+      }
+      const lines = Object.entries(config).map(([key, value]) => `    "${key}": ${JSON.stringify(value)}`);
+      const configString = lines.length > 0 ? `\n${lines.join(",\n")}\n` : "";
+      return `<#import "mozaic/${macro}.ftl" as ${macro}>
+
+<#-- Configuration for ${name} -->
+<#assign config${name} = {${configString}}>
+
+<#-- Render ${name} -->
+<@${macro}.${macro} config=config${name}>
+    ${values.content || "Content goes here"}
+</@${macro}.${macro}>`;
+    },
+  },
+  {
+    name: "get_freemarker_info",
+    label: "Get Freemarker Info",
+    description: "Get Freemarker macro configuration options",
+    fields: [
+      {
+        name: "component",
+        label: "Component",
+        type: "text",
+        placeholder: "button",
+        defaultValue: "button",
+      },
+    ],
+    buildQuery: (values) => {
+      const comp = values.component.toLowerCase();
+      return `
+        SELECT c.name, c.slug, c.category, c.description,
+               (SELECT group_concat(p.name || ': ' || p.type, ', ') FROM component_props p WHERE p.component_id = c.id) as config_options
+        FROM components c
+        WHERE c.frameworks LIKE '%freemarker%' AND (LOWER(c.slug) LIKE '%${comp}%' OR LOWER(c.name) LIKE '%${comp}%')
+        LIMIT 10
+      `;
+    },
+  },
+  {
+    name: "list_freemarker",
+    label: "List Freemarker Macros",
+    description: "List Freemarker macros by category",
+    fields: [
+      {
+        name: "category",
+        label: "Category",
+        type: "select",
+        options: [
+          { value: "all", label: "All" },
+          { value: "action", label: "Action" },
+          { value: "data-display", label: "Data Display" },
+          { value: "feedback", label: "Feedback" },
+          { value: "layout", label: "Layout" },
+          { value: "navigation", label: "Navigation" },
+          { value: "other", label: "Other" },
+        ],
+        defaultValue: "all",
+      },
+    ],
+    buildQuery: (values) => {
+      const cat = values.category;
+      if (cat === "all") {
+        return "SELECT name, slug, category FROM components WHERE frameworks LIKE '%freemarker%' ORDER BY category, name";
+      }
+      return `SELECT name, slug, category FROM components WHERE frameworks LIKE '%freemarker%' AND category = '${cat}' ORDER BY name`;
+    },
+  },
+  {
+    name: "list_style_guides",
+    label: "List Style Guides",
+    description: "List composed screen patterns, filter by category and/or site",
+    fields: [
+      {
+        name: "category",
+        label: "Category",
+        type: "select",
+        options: [
+          { value: "all", label: "All" },
+          { value: "data-table", label: "data-table" },
+          { value: "nav-header", label: "nav-header" },
+          { value: "search-filter", label: "search-filter" },
+          { value: "calendar-view", label: "calendar-view" },
+          { value: "cascading-column-browser", label: "cascading-column-browser" },
+          { value: "form", label: "form" },
+          { value: "master-detail", label: "master-detail" },
+          { value: "modal-confirm", label: "modal-confirm" },
+          { value: "onboarding-stepper", label: "onboarding-stepper" },
+        ],
+        defaultValue: "all",
+      },
+      {
+        name: "site",
+        label: "Site",
+        type: "select",
+        options: [
+          { value: "all", label: "All" },
+          { value: "elo", label: "elo" },
+          { value: "sop", label: "sop" },
+        ],
+        defaultValue: "all",
+      },
+    ],
+    buildQuery: (values) => {
+      const where = [
+        values.category !== "all" ? `category = '${values.category}'` : "",
+        values.site !== "all" ? `site = '${values.site}'` : "",
+      ].filter(Boolean);
+      return `SELECT slug, name, category, site, description, components FROM style_guides${where.length ? ` WHERE ${where.join(" AND ")}` : ""} ORDER BY category, name`;
+    },
+  },
+  {
+    name: "get_style_guide",
+    label: "Get Style Guide",
+    description: "Get a pattern's screenshot, description and component slugs",
+    fields: [
+      {
+        name: "slug",
+        label: "Slug",
+        type: "text",
+        placeholder: "sales-mode-modal",
+        defaultValue: "sales-mode-modal",
+      },
+    ],
+    buildQuery: (values) => {
+      const slug = values.slug.toLowerCase().trim();
+      return `SELECT image_path, slug, name, category, site, description, components FROM style_guides WHERE slug = '${slug}' COLLATE NOCASE`;
     },
   },
 ];
@@ -719,7 +898,7 @@ function Playground() {
             Test It!
           </h1>
           <p className="text-lg text-grey-600 dark:text-grey-400">
-            Interactive playground covering 14 of the 19 MCP tools (Freemarker and style-guide tools are not included). The SQLite database runs directly in your browser using WebAssembly.
+            Interactive playground covering all 19 MCP tools. The SQLite database runs directly in your browser using WebAssembly.
           </p>
         </div>
         <Flag variant="solid" theme="primary">Live Demo</Flag>
@@ -832,6 +1011,8 @@ function Playground() {
                       ? "Vue 3 Component"
                       : currentTool.name === "generate_react_component"
                       ? "React Component"
+                      : currentTool.name === "generate_freemarker"
+                      ? "Freemarker Template"
                       : "Web Component HTML"}
                   </p>
                   <pre className="bg-primary-02-900 text-grey-100 p-4 rounded-lg text-sm overflow-x-auto font-mono whitespace-pre-wrap">
@@ -884,8 +1065,20 @@ function Playground() {
                               className="px-4 py-3 text-grey-700 dark:text-grey-300 max-w-xs truncate"
                               title={String(cell)}
                             >
-                              {String(cell).substring(0, 100)}
-                              {String(cell).length > 100 && "..."}
+                              {result.columns[j] === "image_path" ? (
+                                <a href={`${import.meta.env.BASE_URL}${cell}`} target="_blank" rel="noreferrer">
+                                  <img
+                                    src={`${import.meta.env.BASE_URL}${cell}`}
+                                    alt="Style guide screenshot"
+                                    className="w-72 max-w-none rounded border border-grey-200 dark:border-primary-02-600"
+                                  />
+                                </a>
+                              ) : (
+                                <>
+                                  {String(cell).substring(0, 100)}
+                                  {String(cell).length > 100 && "..."}
+                                </>
+                              )}
                             </td>
                           ))}
                         </tr>

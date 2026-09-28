@@ -94,7 +94,7 @@ npx add-mcp mozaic-mcp-server@2 --name mozaic           # MCP server
 
 ### Try Before Installing
 
-Test 14 of the 19 MCP tools directly in your browser (all except Freemarker and style-guide tools), without installation:
+Test all 19 MCP tools directly in your browser, without installation:
 
 **[🎮 Open MCP Playground](https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/playground)**
 
