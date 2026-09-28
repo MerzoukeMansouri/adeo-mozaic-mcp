@@ -1,3 +1,10 @@
+## [2.9.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.9.0...v2.9.1) (2026-09-28)
+
+
+### Continuous Integration
+
+* pin npm 11 in publish workflow ([a60f65f](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/a60f65f048c7d7d682367dd6e88cd054d2402485))
+
 ## [2.9.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.8.5...v2.9.0) (2026-09-28)
 
 
