@@ -1,3 +1,10 @@
+## [2.9.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.9.1...v2.9.2) (2026-09-28)
+
+
+### Continuous Integration
+
+* authenticate clones of private adeo/mozaic-* repos ([5a0cea2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/5a0cea265d73c9fd861a354abc5adbccdb1b5f3d))
+
 ## [2.9.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.9.0...v2.9.1) (2026-09-28)
 
 
