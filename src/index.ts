@@ -84,6 +84,7 @@ import {
   type GetFreemarkerInfoInput,
 } from "./tools/get-freemarker-info.js";
 import { handleListFreemarker, type ListFreemarkerInput } from "./tools/list-freemarker.js";
+import { VERSION } from "./version.js";
 
 // Get database path
 const __filename = fileURLToPath(import.meta.url);
@@ -110,7 +111,7 @@ function initializeDatabase(): Database.Database {
 // Create MCP server
 const server = new McpServer({
   name: "mozaic-design-system",
-  version: "1.0.0",
+  version: VERSION,
 });
 
 // Register tools using the new McpServer API
@@ -437,7 +438,7 @@ server.registerTool(
   "generate_webcomponent",
   {
     description:
-      "Generate ready-to-use Web Component code using Mozaic Design System (@adeo/mozaic-web-components). Returns HTML with custom elements and import statement.",
+      "Generate ready-to-use Web Component code using Mozaic Design System (@mozaic-ds/web-components). Returns HTML with custom elements and import statement.",
     inputSchema: {
       component: z
         .string()

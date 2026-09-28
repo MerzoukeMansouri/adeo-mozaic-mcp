@@ -2,6 +2,7 @@ import { Controller, Post, Get, Body, UseGuards, HttpCode, HttpStatus } from "@n
 import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { McpService } from "./mcp.service.js";
 import { AuthGuard } from "../auth/auth.guard.js";
+import { VERSION } from "../version.js";
 
 interface McpRequest {
   jsonrpc?: string;
@@ -27,7 +28,7 @@ export class McpController {
       status: "ok",
       timestamp: new Date().toISOString(),
       service: "mozaic-mcp-server",
-      version: "2.4.0",
+      version: VERSION,
     };
   }
 

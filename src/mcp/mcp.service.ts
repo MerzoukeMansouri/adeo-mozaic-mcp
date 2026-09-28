@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from "@nestjs/commo
 import { ConfigService } from "@nestjs/config";
 import { spawn, ChildProcess } from "child_process";
 import { EventEmitter } from "events";
+import { VERSION } from "../version.js";
 
 interface PendingRequest {
   resolve: (value: unknown) => void;
@@ -150,7 +151,7 @@ export class McpService implements OnModuleInit, OnModuleDestroy {
         capabilities: {},
         clientInfo: {
           name: "mozaic-mcp-nestjs",
-          version: "2.4.0",
+          version: VERSION,
         },
       },
     };
@@ -240,7 +241,7 @@ export class McpService implements OnModuleInit, OnModuleDestroy {
         capabilities: {},
         clientInfo: {
           name: "mozaic-mcp-nestjs",
-          version: "2.4.0",
+          version: VERSION,
         },
       });
 

@@ -13,6 +13,7 @@ import {
 import type { Token } from "../db/queries.js";
 import { mapCategoryToDbCategories } from "../parsers/tokens-parser.js";
 import { generateSvg } from "../parsers/icons-parser.js";
+import { VERSION } from "../version.js";
 
 // Token formatting functions
 function formatAsScss(tokens: Token[]): string {
@@ -107,7 +108,7 @@ export class McpLightController {
                 },
                 serverInfo: {
                   name: "mozaic-mcp-light",
-                  version: "1.0.0",
+                  version: VERSION,
                 },
               },
             };

@@ -3,20 +3,22 @@ import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app.module.js";
+import configuration from "./config/configuration.js";
+import { VERSION } from "./version.js";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ["error", "warn", "log", "debug", "verbose"],
   });
 
-  // Enable CORS for v0 and other clients
+  // CORS_ORIGINS (comma-separated); "*" in an entry is a wildcard, e.g. https://*.v0.dev
+  const origins = configuration().cors.origins.map((origin) =>
+    origin.includes("*")
+      ? new RegExp(`^${origin.trim().replace(/\./g, "\\.").replace(/\*/g, "[a-z0-9-]+")}$`)
+      : origin.trim()
+  );
   app.enableCors({
-    origin: [
-      "https://v0.dev",
-      "https://*.v0.dev",
-      "http://localhost:3000",
-      "http://localhost:3001",
-    ],
+    origin: origins,
     credentials: true,
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -38,7 +40,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle("Mozaic MCP Server")
     .setDescription("Model Context Protocol server for Mozaic Design System")
-    .setVersion("2.4.0")
+    .setVersion(VERSION)
     .addBearerAuth()
     .addTag("MCP", "Model Context Protocol endpoints")
     .addTag("Health", "Health check endpoints")

@@ -3,7 +3,7 @@
 FROM node:22-alpine AS builder
 
 # Install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@9 --activate
 
 WORKDIR /app
 
@@ -18,13 +18,13 @@ COPY tsconfig.json ./
 COPY src ./src
 
 # Build TypeScript
-RUN pnpm run build
+RUN pnpm run compile
 
 # Stage 2: Production
 FROM node:22-alpine AS production
 
 # Install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@9 --activate
 
 # Add curl for healthcheck
 RUN apk add --no-cache curl

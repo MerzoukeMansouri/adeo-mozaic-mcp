@@ -43,8 +43,8 @@
     "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\"",
     "database:sanity": "tsx scripts/sanity-check.ts",
     "rebuild": "pnpm rebuild better-sqlite3",
-    "install-mcp": "./scripts/install.sh",
-    "uninstall-mcp": "./scripts/uninstall.sh",
+    "install-mcp": "node bin/install.js mcp",
+    "uninstall-mcp": "node bin/install.js remove mcp",
     "install-skills": "node bin/install.js skills",
     "uninstall-skills": "node bin/install.js remove skills",
     "prepare": "husky"

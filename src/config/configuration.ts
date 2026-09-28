@@ -11,6 +11,9 @@ export default () => ({
     serverPath: process.env.MCP_SERVER_PATH || "/app/dist/index.js",
   },
   cors: {
-    origins: (process.env.CORS_ORIGINS || "https://v0.dev,https://*.v0.dev").split(","),
+    origins: (
+      process.env.CORS_ORIGINS ||
+      "https://v0.dev,https://*.v0.dev,http://localhost:3000,http://localhost:3001"
+    ).split(","),
   },
 });
