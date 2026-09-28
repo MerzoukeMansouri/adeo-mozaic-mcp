@@ -1,3 +1,10 @@
+## [2.12.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.11.1...v2.12.0) (2026-09-28)
+
+
+### Features
+
+* **cli:** drop the custom installer, use the standard CLIs only ([780f715](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/780f715a4a6eed81a53caf23a080becd3ce93636))
+
 ## [2.11.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.11.0...v2.11.1) (2026-09-28)
 
 
