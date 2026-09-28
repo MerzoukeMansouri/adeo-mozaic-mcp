@@ -1,6 +1,16 @@
 import type Database from "better-sqlite3";
 import { getComponentBySlug } from "../db/queries.js";
 
+// @mozaic-ds/web-components exports "./lib/*.js" -> dist/components/*.js, e.g.
+// slug "m-button" + name "MButton (Web Component)" -> ".../lib/button/Button.js".
+// Unknown component: import the whole bundle.
+export function webComponentImport(component?: { slug: string; name: string } | null): string {
+  if (!component) return "import '@mozaic-ds/web-components/lib';";
+  const dir = component.slug.replace(/^m-/, "");
+  const file = component.name.replace(/ \(Web Component\)$/, "").replace(/^M/, "");
+  return `import '@mozaic-ds/web-components/lib/${dir}/${file}.js';`;
+}
+
 export interface GenerateWebComponentInput {
   component: string;
   attributes?: Record<string, string>;
@@ -23,7 +33,7 @@ export function handleGenerateWebComponent(
   const code = generateWebComponent(tagName, attributes, children);
 
   let output = `// Import web component\n`;
-  output += `import '@adeo/mozaic-web-components/${slug}.js';\n\n`;
+  output += `${webComponentImport(componentData)}\n\n`;
   output += `// Usage in HTML\n${code}`;
 
   return {
@@ -86,7 +96,7 @@ function generateAttributesString(attributes: Record<string, string>): string {
 export const generateWebComponentTool = {
   name: "generate_webcomponent",
   description:
-    "Generate Web Component code using Mozaic Design System (@adeo/mozaic-web-components). Returns ready-to-use HTML with import statement.",
+    "Generate Web Component code using Mozaic Design System (@mozaic-ds/web-components). Returns ready-to-use HTML with import statement.",
   inputSchema: {
     type: "object" as const,
     properties: {

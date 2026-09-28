@@ -119,8 +119,8 @@ I'll suggest 2-3 combinations that work well together:
 ```html
 <!-- Import components -->
 <script type="module">
-  import '@adeo/mozaic-web-components/input.js';
-  import '@adeo/mozaic-web-components/button.js';
+  import '@mozaic-ds/web-components/lib/textinput/Textinput.js';
+  import '@mozaic-ds/web-components/lib/button/Button.js';
 </script>
 
 <!-- Usage -->
@@ -149,9 +149,9 @@ I'll suggest 2-3 combinations that work well together:
 ```html
 <!-- Import components -->
 <script type="module">
-  import '@adeo/mozaic-web-components/input.js';
-  import '@adeo/mozaic-web-components/button.js';
-  import '@adeo/mozaic-web-components/checkbox.js';
+  import '@mozaic-ds/web-components/lib/textinput/Textinput.js';
+  import '@mozaic-ds/web-components/lib/button/Button.js';
+  import '@mozaic-ds/web-components/lib/checkbox/Checkbox.js';
 </script>
 
 <!-- Usage -->
@@ -251,8 +251,8 @@ I'll suggest 2-3 combinations that work well together:
 
 <!-- Progressive enhancement with web components -->
 <script type="module">
-  import '@adeo/mozaic-web-components/input.js';
-  import '@adeo/mozaic-web-components/button.js';
+  import '@mozaic-ds/web-components/lib/textinput/Textinput.js';
+  import '@mozaic-ds/web-components/lib/button/Button.js';
 
   // Enhance form when components are loaded
   customElements.whenDefined('mozaic-input').then(() => {

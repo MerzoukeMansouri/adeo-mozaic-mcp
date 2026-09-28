@@ -37,7 +37,9 @@ fi
 
 # Generate import statement
 echo "// Import web component"
-echo "import '@adeo/mozaic-web-components/${COMPONENT_SLUG}.js';"
+# @mozaic-ds/web-components exports lib/<dir>/<File>.js, e.g. m-button -> lib/button/Button.js
+FILE="${COMPONENT_NAME% (Web Component)}"
+echo "import '@mozaic-ds/web-components/lib/${COMPONENT_SLUG#m-}/${FILE#M}.js';"
 echo ""
 echo "// Usage in HTML"
 

@@ -1,4 +1,5 @@
 import type Database from "better-sqlite3";
+import { webComponentImport } from "./generate-webcomponent.js";
 import { getComponentBySlug } from "../db/queries.js";
 
 export interface GetWebComponentInfoInput {
@@ -178,7 +179,7 @@ export function handleGetWebComponentInfo(
   // Installation
   text += `## Installation\n\n`;
   text += `\`\`\`javascript\n`;
-  text += `import '@adeo/mozaic-web-components/${slug}.js';\n`;
+  text += `${webComponentImport(componentData)}\n`;
   text += `\`\`\`\n\n`;
 
   // JSON output for programmatic use

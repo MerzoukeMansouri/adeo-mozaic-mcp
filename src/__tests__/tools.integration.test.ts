@@ -328,7 +328,9 @@ describe("MCP Tools Integration Tests", () => {
       it("generates basic web component code", () => {
         const result = handleGenerateWebComponent(db, { component: "button" });
 
-        expect(result.content[0].text).toContain("import '@adeo/mozaic-web-components/button.js'");
+        expect(result.content[0].text).toContain(
+          "import '@mozaic-ds/web-components/lib/button/Button.js'"
+        );
         expect(result.content[0].text).toContain("<");
         expect(result.content[0].text).toContain(">");
       });
