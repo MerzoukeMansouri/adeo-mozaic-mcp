@@ -119,12 +119,13 @@ curl -X POST https://mozaic-mcp.m14i.com/mcp/list-tools \
 | Resource Type | Count | Description |
 |--------------|-------|-------------|
 | Design Tokens | 586 | Colors, typography, spacing, shadows, borders, breakpoints |
-| Components | 131+ | Vue 3, React, Web Components, and Freemarker macros with full documentation |
+| Components | 191 | Vue 3, React, Web Components, and Freemarker macros with full documentation |
 | Icons | 1,473 | SVG icons across 15 categories |
 | CSS Utilities | 6 | Flexy grid, Container, Margin, Padding, Ratio, Scroll |
-| Documentation | 281 | Searchable usage guides and best practices |
-| MCP Tools | 17 | Programmatic access to all resources |
-| Claude Skills | 7 | Interactive workflows for Vue, React, Web Components, Freemarker, and agnostic use |
+| Documentation | 309 | Searchable usage guides and best practices |
+| MCP Tools | 19 | Programmatic access to all resources |
+| Claude Skills | 8 | Interactive workflows for Vue, React, Web Components, Freemarker, and agnostic use |
+| Style Guides | 16 | Composed screen patterns with screenshots |
 
 ## Quick Start
 
@@ -219,7 +220,7 @@ Claude Code will automatically activate the appropriate skill (Vue or React buil
 | **`generate_freemarker`** | **Code Gen** | **Generate Freemarker macro code with configuration** |
 | **`get_freemarker_info`** | **Freemarker** | **Get macro configuration options and usage** |
 | **`list_freemarker`** | **Freemarker** | **List Freemarker macros by category** |
-| `search_documentation` | Docs | Full-text search across 281 documentation pages |
+| `search_documentation` | Docs | Full-text search across 309 documentation pages |
 | `get_css_utility` | CSS | Get CSS utility classes and examples |
 | `list_css_utilities` | CSS | List available CSS utilities |
 | `search_icons` | Icons | Search 1,473 icons by name, type, or category |
@@ -343,9 +344,10 @@ npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools --help
     │  ~/.claude/mozaic.db     │
     │                          │
     │  • 586 tokens            │
-    │  • 91 components         │
+    │  • 191 components        │
     │  • 1,473 icons           │
-    │  • 281 docs              │
+    │  • 309 docs              │
+    │  • 16 style guides       │
     └──────────────────────────┘
 ```
 

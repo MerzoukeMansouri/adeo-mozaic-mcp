@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import initSqlJs, { Database } from "sql.js";
+import wasmUrl from "sql.js/dist/sql-wasm-browser.wasm?url";
 
 interface UseSqliteReturn {
   db: Database | null;
@@ -27,7 +28,7 @@ export function useSqlite(): UseSqliteReturn {
 
         // Initialize sql.js with WASM
         const SQL = await initSqlJs({
-          locateFile: (file) => `https://sql.js.org/dist/${file}`,
+          locateFile: () => wasmUrl,
         });
 
         // Fetch the database (use base URL for GitHub Pages compatibility)

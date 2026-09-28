@@ -6,6 +6,7 @@ import Sources from "./pages/Sources";
 import Playground from "./pages/Playground";
 import Skills from "./pages/Skills";
 import PublicAPI from "./pages/PublicAPI";
+import StyleGuides from "./pages/StyleGuides";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="docs/:slug" element={<Docs />} />
         <Route path="sources" element={<Sources />} />
         <Route path="skills" element={<Skills />} />
+        <Route path="style-guide" element={<StyleGuides />} />
         <Route path="playground" element={<Playground />} />
         <Route path="public-api" element={<PublicAPI />} />
       </Route>

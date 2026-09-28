@@ -4,12 +4,12 @@ import { Code } from "lucide-react";
 
 const stats = [
   { label: "Design Tokens", value: "586", gradient: "from-secondary-blue-500 to-secondary-blue-600" },
-  { label: "Components", value: "91+", gradient: "from-primary-01-500 to-primary-01-600" },
+  { label: "Components", value: "191", gradient: "from-primary-01-500 to-primary-01-600" },
   { label: "Icons", value: "1,473", gradient: "from-secondary-purple-500 to-secondary-purple-600" },
   { label: "CSS Utilities", value: "6", gradient: "from-secondary-blue-600 to-secondary-blue-700" },
-  { label: "Documentation", value: "281", gradient: "from-primary-01-600 to-primary-01-700" },
-  { label: "MCP Tools", value: "14", gradient: "from-secondary-purple-600 to-secondary-purple-700" },
-  { label: "Claude Skills", value: "6", gradient: "from-secondary-green-500 to-secondary-green-600" },
+  { label: "Documentation", value: "309", gradient: "from-primary-01-600 to-primary-01-700" },
+  { label: "MCP Tools", value: "19", gradient: "from-secondary-purple-600 to-secondary-purple-700" },
+  { label: "Claude Skills", value: "8", gradient: "from-secondary-green-500 to-secondary-green-600" },
 ];
 
 const tools = [
@@ -29,6 +29,8 @@ const tools = [
   { name: "list_css_utilities", desc: "List available CSS utilities", category: "css" },
   { name: "search_icons", desc: "Search icons by name/type", category: "icons" },
   { name: "get_icon", desc: "Get icon SVG and code", category: "icons" },
+  { name: "list_style_guides", desc: "List composed screen patterns by category/site", category: "styleguides", badge: "new" },
+  { name: "get_style_guide", desc: "Get a pattern's screenshot + component slugs", category: "styleguides", badge: "new" },
   { name: "get_install_info", desc: "Get installation commands", category: "install" },
 ];
 
@@ -40,7 +42,7 @@ const features = [
   },
   {
     title: "Component Documentation",
-    desc: "Get complete documentation for 91+ Vue, React, and native Web Components with props, slots, events, and code examples.",
+    desc: "Get complete documentation for 191 Vue, React, Web Components, and Freemarker components with props, slots, events, and code examples.",
     color: "primary-01",
   },
   {
@@ -50,7 +52,7 @@ const features = [
   },
   {
     title: "Full-Text Search",
-    desc: "Search across 281 documentation pages with FTS5-powered full-text search for installation guides, usage, and best practices.",
+    desc: "Search across 309 documentation pages with FTS5-powered full-text search for installation guides, usage, and best practices.",
     color: "primary-01",
   },
 ];

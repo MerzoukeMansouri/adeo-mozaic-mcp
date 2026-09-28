@@ -53,4 +53,13 @@ if (existsSync(dbSrc)) {
   console.log("⚠ mozaic.db not found, skipping (run 'pnpm build' in root first)");
 }
 
+// Copy style guide screenshots (referenced by style_guides.image_path)
+const styleGuidesSrc = join(projectRoot, "style-guides");
+if (existsSync(styleGuidesSrc)) {
+  cpSync(styleGuidesSrc, join(publicDir, "style-guides"), { recursive: true });
+  console.log("✓ Copied style-guides to public/");
+} else {
+  console.log("⚠ style-guides not found, skipping");
+}
+
 console.log("\nAsset copy complete!");

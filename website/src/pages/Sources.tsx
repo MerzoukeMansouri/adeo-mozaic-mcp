@@ -65,11 +65,13 @@ const dataStats = {
     ],
   },
   components: {
-    total: 91,
-    vue: 52,
+    total: 191,
+    vue: 79,
     react: 39,
-    vueExamples: 180,
-    reactExamples: 40,
+    webComponents: 33,
+    freemarker: 40,
+    vueExamples: 326,
+    reactExamples: 60,
   },
   icons: {
     total: 1473,
@@ -78,9 +80,9 @@ const dataStats = {
     sizes: [16, 24, 32, 48, 64],
   },
   documentation: {
-    total: 281,
+    total: 309,
     designSystem: 220,
-    vueStorybook: 58,
+    vueStorybook: 86,
     reactStorybook: 3,
   },
 };
@@ -227,6 +229,22 @@ function Sources() {
                 </span>
                 <span className="font-medium text-gray-900 dark:text-white">
                   {dataStats.components.react}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-400">
+                  Web Components
+                </span>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {dataStats.components.webComponents}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-400">
+                  Freemarker macros
+                </span>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {dataStats.components.freemarker}
                 </span>
               </div>
               <div className="flex justify-between">

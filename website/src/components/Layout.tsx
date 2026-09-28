@@ -6,6 +6,7 @@ const navItems = [
   { path: "/public-api", label: "Public API" },
   { path: "/docs", label: "Documentation" },
   { path: "/skills", label: "Skills" },
+  { path: "/style-guide", label: "Style Guides" },
   { path: "/sources", label: "Sources" },
   { path: "/playground", label: "Playground", highlight: true },
 ];
