@@ -1,3 +1,10 @@
+## [2.11.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.10.4...v2.11.0) (2026-09-28)
+
+
+### Features
+
+* **website:** add style guide and Freemarker tools to the playground ([2874334](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/2874334b8ad6749266a0d7744e13422f088627c5))
+
 ## [2.10.4](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.10.3...v2.10.4) (2026-09-28)
 
 
