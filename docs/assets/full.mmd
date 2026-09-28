@@ -10,8 +10,7 @@ flowchart TB
     end
 
     subgraph SkillsG["Agent Skills (8)"]
-        SK7[7 skills: bash + sqlite3]
-        SKSG[mozaic-style-guide: MCP tools]
+        SK7[8 skills: bash + sqlite3]
     end
 
     subgraph MCP["MCP server (stdio) - src/index.ts"]
@@ -57,7 +56,6 @@ flowchart TB
     AG --> SkillsG
     AG <-->|"stdio"| MCP
     SK7 --> HOMEDB
-    SKSG --> MCP
     WEB --> Http
     MCPR -->|"proxy"| MCP
     LIGHT --> DB

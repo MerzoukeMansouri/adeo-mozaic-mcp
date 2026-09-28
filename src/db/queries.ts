@@ -105,6 +105,7 @@ export interface StyleGuide {
   description: string;
   components?: string[];
   imagePath: string;
+  image?: Buffer;
 }
 
 // Database initialization
@@ -868,8 +869,8 @@ export function getDatabaseStats(db: Database.Database): {
 export function insertStyleGuide(db: Database.Database, guide: StyleGuide): void {
   db.prepare(
     `
-    INSERT INTO style_guides (slug, name, category, site, description, components, image_path)
-    VALUES (@slug, @name, @category, @site, @description, @components, @imagePath)
+    INSERT INTO style_guides (slug, name, category, site, description, components, image_path, image)
+    VALUES (@slug, @name, @category, @site, @description, @components, @imagePath, @image)
   `
   ).run({
     slug: guide.slug,
@@ -879,6 +880,7 @@ export function insertStyleGuide(db: Database.Database, guide: StyleGuide): void
     description: guide.description,
     components: guide.components ? JSON.stringify(guide.components) : null,
     imagePath: guide.imagePath,
+    image: guide.image ?? null,
   });
 }
 
@@ -947,4 +949,12 @@ export function getStyleGuideBySlug(db: Database.Database, slug: string): StyleG
     .get(slug) as StyleGuideRow | undefined;
 
   return row ? rowToStyleGuide(row) : null;
+}
+
+export function getStyleGuideImage(db: Database.Database, slug: string): Buffer | null {
+  const row = db
+    .prepare("SELECT image FROM style_guides WHERE slug = ? COLLATE NOCASE")
+    .get(slug) as { image: Buffer | null } | undefined;
+
+  return row?.image ?? null;
 }

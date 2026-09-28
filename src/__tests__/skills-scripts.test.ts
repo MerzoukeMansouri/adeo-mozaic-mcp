@@ -532,3 +532,41 @@ describe("script argument escaping", () => {
     expect(JSON.parse(stdout).length).toBeGreaterThan(0);
   });
 });
+
+// ---------------------------------------------------------------------------
+// mozaic-style-guide — works from the database alone, no MCP server
+// ---------------------------------------------------------------------------
+describe("mozaic-style-guide scripts", () => {
+  const dir = `${SKILLS_DIR}/mozaic-style-guide/scripts`;
+
+  it("lists and filters patterns with components as arrays", () => {
+    const { stdout, status } = runScript(`${dir}/list-style-guides.sh`, ["data-table", "sop"]);
+    expect(status).toBe(0);
+    const guides = JSON.parse(stdout);
+    expect(guides.length).toBeGreaterThan(0);
+    for (const g of guides) {
+      expect(g).toMatchObject({ category: "data-table", site: "sop" });
+      expect(Array.isArray(g.components)).toBe(true);
+    }
+  });
+
+  it("writes the screenshot identical to the source PNG", () => {
+    const out = mkdtempSync(join(tmpdir(), "mozaic-sg-"));
+    const result = spawnSync("bash", [`${dir}/get-style-guide.sh`, "sales-mode-modal"], {
+      env: { ...process.env, MOZAIC_DB_PATH: DB_PATH, MOZAIC_STYLE_GUIDES_DIR: out },
+      encoding: "utf8",
+    });
+    expect(result.status).toBe(0);
+    const guide = JSON.parse(result.stdout);
+    expect(guide.screenshot).toBe(join(out, "sales-mode-modal.png"));
+    expect(readFileSync(guide.screenshot)).toEqual(
+      readFileSync(resolve(process.cwd(), "style-guides/sales-mode-modal/screenshot.png"))
+    );
+  });
+
+  it("fails clearly on an unknown slug", () => {
+    const { status, stderr } = runScript(`${dir}/get-style-guide.sh`, ["nope"]);
+    expect(status).toBe(1);
+    expect(stderr).toContain("not found");
+  });
+});

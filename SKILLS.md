@@ -1,12 +1,12 @@
 # Mozaic Design System Skills
 
-Agent skills for working with the Mozaic Design System, usable by any agent that supports the [Agent Skills](https://agentskills.io) format. Most skills run locally with bash scripts and a SQLite database; `mozaic-style-guide` uses the MCP server.
+Agent skills for working with the Mozaic Design System, usable by any agent that supports the [Agent Skills](https://agentskills.io) format. All 8 skills run locally with bash scripts and a SQLite database; none needs the MCP server.
 
 ## Overview
 
-**7 Self-Contained Skills** that use **local shell scripts** (22 scripts total, `sqlite3`; some also `jq`) to query a SQLite database, plus **1 MCP-tool skill** (`mozaic-style-guide`) that calls the MCP server directly to return an image content block.
+**8 Self-Contained Skills** that use **local shell scripts** (24 scripts total, `sqlite3`; some also `jq`) to query a SQLite database. No MCP server needed.
 
-**Architecture Pattern**: Skills provide workflows + data access through bash scripts → local database (or, for `mozaic-style-guide`, through MCP tool calls)
+**Architecture Pattern**: Skills provide workflows + data access through bash scripts → local database
 
 ## Skills Summary
 
@@ -19,9 +19,9 @@ Agent skills for working with the Mozaic Design System, usable by any agent that
 | `mozaic-design-tokens` | Agnostic | Design tokens and styling expert | 2 scripts |
 | `mozaic-css-utilities` | Agnostic | CSS utility classes and layouts | 2 scripts |
 | `mozaic-icons` | Both | Icon search and integration | 2 scripts |
-| `mozaic-style-guide` | Agnostic | Composed-pattern catalog (compliance/reference layer) | MCP tools (no scripts) |
+| `mozaic-style-guide` | Agnostic | Composed-pattern catalog (compliance/reference layer) | 2 scripts |
 
-**Total**: 8 skills; 7 self-contained with 22 shell scripts querying `~/.mozaic/mozaic.db`, 1 (`mozaic-style-guide`) calling MCP tools directly
+**Total**: 8 self-contained skills with 24 shell scripts querying `~/.mozaic/mozaic.db`
 
 ---
 
@@ -294,9 +294,9 @@ Skill: Shows cart icons → User selects size/framework → Generates code
 ### Purpose
 Framework-agnostic compliance/reference layer: a catalog of real, composed Mozaic UI patterns (not single components) so any coding agent can see how components are combined correctly before generating code, then hand off to the matching framework builder skill.
 
-### MCP Tools
-- `list_style_guides(category?, site?)` - List patterns, optionally filtered by category and/or source site (no full-text search, the table stays small)
-- `get_style_guide(slug)` - Returns the pattern's screenshot as a base64 image content block, its relative path as text, its source site, and the linked component slugs
+### Scripts
+- `list-style-guides.sh [category|all] [site|all]` - List patterns, optionally filtered by category and/or source site
+- `get-style-guide.sh <slug>` - Pattern details and linked component slugs, plus `screenshot`: a PNG written to `~/.mozaic/style-guides/<slug>.png` (screenshots are stored in the database) that the agent opens to see the layout
 
 ### Key Features
 - Browse patterns by category (modal-confirm, nav-header, search-filter, data-table, master-detail, calendar-view, onboarding-stepper, cascading-column-browser, form) and/or by source site (elo, sop)
@@ -307,8 +307,8 @@ Framework-agnostic compliance/reference layer: a catalog of real, composed Mozai
 ### Example Usage
 ```
 User: "I need a confirmation modal like the rest of the app"
-Skill: Calls list_style_guides(category: "modal-confirm") → get_style_guide("sales-mode-modal")
-       Shows the screenshot + linked components (modal, radiogroup, button) → hands off to the
+Skill: Runs list-style-guides.sh modal-confirm → get-style-guide.sh sales-mode-modal
+       Opens the screenshot + reads linked components (modal, radiogroup, button) → hands off to the
        framework builder skill matching the project's stack to generate the actual code
 ```
 
@@ -339,7 +339,7 @@ Skills are **self-contained** and use bash scripts to query the local database:
 2. Scripts query `~/.mozaic/mozaic.db` (SQLite database, installed on first use)
 3. Scripts return JSON data for processing
 4. Skills provide guided workflows and interactive experiences
-5. No MCP server needed (except `mozaic-style-guide`)
+5. No MCP server needed
 
 ### Example: mozaic-vue-builder Workflow
 
@@ -382,9 +382,9 @@ npx skills remove mozaic-icons                             # remove a skill
 
 Script-based skills read `~/.mozaic/mozaic.db` (override with `MOZAIC_DB_PATH`). If it is missing, the first script run installs it with `npx -y -p mozaic-mcp-server@2 mozaic-db`; run that command again to refresh it.
 
-### MCP Server
+### MCP Server (optional)
 
-Only `mozaic-style-guide` needs the MCP server, registered under the name `mozaic`:
+No skill needs it. Add it only if you also want the 19 MCP tools in your agent:
 
 ```bash
 npx add-mcp mozaic-mcp-server@2 --name mozaic
@@ -433,7 +433,7 @@ metadata:
 
 1. Create skill directory: `skills/new-skill/` (`name` in frontmatter must match the folder name)
 2. Create `SKILL.md` with frontmatter following the [Agent Skills spec](https://agentskills.io/specification)
-3. Reference MCP tools by their plain name (e.g. `get_style_guide`), not an agent-specific prefix
+3. Get data through a bash script in `scripts/` (with the shared database bootstrap), not through MCP tools, so the skill works without the MCP server
 4. Provide interactive workflows
 5. Include examples and best practices
 

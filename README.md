@@ -212,13 +212,13 @@ Agent: [calls get_component_info, then generate_react_component]
      ┌──────────────┴──────────────┐
      ▼                             ▼
  Skills (8)                  MCP server (19 tools, stdio)
- 22 shell scripts + sqlite3  npx -y mozaic-mcp-server@2
+ 24 shell scripts + sqlite3  npx -y mozaic-mcp-server@2
      │                             │
      ▼                             ▼
  ~/.mozaic/mozaic.db         data/mozaic.db (packaged)
 ```
 
-Both are the same SQLite database: 586 tokens, 191 components, 1,473 icons, 309 docs, 16 style guides. `mozaic-style-guide` has no scripts; it calls the MCP server's style-guide tools.
+Both are the same SQLite database: 586 tokens, 191 components, 1,473 icons, 309 docs, 16 style guides. Skills never need the MCP server: every skill, including `mozaic-style-guide` (screenshots are stored in the database), works from its scripts alone.
 
 ## File Locations
 

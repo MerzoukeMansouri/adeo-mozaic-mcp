@@ -1,10 +1,5 @@
 import type Database from "better-sqlite3";
-import { readFileSync } from "fs";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
-import { getStyleGuideBySlug } from "../db/queries.js";
-
-const PACKAGE_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+import { getStyleGuideBySlug, getStyleGuideImage } from "../db/queries.js";
 
 export interface GetStyleGuideInput {
   slug: string;
@@ -77,19 +72,12 @@ export function handleGetStyleGuide(
     },
   ];
 
-  try {
-    const imageBuffer = readFileSync(join(PACKAGE_ROOT, guide.imagePath));
-    content.push({
-      type: "image",
-      data: imageBuffer.toString("base64"),
-      mimeType: "image/png",
-    });
-  } catch (error) {
-    content.push({
-      type: "text",
-      text: JSON.stringify({ error: `Could not read screenshot: ${error}` }, null, 2),
-    });
-  }
+  const image = getStyleGuideImage(db, guide.slug);
+  content.push(
+    image
+      ? { type: "image", data: image.toString("base64"), mimeType: "image/png" }
+      : { type: "text", text: JSON.stringify({ error: "Screenshot missing from database" }) }
+  );
 
   return { content };
 }

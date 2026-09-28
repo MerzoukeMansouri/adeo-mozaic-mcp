@@ -258,7 +258,8 @@ CREATE TABLE IF NOT EXISTS style_guides (
   site TEXT,                        -- source app the pattern was captured from, e.g. 'elo', 'sop'
   description TEXT NOT NULL,
   components TEXT,                  -- JSON array of component slugs it composes
-  image_path TEXT NOT NULL          -- path (relative to repo root) to the screenshot
+  image_path TEXT NOT NULL,         -- path (relative to repo root) to the screenshot
+  image BLOB                        -- the screenshot PNG itself, so consumers don't need the repo
 );
 
 CREATE INDEX IF NOT EXISTS idx_style_guides_category ON style_guides(category);

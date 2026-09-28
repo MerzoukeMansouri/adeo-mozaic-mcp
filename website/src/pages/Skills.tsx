@@ -149,8 +149,8 @@ const skills = [
       "Framework-agnostic compliance/reference layer"
     ],
     tools: [
-      "MCP: list_style_guides",
-      "MCP: get_style_guide"
+      "list-style-guides.sh",
+      "get-style-guide.sh"
     ]
   }
 ];
@@ -187,7 +187,7 @@ function Skills() {
 
         <p className="text-lg md:text-xl text-grey-600 dark:text-grey-300 max-w-3xl mx-auto mb-8 leading-relaxed">
           8 interactive skills that provide guided workflows for building applications with Mozaic Design System.
-          Seven query the Mozaic SQLite database through bundled shell scripts (no MCP server needed); mozaic-style-guide uses the MCP server named <code>mozaic</code>.
+          All of them query the Mozaic SQLite database through bundled shell scripts: no MCP server needed.
         </p>
 
         <div className="flex flex-wrap justify-center gap-4">
@@ -258,7 +258,7 @@ function Skills() {
           {/* Key Point */}
           <div className="mt-8 p-4 bg-primary-01-50 dark:bg-primary-01-900/10 rounded-lg border-l-4 border-primary-01-500">
             <p className="text-sm text-grey-700 dark:text-grey-300">
-              <strong className="text-primary-01-600 dark:text-primary-01-400">Direct Access:</strong> 7 skills use 22 bundled shell scripts to query the SQLite database via sqlite3 (some use jq). The database is installed to ~/.mozaic/mozaic.db on first run (override with MOZAIC_DB_PATH). Only mozaic-style-guide needs the MCP server, which must be named <code>mozaic</code>.
+              <strong className="text-primary-01-600 dark:text-primary-01-400">Direct Access:</strong> All 8 skills use 24 bundled shell scripts to query the SQLite database via sqlite3 (some use jq). The database is installed to ~/.mozaic/mozaic.db on first run (override with MOZAIC_DB_PATH).
             </p>
           </div>
         </div>
@@ -379,7 +379,7 @@ function Skills() {
             </div>
 
             <p className="text-sm text-grey-600 dark:text-grey-300 mb-3">
-              Only needed for mozaic-style-guide (and to use the 19 MCP tools directly). Run <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">npx add-mcp mozaic-mcp-server@2 --name mozaic</code>, or add to <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.mcp.json</code> / <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.cursor/mcp.json</code>:
+              Optional: no skill needs it. Add it to use the 19 MCP tools directly. Run <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">npx add-mcp mozaic-mcp-server@2 --name mozaic</code>, or add to <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.mcp.json</code> / <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.cursor/mcp.json</code>:
             </p>
 
             <div className="bg-grey-900 dark:bg-grey-950 rounded-lg p-4 font-mono text-sm overflow-x-auto">

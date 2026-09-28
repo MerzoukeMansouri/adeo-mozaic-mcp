@@ -169,8 +169,7 @@ flowchart TB
     WEB[Web tools<br/>e.g. v0]
 
     subgraph Skills["Agent Skills (8) - skills/&lt;name&gt;/SKILL.md"]
-        SK7[7 builder/reference skills<br/>bash scripts + sqlite3]
-        SKSG[mozaic-style-guide<br/>uses MCP tools]
+        SK7[8 skills<br/>24 bash scripts + sqlite3]
     end
 
     subgraph Stdio["MCP server (stdio) - src/index.ts"]
@@ -190,7 +189,6 @@ flowchart TB
     AG -->|loads| Skills
     AG <-->|stdio<br/>npx -y mozaic-mcp-server@2| Stdio
     SK7 -->|sqlite3| HOMEDB
-    SKSG -->|list/get_style_guide| Stdio
     WEB -->|HTTPS| Http
     MCPR -->|spawns + proxies| Stdio
     LIGHT -->|reads directly| DB
@@ -605,8 +603,7 @@ flowchart TB
     end
 
     subgraph SkillsG["Agent Skills (8)"]
-        SK7[7 skills: bash + sqlite3]
-        SKSG[mozaic-style-guide: MCP tools]
+        SK7[8 skills: bash + sqlite3]
     end
 
     subgraph MCP["MCP server (stdio) - src/index.ts"]
@@ -658,7 +655,6 @@ flowchart TB
     AG --> SkillsG
     AG <-->|"stdio"| MCP
     SK7 --> HOMEDB
-    SKSG --> MCP
     WEB --> Http
     MCPR -->|"proxy"| MCP
     LIGHT --> DB

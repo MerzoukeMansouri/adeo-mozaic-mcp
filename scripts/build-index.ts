@@ -407,6 +407,7 @@ async function indexStyleGuides(db: ReturnType<typeof initDatabase>): Promise<nu
       description: meta.description,
       components: meta.components,
       imagePath: `style-guides/${slug}/screenshot.png`,
+      image: readFileSync(imagePath),
     };
   });
 
