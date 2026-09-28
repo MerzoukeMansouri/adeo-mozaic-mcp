@@ -36,8 +36,11 @@ Flags (passed to npx skills / npx add-mcp):
 
 Without -g, config is written to the current project so it can be committed and shared.`;
 
+// Name the package explicitly (-p): when this installer itself runs under npx, the inherited
+// npm_config_package would otherwise make `npx skills` look for a `skills` bin in this package.
 function run(args, command = "npx") {
-  const { status } = spawnSync(command, command === "npx" ? ["-y", ...args] : args, {
+  const npxArgs = ["-y", "-p", args[0], ...args];
+  const { status } = spawnSync(command, command === "npx" ? npxArgs : args, {
     stdio: "inherit",
     shell: process.platform === "win32",
   });
