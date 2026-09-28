@@ -1,3 +1,10 @@
+## [2.10.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.10.1...v2.10.2) (2026-09-28)
+
+
+### Continuous Integration
+
+* make publish re-runnable and retry MCP Registry 5xx ([8eea1a6](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/8eea1a61dab03a3546a21b5f3860986f19289555))
+
 ## [2.10.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.10.0...v2.10.1) (2026-09-28)
 
 
