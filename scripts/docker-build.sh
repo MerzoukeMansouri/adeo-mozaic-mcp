@@ -13,8 +13,8 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# Check if database exists in home directory
-SOURCE_DB="$HOME/.claude/mozaic.db"
+# Use the database built in this repo (pnpm build)
+SOURCE_DB="./data/mozaic.db"
 LOCAL_DB="./mozaic.db"
 
 if [ -f "$SOURCE_DB" ]; then

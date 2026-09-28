@@ -24,7 +24,7 @@ The deployment consists of:
 ./scripts/docker-build.sh
 
 # Option B: Manual build
-cp ~/.claude/mozaic.db ./mozaic.db
+cp data/mozaic.db ./mozaic.db
 docker build -t mozaic-mcp-server:latest .
 ```
 
@@ -271,10 +271,10 @@ docker run -e MCP_DEBUG=true ...
 1. **Database not found**
    ```bash
    # Ensure database exists
-   ls -la ~/.claude/mozaic.db
+   ls -la data/mozaic.db  # run pnpm build if missing
 
    # Copy to project
-   cp ~/.claude/mozaic.db ./mozaic.db
+   cp data/mozaic.db ./mozaic.db
    ```
 
 2. **Port already in use**

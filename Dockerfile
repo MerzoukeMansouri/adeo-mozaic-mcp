@@ -41,7 +41,7 @@ RUN pnpm install --prod --frozen-lockfile
 COPY --from=builder /app/dist ./dist
 
 # Copy the SQLite database from build context
-# This will be copied from local ~/.claude/mozaic.db during build
+# This will be copied from data/mozaic.db by scripts/docker-build.sh
 COPY mozaic.db /app/data/mozaic.db
 
 # Create data directory with proper permissions

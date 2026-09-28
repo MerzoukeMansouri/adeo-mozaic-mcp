@@ -22,7 +22,7 @@ services:
       # Persist database between container restarts
       - mozaic-data:/app/data
       # Optional: Mount local database for development
-      # - ~/.claude/mozaic.db:/app/data/mozaic.db:ro
+      # - ./data/mozaic.db:/app/data/mozaic.db:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 30s

@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-online-blue.svg)](https://merzoukemansouri.github.io/adeo-mozaic-mcp/)
 
-Self-contained Claude Code skills and MCP server for the [Mozaic Design System](https://mozaic.adeo.cloud/) by ADEO.
+MCP server and agent skills for the [Mozaic Design System](https://mozaic.adeo.cloud/) by ADEO, for any coding agent: Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, ...
 
 **📚 [Documentation](https://merzoukemansouri.github.io/adeo-mozaic-mcp/) • 🎮 [MCP Playground](https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/playground) • 🌐 [Website](https://merzoukemansouri.github.io/adeo-mozaic-mcp/)**
 
@@ -13,7 +13,7 @@ Self-contained Claude Code skills and MCP server for the [Mozaic Design System](
 
 This package provides two complementary tools for working with the Mozaic Design System in AI assistants:
 
-- **🤖 Claude Code Skills** - 7 interactive skills for guided component building and design token usage
+- **🤖 Agent Skills** - 8 interactive skills for guided component building and design token usage
 - **🔌 MCP Server** - Model Context Protocol server with 17 tools for programmatic access to Mozaic resources
 
 ## HTTP API
@@ -124,37 +124,38 @@ curl -X POST https://mozaic-mcp.m14i.com/mcp/list-tools \
 | CSS Utilities | 6 | Flexy grid, Container, Margin, Padding, Ratio, Scroll |
 | Documentation | 309 | Searchable usage guides and best practices |
 | MCP Tools | 19 | Programmatic access to all resources |
-| Claude Skills | 8 | Interactive workflows for Vue, React, Web Components, Freemarker, and agnostic use |
+| Agent Skills | 8 | Interactive workflows for Vue, React, Web Components, Freemarker, and agnostic use |
 | Style Guides | 16 | Composed screen patterns with screenshots |
 
 ## Quick Start
 
-### Interactive Installation (Recommended)
+Works with any coding agent that supports [Agent Skills](https://agentskills.io) and/or MCP: Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, OpenCode, Windsurf, VS Code, ...
+
+### One command
 
 ```bash
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools
+npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools
 ```
 
-Use arrow keys and space to select components, then press Enter to install.
+It detects your agents and installs, **in the current project** by default:
+- the 8 skills, through [`npx skills`](https://github.com/vercel-labs/skills) (`.agents/skills/`, `.claude/skills/`, ...)
+- the MCP server, through [`npx add-mcp`](https://github.com/neondatabase/add-mcp) (`.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json`, `.codex/config.toml`, ...)
+- the database used by the skills' scripts (`~/.mozaic/mozaic.db`)
 
-### One-Command Installation
+Add `-g` to install for your user instead, `-a <agent>` to target specific agents, `-y` to skip prompts.
+
+### Or use the standard CLIs directly
 
 ```bash
-# Install everything (skills + MCP server)
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools all
-
-# Install only skills (for Claude Code)
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills
-
-# Install only MCP server (for Claude Desktop)
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools mcp
+npx skills add MerzoukeMansouri/adeo-mozaic-mcp        # skills
+npx add-mcp mozaic-mcp-server@2 --name mozaic           # MCP server
 ```
 
-### Check Installation Status
+### Project or global?
 
-```bash
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools list
-```
+- **Project (default, recommended):** commit the generated files so the whole team gets the same setup, and skills are only loaded in Mozaic projects.
+- **Global (`-g`):** for your user across every project, nothing to commit.
+- Never `npm i -g`: agents run the server with `npx -y mozaic-mcp-server@2`, which stays on major version 2 and picks up fixes.
 
 ### Try Before Installing
 
@@ -162,13 +163,7 @@ Test the MCP tools directly in your browser without installation:
 
 **[🎮 Open MCP Playground](https://merzoukemansouri.github.io/adeo-mozaic-mcp/#/playground)**
 
-The playground lets you:
-- Test all 11 MCP tools interactively
-- Browse components, tokens, and icons
-- Generate code snippets
-- Search documentation
-
-## Claude Code Skills
+## Agent Skills
 
 8 skills that provide interactive workflows for building with Mozaic.
 
@@ -187,13 +182,13 @@ The playground lets you:
 
 ### How Skills Work
 
-Skills are activated automatically in Claude Code based on context, or you can invoke them manually:
+Skills follow the [Agent Skills](https://agentskills.io/specification) format (`skills/<name>/SKILL.md`), so any compatible agent activates them automatically based on context:
 
 ```
 User: "I need a login form with Mozaic"
 ```
 
-Claude Code will automatically activate the appropriate skill (Vue or React builder) and guide you through:
+The agent activates the appropriate skill (Vue or React builder) and guide you through:
 1. Component selection
 2. Props configuration
 3. Code generation
@@ -231,117 +226,90 @@ Claude Code will automatically activate the appropriate skill (Vue or React buil
 
 ### Configuration
 
-Add to your Claude Code or Claude Desktop settings:
+`npx add-mcp mozaic-mcp-server@2 --name mozaic` writes the right file for each agent. The server name must be `mozaic` (the `mozaic-style-guide` skill expects it). Manual setup, for example `.mcp.json` (Claude Code) or `.cursor/mcp.json` (Cursor):
 
-**For Claude Code** (in `.claude/settings.json`):
 ```json
 {
   "mcpServers": {
     "mozaic": {
       "command": "npx",
-      "args": ["-y", "mozaic-mcp-server"]
+      "args": ["-y", "mozaic-mcp-server@2"]
     }
   }
 }
 ```
 
-**For Claude Desktop** (in `~/Library/Application Support/Claude/claude_desktop_config.json`):
-```json
-{
-  "mcpServers": {
-    "mozaic": {
-      "command": "npx",
-      "args": ["-y", "mozaic-mcp-server"]
-    }
-  }
-}
-```
+The server is also published to the [MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.MerzoukeMansouri/mozaic`.
 
 ## Usage Examples
 
-### Using Skills in Claude Code
+### Using Skills
 
 Skills activate automatically based on your request:
 
 ```
 You: "I need a responsive grid with 3 columns"
-Claude: [activates mozaic-css-utilities skill]
+Agent: [activates mozaic-css-utilities skill]
         Here's the Flexy grid solution...
 ```
 
 ```
 You: "Add a shopping cart icon"
-Claude: [activates mozaic-icons skill]
+Agent: [activates mozaic-icons skill]
         I found these cart icons...
 ```
 
 ### Using MCP Tools Programmatically
 
-When configured, Claude can use MCP tools directly:
+When configured, the agent can use MCP tools directly:
 
 ```
 You: "What design tokens are available?"
-Claude: [calls get_design_tokens tool]
+Agent: [calls get_design_tokens tool]
         Found 586 tokens across 7 categories...
 ```
 
 ```
 You: "Generate a React button component"
-Claude: [calls get_component_info, then generate_react_component]
+Agent: [calls get_component_info, then generate_react_component]
         Here's your Button component with TypeScript...
 ```
 
 ## CLI Commands
 
-The `adeo-mozaic-install-tools` CLI provides several commands:
-
 ```bash
-# Interactive mode (default)
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools
+npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools [command] [-g] [-a <agent>] [-y]
 
-# Install all components
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools all
-
-# Install skills only
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills
-
-# Install MCP server only
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools mcp
-
-# Check status
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools list
-
-# Remove components
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools remove skills
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools remove mcp
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools remove all
-
-# Show help
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools --help
+  all (default)        Skills + MCP server + database
+  skills               Skills (and the database their scripts use)
+  mcp                  MCP server config
+  db                   Install/refresh ~/.mozaic/mozaic.db
+  list                 Installed skills and MCP servers
+  remove [skills|mcp]  Remove skills, the MCP server, or both
 ```
 
 ## Architecture
 
 ```
 ┌─────────────────────────────────────┐
-│   Claude Code / Claude Desktop      │
+│   Any MCP client / coding agent     │
 │                                     │
 │   ┌─────────────┐  ┌─────────────┐ │
 │   │   Skills    │  │ MCP Server  │ │
-│   │  (5 total)  │  │ (11 tools)  │ │
+│   │  (8 total)  │  │ (19 tools)  │ │
 │   └─────────────┘  └─────────────┘ │
 │          │                │         │
 └──────────┼────────────────┼─────────┘
            │                │
            ▼                ▼
     ┌──────────────────────────┐
-    │  Shell Scripts (14)      │
+    │  Shell Scripts (22)      │
     │  ↓ sqlite3 queries       │
     └──────────────────────────┘
                ▼
     ┌──────────────────────────┐
     │  SQLite Database         │
-    │  ~/.claude/mozaic.db     │
+    │  ~/.mozaic/mozaic.db     │
     │                          │
     │  • 586 tokens            │
     │  • 191 components        │
@@ -353,22 +321,11 @@ npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools --help
 
 ## File Locations
 
-After installation:
-
-```
-~/.claude/
-├── mozaic.db                      # SQLite database (all Mozaic data)
-├── skills/                        # Claude Code skills
-│   ├── mozaic-vue-builder/
-│   ├── mozaic-react-builder/
-│   ├── mozaic-design-tokens/
-│   ├── mozaic-css-utilities/
-│   └── mozaic-icons/
-└── (Claude Code settings.json)    # MCP server config
-
-~/Library/Application Support/Claude/
-└── claude_desktop_config.json     # Claude Desktop MCP config
-```
+| What | Project (default) | Global (`-g`) |
+|------|-------------------|---------------|
+| Skills | `.agents/skills/`, `.claude/skills/`, ... per agent | `~/.claude/skills/`, `~/.codex/skills/`, `~/.cursor/skills/`, ... |
+| MCP config | `.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json`, `.codex/config.toml`, ... | `~/.claude.json`, `~/.cursor/mcp.json`, `~/.codex/config.toml`, ... |
+| Skills database | `~/.mozaic/mozaic.db` (override with `MOZAIC_DB_PATH`) | same |
 
 ## Development
 
@@ -405,7 +362,7 @@ mozaic-mcp-server/
 │   ├── index.ts           # MCP server entry point
 │   ├── tools/             # MCP tool implementations
 │   └── database/          # Database utilities
-├── skills/                # Claude Code skills
+├── skills/                # Agent Skills (SKILL.md)
 │   ├── mozaic-vue-builder/
 │   │   ├── skill.md       # Skill instructions
 │   │   └── scripts/       # Shell scripts (4)

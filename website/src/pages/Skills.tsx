@@ -183,7 +183,7 @@ function Skills() {
         </div>
 
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-grey-900 dark:text-grey-000 mb-6 tracking-tight">
-          Claude Code Skills
+          Agent Skills
         </h1>
 
         <p className="text-lg md:text-xl text-grey-600 dark:text-grey-300 max-w-3xl mx-auto mb-8 leading-relaxed">
@@ -198,7 +198,7 @@ function Skills() {
               <span className="text-sm">Install Skills</span>
             </div>
             <code className="text-secondary-green-400 text-lg">
-              npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills
+              npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools
             </code>
           </div>
         </div>
@@ -244,7 +244,7 @@ function Skills() {
                   <h3 className="text-2xl font-bold text-white">SQLite Database</h3>
                 </div>
                 <p className="text-white/90 text-sm mb-3">
-                  ~/.claude/mozaic.db
+                  ~/.mozaic/mozaic.db
                 </p>
                 <div className="grid grid-cols-2 gap-2 text-xs text-white/80">
                   <div>Components</div>
@@ -272,7 +272,7 @@ function Skills() {
             Available Skills
           </h2>
           <span className="text-sm text-grey-500 dark:text-grey-400">
-            8 skills • No database required
+            8 skills • Agent Skills format
           </span>
         </div>
 
@@ -360,12 +360,12 @@ function Skills() {
             </div>
 
             <div className="bg-grey-900 dark:bg-grey-950 rounded-lg p-4 font-mono text-sm overflow-x-auto">
-              <div className="text-grey-400 mb-1"># Install all 8 skills</div>
-              <code className="text-secondary-green-400">npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills</code>
+              <div className="text-grey-400 mb-1"># Skills + MCP server + database, current project (-g for your user)</div>
+              <code className="text-secondary-green-400">npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools</code>
             </div>
 
             <p className="text-sm text-grey-600 dark:text-grey-300 mt-3">
-              This installs all skills to <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">~/.claude/skills/</code>
+              Detects your agents (Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, ...) and installs the skills into each one's folder, e.g. <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.agents/skills/</code> or <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.claude/skills/</code>. Standard CLI alternative: <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">npx skills add MerzoukeMansouri/adeo-mozaic-mcp</code>
             </p>
           </div>
 
@@ -380,7 +380,7 @@ function Skills() {
             </div>
 
             <p className="text-sm text-grey-600 dark:text-grey-300 mb-3">
-              Add to your Claude Code settings:
+              Already done by the command above. To add it yourself, run <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">npx add-mcp mozaic-mcp-server@2 --name mozaic</code>, or add to <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.mcp.json</code> / <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.cursor/mcp.json</code>:
             </p>
 
             <div className="bg-grey-900 dark:bg-grey-950 rounded-lg p-4 font-mono text-sm overflow-x-auto">
@@ -389,7 +389,7 @@ function Skills() {
   "mcpServers": {
     "mozaic": {
       "command": "npx",
-      "args": ["mozaic-mcp-server"]
+      "args": ["-y", "mozaic-mcp-server@2"]
     }
   }
 }`}
@@ -408,7 +408,7 @@ function Skills() {
             </div>
 
             <p className="text-grey-600 dark:text-grey-300">
-              Restart Claude Code and skills will activate automatically based on context.
+              Restart your agent and skills will activate automatically based on context.
             </p>
           </div>
         </div>
@@ -457,12 +457,12 @@ function Skills() {
           Ready to Get Started?
         </h2>
         <p className="text-white/90 mb-6 max-w-2xl mx-auto">
-          Install skills and start building with Mozaic Design System in minutes.
+          Install skills and the MCP server and start building with Mozaic Design System in minutes.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <div className="bg-grey-900 rounded-lg px-6 py-3 font-mono">
             <code className="text-secondary-green-400">
-              npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills
+              npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools
             </code>
           </div>
         </div>

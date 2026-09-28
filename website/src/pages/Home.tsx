@@ -9,7 +9,7 @@ const stats = [
   { label: "CSS Utilities", value: "6", gradient: "from-secondary-blue-600 to-secondary-blue-700" },
   { label: "Documentation", value: "309", gradient: "from-primary-01-600 to-primary-01-700" },
   { label: "MCP Tools", value: "19", gradient: "from-secondary-purple-600 to-secondary-purple-700" },
-  { label: "Claude Skills", value: "8", gradient: "from-secondary-green-500 to-secondary-green-600" },
+  { label: "Agent Skills", value: "8", gradient: "from-secondary-green-500 to-secondary-green-600" },
 ];
 
 const tools = [
@@ -75,7 +75,7 @@ function Home() {
 
         <p className="text-lg md:text-xl text-grey-600 dark:text-grey-300 max-w-3xl mx-auto mb-8 leading-relaxed">
           An MCP (Model Context Protocol) server that exposes the{" "}
-          <strong className="text-primary-01-600 dark:text-primary-01-400">Mozaic Design System</strong> by ADEO to Claude and other AI assistants.
+          <strong className="text-primary-01-600 dark:text-primary-01-400">Mozaic Design System</strong> by ADEO to any AI coding agent.
         </p>
 
         <div className="flex flex-wrap justify-center gap-4">
@@ -135,68 +135,66 @@ function Home() {
           <div className="flex-1 h-px bg-grey-200 dark:bg-primary-02-700"></div>
         </div>
 
-        <div className="bg-gradient-to-br from-primary-01-100 to-primary-01-50 dark:from-primary-01-900/30 dark:to-primary-02-800 rounded-xl p-6 border-2 border-primary-01-400 dark:border-primary-01-500 mb-6">
+        <div className="bg-gradient-to-br from-primary-01-100 to-primary-01-50 dark:from-primary-01-900/30 dark:to-primary-02-800 rounded-xl p-6 border-2 border-primary-01-400 dark:border-primary-01-600 mb-6">
           <h3 className="text-lg font-semibold text-grey-900 dark:text-grey-000 mb-3 flex items-center gap-2">
             <span className="text-2xl">⚡</span>
-            Interactive Mode (Recommended)
+            One command, any agent
           </h3>
           <div className="code-block-sm p-4 mb-3">
             <pre className="text-grey-100 text-sm font-mono">
-              <code>npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools</code>
+              <code>npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools</code>
             </pre>
           </div>
           <p className="text-sm text-grey-600 dark:text-grey-400">
-            Select individual skills and MCP server with checkboxes. See what's installed and make changes interactively!
+            Detects your agents (Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, ...) and installs the skills, the MCP server and the database in the current project, ready to commit. Add <code>-g</code> to install for your user instead.
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4 mb-6">
           <div className="bg-white dark:bg-primary-02-800 rounded-xl p-5 border border-grey-200 dark:border-primary-02-600">
             <h3 className="text-base font-semibold text-grey-900 dark:text-grey-000 mb-3">
-              All Components
+              Skills only
             </h3>
             <div className="code-block-sm p-3 mb-2">
               <pre className="text-grey-100 text-xs font-mono">
-                <code>npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools all</code>
+                <code>npx skills add MerzoukeMansouri/adeo-mozaic-mcp</code>
               </pre>
             </div>
             <p className="text-xs text-grey-600 dark:text-grey-400">
-              Quick install everything
+              Standard Agent Skills CLI
             </p>
           </div>
-
           <div className="bg-white dark:bg-primary-02-800 rounded-xl p-5 border border-grey-200 dark:border-primary-02-600">
             <h3 className="text-base font-semibold text-grey-900 dark:text-grey-000 mb-3">
-              Skills Only
+              MCP server only
             </h3>
             <div className="code-block-sm p-3 mb-2">
               <pre className="text-grey-100 text-xs font-mono">
-                <code>npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills</code>
+                <code>npx add-mcp mozaic-mcp-server@2 --name mozaic</code>
               </pre>
             </div>
             <p className="text-xs text-grey-600 dark:text-grey-400">
-              For Claude Code
+              Writes each agent's MCP config
             </p>
           </div>
-
           <div className="bg-white dark:bg-primary-02-800 rounded-xl p-5 border border-grey-200 dark:border-primary-02-600">
             <h3 className="text-base font-semibold text-grey-900 dark:text-grey-000 mb-3">
-              MCP Only
+              Global install
             </h3>
             <div className="code-block-sm p-3 mb-2">
               <pre className="text-grey-100 text-xs font-mono">
-                <code>npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools mcp</code>
+                <code>npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools -g</code>
               </pre>
             </div>
             <p className="text-xs text-grey-600 dark:text-grey-400">
-              For Claude Desktop
+              For your user, across all projects
             </p>
           </div>
         </div>
 
         <div className="mt-4 p-4 bg-secondary-blue-100 dark:bg-secondary-blue-900/20 border border-secondary-blue-200 dark:border-secondary-blue-800 rounded-lg">
           <p className="text-sm text-secondary-blue-700 dark:text-secondary-blue-300">
-            <strong>💡 Tip:</strong> Use <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools list</code> to check status, or <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">--help</code> for all commands.
+            <strong>💡 Tip:</strong> Use <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">list</code> to see what's installed, <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">remove</code> to uninstall, or <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">--help</code> for all commands.
           </p>
         </div>
       </section>
