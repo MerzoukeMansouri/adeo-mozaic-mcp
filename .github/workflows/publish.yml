@@ -74,7 +74,13 @@ jobs:
           fi
 
       - name: Publish to NPM (with Trusted Publishers)
-        run: npm publish --provenance
+        run: |
+          # Skip when re-running a job whose npm publish already succeeded
+          if npm view "$(node -p "require('./package.json').name + '@' + require('./package.json').version")" version >/dev/null 2>&1; then
+            echo "Version already on npm, skipping"
+          else
+            npm publish --provenance
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -90,7 +96,9 @@ jobs:
           jq --arg v "$VERSION" '.version = $v | .packages[0].version = $v' server.json > server.tmp && mv server.tmp server.json
           curl -sL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
           ./mcp-publisher login github-oidc
-          ./mcp-publisher publish
+          # The registry is in preview and sometimes answers 5xx; retry
+          for i in 1 2 3; do ./mcp-publisher publish && exit 0; sleep 30; done
+          exit 1
 
       - name: Verify publication
         run: |
