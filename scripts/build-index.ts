@@ -34,7 +34,7 @@ const REPOS_DIR = join(PROJECT_ROOT, "repos");
 const DB_PATH = join(DATA_DIR, "mozaic.db");
 
 // Repository URLs over HTTPS. Only mozaic-design-system is public; CI authenticates
-// the private ones with a git insteadOf rewrite (see .github/workflows/test.yml).
+// the private ones via MOZAIC_REPOS_TOKEN and a git insteadOf rewrite (see .github/workflows).
 const REPOS = {
   designSystem: {
     url: "https://github.com/adeo/mozaic-design-system.git",

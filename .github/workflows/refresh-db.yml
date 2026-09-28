@@ -41,8 +41,14 @@ jobs:
 
       - name: Authenticate git for private adeo/mozaic-* repos
         env:
-          REPOS_TOKEN: ${{ secrets.MOZAIC_REPOS_TOKEN || secrets.GH_PAT }}
-        run: git config --global url."https://x-access-token:${REPOS_TOKEN}@github.com/adeo/".insteadOf "https://github.com/adeo/"
+          # Read access to the private adeo/mozaic-{vue,react,web-components,freemarker} repos
+          REPOS_TOKEN: ${{ secrets.MOZAIC_REPOS_TOKEN }}
+        run: |
+          if [ -z "$REPOS_TOKEN" ]; then
+            echo "::error::MOZAIC_REPOS_TOKEN secret is not set"
+            exit 1
+          fi
+          git config --global url."https://x-access-token:${REPOS_TOKEN}@github.com/adeo/".insteadOf "https://github.com/adeo/"
 
       - name: Rebuild database from upstream Mozaic repos
         run: pnpm build

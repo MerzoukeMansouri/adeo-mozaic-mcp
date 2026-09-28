@@ -36,6 +36,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+      # Read access to the private adeo/mozaic-{vue,react,web-components,freemarker} repos
+      REPOS_TOKEN: ${{ secrets.MOZAIC_REPOS_TOKEN }}
 
     steps:
       - name: Checkout
@@ -64,11 +67,12 @@ jobs:
         run: pnpm rebuild better-sqlite3
 
       - name: Authenticate git for private adeo/mozaic-* repos
-        env:
-          REPOS_TOKEN: ${{ secrets.MOZAIC_REPOS_TOKEN || secrets.GH_PAT }}
+        if: env.REPOS_TOKEN != ''
         run: git config --global url."https://x-access-token:${REPOS_TOKEN}@github.com/adeo/".insteadOf "https://github.com/adeo/"
 
+      # Skipped until MOZAIC_REPOS_TOKEN is set; tests then run on the committed DB
       - name: Rebuild database from upstream Mozaic repos
+        if: env.REPOS_TOKEN != ''
         run: pnpm build
 
       - name: Run sanity check
