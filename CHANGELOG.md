@@ -1,3 +1,10 @@
+## [2.10.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.10.0...v2.10.1) (2026-09-28)
+
+
+### Continuous Integration
+
+* wait for npm before publishing to the MCP Registry ([a6466c0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/a6466c0835371db4b02fc33712decca8338a7c24))
+
 ## [2.10.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.9.3...v2.10.0) (2026-09-28)
 
 
