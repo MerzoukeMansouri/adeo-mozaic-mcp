@@ -12,6 +12,14 @@ if [ ! -f "$DB_PATH" ]; then
     exit 1
   }
 fi
+# Databases installed before screenshots were stored in them lack style_guides.image
+if ! sqlite3 "$DB_PATH" "SELECT image FROM style_guides LIMIT 0" >/dev/null 2>&1; then
+  echo "Mozaic database is outdated, refreshing $DB_PATH..." >&2
+  npx -y -p mozaic-mcp-server@2 mozaic-db "$DB_PATH" >&2 || {
+    echo "Error: could not refresh the database. Run: npx -y -p mozaic-mcp-server@2 mozaic-db" >&2
+    exit 1
+  }
+fi
 if [ -z "$SLUG" ]; then
   echo "Error: Style guide slug required"
   echo "Usage: $0 <slug>  (list slugs with ./list-style-guides.sh)"
