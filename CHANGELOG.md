@@ -1,3 +1,10 @@
+## [2.14.3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.14.2...v2.14.3) (2026-09-28)
+
+
+### Bug Fixes
+
+* **http:** accept any-case Bearer scheme, compare tokens in constant time ([6fe0942](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/6fe09424fe06fce4cedb812ae6d3c9bc845d2dbe))
+
 ## [2.14.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.14.1...v2.14.2) (2026-09-28)
 
 
