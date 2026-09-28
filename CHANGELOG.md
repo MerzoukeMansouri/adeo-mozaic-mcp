@@ -1,3 +1,10 @@
+## [2.9.3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.9.2...v2.9.3) (2026-09-28)
+
+
+### Continuous Integration
+
+* gate DB rebuild on MOZAIC_REPOS_TOKEN ([c31197a](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/c31197ac99da9cdc8dcd777cc40632008f15bfd9))
+
 ## [2.9.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.9.1...v2.9.2) (2026-09-28)
 
 
