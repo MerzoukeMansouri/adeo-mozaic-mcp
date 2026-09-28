@@ -12,6 +12,7 @@ fi
 # Arguments end up in SQL: escape single quotes, keep numbers numeric
 SQ="'"
 CATEGORY="${CATEGORY//$SQ/$SQ$SQ}"
+[ "$CATEGORY" = "all" ] && CATEGORY=""
 
 sqlite3 "$DB_PATH" <<EOF
 .mode json

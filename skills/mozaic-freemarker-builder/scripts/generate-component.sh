@@ -23,7 +23,7 @@ if [ -z "$COMP_DATA" ]; then
   exit 1
 fi
 
-MACRO_NAME=$(echo "$COMP_DATA" | tr '-' '')
+MACRO_NAME=$(echo "$COMP_DATA" | tr -d '-')
 
 # Generate code
 cat <<EOF

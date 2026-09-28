@@ -481,6 +481,13 @@ describe("skill packaging", () => {
     expect(content.split("\n").length).toBeLessThan(500);
   });
 
+  it.each(skills)("%s works without the MCP server", (skill) => {
+    const content = readFileSync(`${SKILLS_DIR}/${skill}/SKILL.md`, "utf8");
+    expect(content.match(/^allowed-tools: (.+)$/m)?.[1]).not.toMatch(/mcp/i);
+    expect(content).not.toMatch(/mcp__/);
+    expect(existsSync(`${SKILLS_DIR}/${skill}/scripts`)).toBe(true);
+  });
+
   it("scripts bootstrap the database from the current major version", () => {
     for (const skill of skills) {
       const dir = `${SKILLS_DIR}/${skill}/scripts`;
@@ -568,5 +575,27 @@ describe("mozaic-style-guide scripts", () => {
     const { status, stderr } = runScript(`${dir}/get-style-guide.sh`, ["nope"]);
     expect(status).toBe(1);
     expect(stderr).toContain("not found");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// mozaic-freemarker-builder
+// ---------------------------------------------------------------------------
+describe("mozaic-freemarker-builder scripts", () => {
+  const dir = `${SKILLS_DIR}/mozaic-freemarker-builder/scripts`;
+
+  it("lists all macros by default", () => {
+    const { stdout, status } = runScript(`${dir}/list-components.sh`);
+    expect(status).toBe(0);
+    expect(JSON.parse(stdout).length).toBeGreaterThan(30);
+  });
+
+  it("generates a macro call with the import name", () => {
+    const { stdout, stderr, status } = runScript(`${dir}/generate-component.sh`, [
+      "actionbottombar",
+    ]);
+    expect(status).toBe(0);
+    expect(stderr).toBe("");
+    expect(stdout).toContain('<#import "mozaic/actionbottombar.ftl" as actionbottombar>');
   });
 });
