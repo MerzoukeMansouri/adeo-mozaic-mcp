@@ -4,17 +4,18 @@
 
 QUERY="$1"
 LIMIT="${2:-5}"
-DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.claude/mozaic.db}"
+DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.mozaic/mozaic.db}"
+if [ ! -f "$DB_PATH" ]; then
+  echo "Mozaic database not found, installing it to $DB_PATH..." >&2
+  npx -y -p mozaic-mcp-server@2 mozaic-db "$DB_PATH" >&2 || {
+    echo "Error: could not install the database. Run: npx -y -p mozaic-mcp-server@2 mozaic-db" >&2
+    exit 1
+  }
+fi
 
 if [ -z "$QUERY" ]; then
   echo "Error: Search query required"
   echo "Usage: $0 <query> [limit]"
-  exit 1
-fi
-
-if [ ! -f "$DB_PATH" ]; then
-  echo "Error: Database not found at $DB_PATH"
-  echo "Please run: npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills"
   exit 1
 fi
 

@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { spawnSync } from "child_process";
-import { resolve } from "path";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, statSync } from "fs";
+import { tmpdir } from "os";
+import { join, resolve } from "path";
 
 const DB_PATH = resolve(process.cwd(), "data/mozaic.db");
 const SKILLS_DIR = resolve(process.cwd(), "skills");
@@ -459,5 +461,40 @@ describe("mozaic-css-utilities/list-utilities.sh", () => {
     expect(status).toBe(0);
     const data = JSON.parse(stdout);
     expect(data.every((u: { category: string }) => u.category === "layout")).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Packaging: Agent Skills spec + database bootstrap
+// ---------------------------------------------------------------------------
+describe("skill packaging", () => {
+  const skills = readdirSync(SKILLS_DIR);
+  const major = JSON.parse(
+    readFileSync(resolve(process.cwd(), "package.json"), "utf8")
+  ).version.split(".")[0];
+
+  it.each(skills)("%s has a SKILL.md whose name matches its folder", (skill) => {
+    const content = readFileSync(`${SKILLS_DIR}/${skill}/SKILL.md`, "utf8");
+    expect(content.match(/^---\nname: (.+)$/m)?.[1]).toBe(skill);
+    expect(content).toMatch(/^description: .{20,1024}$/m);
+  });
+
+  it("scripts bootstrap the database from the current major version", () => {
+    for (const skill of skills) {
+      const dir = `${SKILLS_DIR}/${skill}/scripts`;
+      if (!existsSync(dir)) continue;
+      for (const script of readdirSync(dir)) {
+        expect(readFileSync(`${dir}/${script}`, "utf8")).toContain(
+          `npx -y -p mozaic-mcp-server@${major} mozaic-db`
+        );
+      }
+    }
+  });
+
+  it("mozaic-db copies the packaged database to the given path", () => {
+    const dest = join(mkdtempSync(join(tmpdir(), "mozaic-db-")), "nested", "mozaic.db");
+    const result = spawnSync("node", [resolve(process.cwd(), "bin/mozaic-db.js"), dest]);
+    expect(result.status).toBe(0);
+    expect(statSync(dest).size).toBe(statSync(DB_PATH).size);
   });
 });

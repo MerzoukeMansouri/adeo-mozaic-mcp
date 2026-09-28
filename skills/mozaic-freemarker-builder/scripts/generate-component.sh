@@ -3,7 +3,14 @@
 COMPONENT="${1:?Component name required}"
 CONFIG="${2:-{}}"
 CONTENT="${3:-Content goes here}"
-DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.claude/mozaic.db}"
+DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.mozaic/mozaic.db}"
+if [ ! -f "$DB_PATH" ]; then
+  echo "Mozaic database not found, installing it to $DB_PATH..." >&2
+  npx -y -p mozaic-mcp-server@2 mozaic-db "$DB_PATH" >&2 || {
+    echo "Error: could not install the database. Run: npx -y -p mozaic-mcp-server@2 mozaic-db" >&2
+    exit 1
+  }
+fi
 
 # Get component info
 COMP_DATA=$(sqlite3 "$DB_PATH" "SELECT slug FROM components WHERE frameworks LIKE '%freemarker%' AND (LOWER(slug) LIKE LOWER('%$COMPONENT%') OR LOWER(name) LIKE LOWER('%$COMPONENT%')) LIMIT 1;")

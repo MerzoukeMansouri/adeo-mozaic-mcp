@@ -1,9 +1,10 @@
 ---
 name: mozaic-vue-builder
 description: Interactive Vue 3 component generator with Mozaic Design System. Helps discover, configure, and generate production-ready Vue components with proper imports and installation guidance.
-version: 2.0.0
-allowed-tools:
-  - Bash
+compatibility: Requires bash, sqlite3 and jq, plus npx to fetch the Mozaic database (~/.mozaic/mozaic.db) on first use.
+allowed-tools: Bash
+metadata:
+  version: "2.0.0"
 ---
 
 # Mozaic Vue Builder
@@ -26,7 +27,7 @@ This skill uses shell scripts to query the local Mozaic database:
 - `generate-component.sh` - Generate Vue 3 component code
 - `get-install-info.sh` - Get installation commands and imports
 
-Database location: `~/.claude/mozaic.db`
+Database location: `~/.mozaic/mozaic.db` (override with `MOZAIC_DB_PATH`; installed automatically on first use)
 
 ## When to Use This Skill
 

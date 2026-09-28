@@ -1,9 +1,10 @@
 ---
 name: mozaic-webcomponents-builder
 description: Interactive Web Components generator with Mozaic Design System. Helps discover, configure, and generate production-ready native web components with proper imports and usage patterns.
-version: 1.0.0
-allowed-tools:
-  - Bash
+compatibility: Requires bash, sqlite3 and jq, plus npx to fetch the Mozaic database (~/.mozaic/mozaic.db) on first use.
+allowed-tools: Bash
+metadata:
+  version: "1.0.0"
 ---
 
 # Mozaic Web Components Builder
@@ -27,7 +28,7 @@ This skill uses shell scripts to query the local Mozaic database:
 - `search-components.sh` - Search components by name or description
 - `generate-component.sh` - Generate web component usage code
 
-Database location: `~/.claude/mozaic.db`
+Database location: `~/.mozaic/mozaic.db` (override with `MOZAIC_DB_PATH`; installed automatically on first use)
 
 ## When to Use This Skill
 

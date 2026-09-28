@@ -1,6 +1,6 @@
 # Mozaic Design System Skills
 
-Self-contained Claude Code skills for working with the Mozaic Design System. No MCP server configuration required - everything runs locally with bash scripts and a SQLite database.
+Agent skills for working with the Mozaic Design System, usable by any agent that supports the [Agent Skills](https://agentskills.io) format. Most skills run locally with bash scripts and a SQLite database; `mozaic-style-guide` uses the MCP server.
 
 ## Overview
 
@@ -20,13 +20,13 @@ Self-contained Claude Code skills for working with the Mozaic Design System. No 
 | `mozaic-icons` | Both | Icon search and integration | 2 scripts |
 | `mozaic-style-guide` | Agnostic | Composed-pattern catalog (compliance/reference layer) | MCP tools (no scripts) |
 
-**Total**: 8 skills; 7 self-contained with 18 shell scripts querying `~/.claude/mozaic.db`, 1 (`mozaic-style-guide`) calling MCP tools directly
+**Total**: 8 skills; 7 self-contained with 18 shell scripts querying `~/.mozaic/mozaic.db`, 1 (`mozaic-style-guide`) calling MCP tools directly
 
 ---
 
 ## Skill 1: mozaic-vue-builder
 
-**Location**: `skills/mozaic-vue-builder/skill.md`
+**Location**: `skills/mozaic-vue-builder/SKILL.md`
 
 ### Purpose
 Interactive assistant for building Vue 3 applications with Mozaic Design System.
@@ -60,7 +60,7 @@ Skill: Proposes TextInput + Button combinations → Generates Vue code
 
 ## Skill 2: mozaic-react-builder
 
-**Location**: `skills/mozaic-react-builder/skill.md`
+**Location**: `skills/mozaic-react-builder/SKILL.md`
 
 ### Purpose
 Interactive assistant for building React applications with Mozaic Design System and full TypeScript support.
@@ -94,7 +94,7 @@ Skill: Proposes components with TypeScript interfaces → Generates typed React 
 
 ## Skill 3: mozaic-webcomponents-builder
 
-**Location**: `skills/mozaic-webcomponents-builder/skill.md`
+**Location**: `skills/mozaic-webcomponents-builder/SKILL.md`
 
 ### Purpose
 Interactive assistant for building framework-agnostic applications with native Web Components (Custom Elements v1) using Mozaic Design System.
@@ -141,7 +141,7 @@ Skill: Proposes mozaic-input + mozaic-button → Generates HTML with imports and
 
 ## Skill 4: mozaic-design-tokens
 
-**Location**: `skills/mozaic-design-tokens/skill.md`
+**Location**: `skills/mozaic-design-tokens/SKILL.md`
 
 ### Purpose
 Expert for working with Mozaic design tokens (colors, typography, spacing, shadows, borders, breakpoints, grid).
@@ -183,7 +183,7 @@ Skill: Returns colors in requested format (SCSS/CSS/JS) with usage examples
 
 ## Skill 5: mozaic-css-utilities
 
-**Location**: `skills/mozaic-css-utilities/skill.md`
+**Location**: `skills/mozaic-css-utilities/SKILL.md`
 
 ### Purpose
 Expert for Mozaic CSS-only utility classes (no framework needed).
@@ -225,7 +225,7 @@ Skill: Returns Flexy grid HTML with responsive breakpoints
 
 ## Skill 6: mozaic-icons
 
-**Location**: `skills/mozaic-icons/skill.md`
+**Location**: `skills/mozaic-icons/SKILL.md`
 
 ### Purpose
 Icon search and integration for Vue & React applications.
@@ -269,7 +269,7 @@ Skill: Shows cart icons → User selects size/framework → Generates code
 
 ## Skill 7: mozaic-style-guide
 
-**Location**: `skills/mozaic-style-guide/skill.md`
+**Location**: `skills/mozaic-style-guide/SKILL.md`
 
 ### Purpose
 Framework-agnostic compliance/reference layer: a catalog of real, composed Mozaic UI patterns (not single components) so any coding agent can see how components are combined correctly before generating code, then hand off to the matching framework builder skill.
@@ -315,11 +315,11 @@ style-guides/<slug>/
 
 Skills are **self-contained** and use bash scripts to query the local database:
 
-1. Each skill has a `skill.md` file (instructions) and `scripts/` folder (bash scripts)
-2. Scripts query `~/.claude/mozaic.db` (SQLite database)
+1. Each skill has a `SKILL.md` file (instructions) and `scripts/` folder (bash scripts)
+2. Scripts query `~/.mozaic/mozaic.db` (SQLite database, installed on first use)
 3. Scripts return JSON data for processing
 4. Skills provide guided workflows and interactive experiences
-5. No MCP server or external services needed
+5. No MCP server needed (except `mozaic-style-guide`)
 
 ### Example: mozaic-vue-builder Workflow
 
@@ -338,97 +338,46 @@ Skills are **self-contained** and use bash scripts to query the local database:
 
 ## Installation
 
-### Skills Location
+Skills follow the [Agent Skills](https://agentskills.io/specification) format, so they work in any compatible agent (Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, OpenCode, ...):
 
-Skills are located in this repository:
 ```
-mozaic-mcp-server/skills/
-├── mozaic-vue-builder/
-│   └── skill.md
-├── mozaic-react-builder/
-│   └── skill.md
-├── mozaic-design-tokens/
-│   └── skill.md
-├── mozaic-css-utilities/
-│   └── skill.md
-└── mozaic-icons/
-    └── skill.md
+skills/
+└── <skill-name>/
+    ├── SKILL.md      # frontmatter (name, description, compatibility, allowed-tools, metadata) + instructions
+    └── scripts/      # bash scripts querying the SQLite database
 ```
 
-### Installation Methods
-
-#### Method 1: NPX (Recommended)
-
-Install the latest skills directly from npm:
+### Recommended
 
 ```bash
-# Install skills
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills
+# Skills + MCP server + database, in the current project (add -g for your user)
+npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools
 
-# Uninstall skills
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools remove skills
+# Skills only
+npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools skills
 
-# View all commands
-npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools --help
+# Remove
+npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools remove skills
 ```
 
-This method:
-- ✅ Always gets the latest version
-- ✅ No need to clone the repository
-- ✅ Works from anywhere
-- ✅ No database/build required
-
-#### Method 2: Local Scripts
-
-From the repository:
+### With the standard CLI
 
 ```bash
-# Install skills
-./scripts/install-skills.sh
-
-# Or using npm/pnpm
-pnpm install-skills
-
-# Uninstall
-pnpm uninstall-skills
+npx skills add MerzoukeMansouri/adeo-mozaic-mcp            # project
+npx skills add MerzoukeMansouri/adeo-mozaic-mcp -g         # your user
 ```
 
-#### Method 3: Manual Copy
+### Database
+
+Script-based skills read `~/.mozaic/mozaic.db` (override with `MOZAIC_DB_PATH`). If it is missing, the first script run installs it with `npx -y -p mozaic-mcp-server@2 mozaic-db`; run that command again to refresh it.
+
+### MCP Server
+
+Only `mozaic-style-guide` needs the MCP server, registered under the name `mozaic`:
 
 ```bash
-# From repository
-cp -r skills/* ~/.claude/skills/
+npx add-mcp mozaic-mcp-server@2 --name mozaic
 ```
-
-### MCP Server Configuration
-
-**IMPORTANT**: Skills require the Mozaic MCP server to be running. Configure it in Claude Code settings:
-
-**Option 1: Using npx (Recommended)**
-```json
-{
-  "mcpServers": {
-    "mozaic": {
-      "command": "npx",
-      "args": ["mozaic-mcp-server"]
-    }
-  }
-}
-```
-
-**Option 2: Local development**
-```json
-{
-  "mcpServers": {
-    "mozaic": {
-      "command": "node",
-      "args": ["/path/to/mozaic-mcp-server/dist/index.js"]
-    }
-  }
-}
-```
-
-Without the MCP server configured, skills cannot access the Mozaic database (components, tokens, icons, etc.).
 
 ---
 
@@ -437,7 +386,7 @@ Without the MCP server configured, skills cannot access the Mozaic database (com
 Skills activate automatically based on context, or you can invoke them:
 
 - **Auto-activation**: When user mentions relevant keywords
-- **Manual**: `/skill mozaic-vue-builder`
+- **Manual**: depends on the agent (e.g. `/mozaic-vue-builder` in Claude Code)
 
 ---
 
@@ -491,9 +440,9 @@ version: 1.0.0
 
 ### Adding New Skills
 
-1. Create skill directory: `~/.claude/skills/new-skill/`
-2. Create `skill.md` with frontmatter
-3. Reference MCP tools with fully qualified names
+1. Create skill directory: `skills/new-skill/` (`name` in frontmatter must match the folder name)
+2. Create `SKILL.md` with frontmatter following the [Agent Skills spec](https://agentskills.io/specification)
+3. Reference MCP tools by their plain name (e.g. `get_style_guide`), not an agent-specific prefix
 4. Provide interactive workflows
 5. Include examples and best practices
 
@@ -513,7 +462,7 @@ version: 1.0.0
 For issues or questions:
 - MCP Server: Check `mozaic-mcp-server/README.md`
 - Skills: This document
-- Claude Code: https://code.claude.com/docs
+- Agent Skills spec: https://agentskills.io/specification
 
 ---
 
@@ -523,7 +472,7 @@ For issues or questions:
 
 ## Skill 4: mozaic-freemarker-builder
 
-**Location**: `skills/mozaic-freemarker-builder/skill.md`
+**Location**: `skills/mozaic-freemarker-builder/SKILL.md`
 
 ### Purpose
 Interactive assistant for building server-side templates with Freemarker macros using Mozaic Design System.

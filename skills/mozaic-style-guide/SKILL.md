@@ -1,10 +1,10 @@
 ---
 name: mozaic-style-guide
 description: Mozaic composed-pattern catalog — real UI screens/layouts (master-detail, data-table, search-filter, modal-confirm, etc.) captured from live ADEO apps, each with a screenshot and description. Framework-agnostic reference to check before building a screen, so it comes out Mozaic-compliant.
-version: 1.0.0
-allowed-tools:
-  - mcp__mozaic__list_style_guides
-  - mcp__mozaic__get_style_guide
+compatibility: "Requires the Mozaic MCP server, registered as \"mozaic\" (npx add-mcp mozaic-mcp-server@2 --name mozaic)."
+allowed-tools: mcp__mozaic__list_style_guides mcp__mozaic__get_style_guide
+metadata:
+  version: "1.0.0"
 ---
 
 # Mozaic Style Guide

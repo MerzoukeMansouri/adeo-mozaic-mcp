@@ -4,15 +4,16 @@
 # Categories: form, navigation, feedback, layout, data-display, action, all (default)
 
 CATEGORY="${1:-all}"
-DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.claude/mozaic.db}"
-
-# Check if database exists
+DB_PATH="${MOZAIC_DB_PATH:-${HOME}/.mozaic/mozaic.db}"
 if [ ! -f "$DB_PATH" ]; then
-  echo "Error: Database not found at $DB_PATH"
-  echo "Please run: npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills"
-  exit 1
+  echo "Mozaic database not found, installing it to $DB_PATH..." >&2
+  npx -y -p mozaic-mcp-server@2 mozaic-db "$DB_PATH" >&2 || {
+    echo "Error: could not install the database. Run: npx -y -p mozaic-mcp-server@2 mozaic-db" >&2
+    exit 1
+  }
 fi
 
+# Check if database exists
 # Query components by category
 if [ "$CATEGORY" = "all" ]; then
   sqlite3 "$DB_PATH" <<EOF

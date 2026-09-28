@@ -1,9 +1,10 @@
 ---
 name: mozaic-design-tokens
 description: Mozaic Design System tokens and styling expert. Access design tokens (colors, typography, spacing, shadows, borders, breakpoints, grid) in multiple formats (JSON, SCSS, CSS, JS) and search documentation for styling guidance.
-version: 2.0.0
-allowed-tools:
-  - Bash
+compatibility: Requires bash, sqlite3 and jq, plus npx to fetch the Mozaic database (~/.mozaic/mozaic.db) on first use.
+allowed-tools: Bash
+metadata:
+  version: "2.0.0"
 ---
 
 # Mozaic Design Tokens
@@ -24,7 +25,7 @@ This skill uses shell scripts to query the local Mozaic database:
 - `get-tokens.sh` - Get design tokens by category and format (JSON, SCSS, CSS, JS)
 - `search-docs.sh` - Search Mozaic documentation for styling guidance
 
-Database location: `~/.claude/mozaic.db`
+Database location: `~/.mozaic/mozaic.db` (override with `MOZAIC_DB_PATH`; installed automatically on first use)
 
 ## When to Use This Skill
 

@@ -1,9 +1,10 @@
 ---
 name: mozaic-react-builder
 description: Interactive React/TSX component generator with Mozaic Design System. Helps discover, configure, and generate production-ready React components with TypeScript support, proper imports, and installation guidance.
-version: 2.0.0
-allowed-tools:
-  - Bash
+compatibility: Requires bash, sqlite3 and jq, plus npx to fetch the Mozaic database (~/.mozaic/mozaic.db) on first use.
+allowed-tools: Bash
+metadata:
+  version: "2.0.0"
 ---
 
 # Mozaic React Builder
@@ -26,7 +27,7 @@ This skill uses shell scripts to query the local Mozaic database:
 - `generate-component.sh` - Generate React/TSX component code
 - `get-install-info.sh` - Get installation commands and imports
 
-Database location: `~/.claude/mozaic.db`
+Database location: `~/.mozaic/mozaic.db` (override with `MOZAIC_DB_PATH`; installed automatically on first use)
 
 ## When to Use This Skill
 

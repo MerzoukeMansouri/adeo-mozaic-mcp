@@ -1,3 +1,12 @@
+---
+name: mozaic-freemarker-builder
+description: Interactive Freemarker macro generator for Mozaic Design System. Discover, configure, and generate production-ready Freemarker (.ftl) template code with proper imports. Use when working with Freemarker templates or Mozaic macros.
+compatibility: Requires bash and sqlite3, plus npx to fetch the Mozaic database (~/.mozaic/mozaic.db) on first use.
+allowed-tools: Bash
+metadata:
+  version: "1.0.0"
+---
+
 # Mozaic Freemarker Builder
 
 Interactive Freemarker macro generator for Mozaic Design System. Help users discover, configure, and generate production-ready Freemarker template code with proper imports and configuration.

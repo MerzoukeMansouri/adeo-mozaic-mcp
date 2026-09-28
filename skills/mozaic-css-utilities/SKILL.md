@@ -1,9 +1,10 @@
 ---
 name: mozaic-css-utilities
 description: Mozaic CSS utility classes and layout systems expert. Master Flexy grid, Container, Margin, Padding, Ratio, and Scroll utilities for responsive layouts without writing custom CSS.
-version: 2.0.0
-allowed-tools:
-  - Bash
+compatibility: Requires bash and sqlite3, plus npx to fetch the Mozaic database (~/.mozaic/mozaic.db) on first use.
+allowed-tools: Bash
+metadata:
+  version: "2.0.0"
 ---
 
 # Mozaic CSS Utilities
@@ -25,7 +26,7 @@ This skill uses shell scripts to query the local Mozaic database:
 - `list-utilities.sh` - Browse CSS utilities by category (layout, utility, all)
 - `get-utility.sh` - Get detailed utility class documentation with examples
 
-Database location: `~/.claude/mozaic.db`
+Database location: `~/.mozaic/mozaic.db` (override with `MOZAIC_DB_PATH`; installed automatically on first use)
 
 ## When to Use This Skill
 

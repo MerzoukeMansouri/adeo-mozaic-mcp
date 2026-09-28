@@ -1,9 +1,10 @@
 ---
 name: mozaic-icons
 description: Mozaic icon search and integration for Vue & React. Search icons by name or type, view multiple sizes (16, 24, 32, 48, 64), and generate framework-specific code with proper imports.
-version: 2.0.0
-allowed-tools:
-  - Bash
+compatibility: Requires bash, sqlite3 and jq, plus npx to fetch the Mozaic database (~/.mozaic/mozaic.db) on first use.
+allowed-tools: Bash
+metadata:
+  version: "2.0.0"
 ---
 
 # Mozaic Icons
@@ -25,7 +26,7 @@ This skill uses shell scripts to query the local Mozaic database:
 - `search-icons.sh` - Search icons by name, type, or size (1,473 icons)
 - `get-icon.sh` - Get specific icon with SVG and framework code (Vue/React)
 
-Database location: `~/.claude/mozaic.db`
+Database location: `~/.mozaic/mozaic.db` (override with `MOZAIC_DB_PATH`; installed automatically on first use)
 
 ## When to Use This Skill
 
