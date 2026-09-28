@@ -1,24 +1,5 @@
 #!/usr/bin/env node
 
-// Legacy install subcommands: forward to the harness-agnostic installer (bin/install.js).
-const LEGACY_COMMANDS: Record<string, string[]> = {
-  install: ["help"],
-  "install-skills": ["skills"],
-  "uninstall-skills": ["remove", "skills"],
-  "install-mcp": ["mcp"],
-  "uninstall-mcp": ["remove", "mcp"],
-};
-const legacy = LEGACY_COMMANDS[process.argv[2]];
-if (legacy) {
-  const { spawnSync } = await import("child_process");
-  const { fileURLToPath } = await import("url");
-  const installer = fileURLToPath(new URL("../bin/install.js", import.meta.url));
-  const { status } = spawnSync(process.execPath, [installer, ...legacy, ...process.argv.slice(3)], {
-    stdio: "inherit",
-  });
-  process.exit(status ?? 1);
-}
-
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import Database from "better-sqlite3";

@@ -368,24 +368,14 @@ skills/
     └── references/   # longer examples, loaded only when needed (keeps SKILL.md < 500 lines)
 ```
 
-### Recommended
+### Install
+
+Standard [`npx skills`](https://github.com/vercel-labs/skills) CLI:
 
 ```bash
-# Skills + MCP server + database, in the current project (add -g for your user)
-npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools
-
-# Skills only
-npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools skills
-
-# Remove
-npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools remove skills
-```
-
-### With the standard CLI
-
-```bash
-npx skills add MerzoukeMansouri/adeo-mozaic-mcp            # project
+npx skills add MerzoukeMansouri/adeo-mozaic-mcp            # current project
 npx skills add MerzoukeMansouri/adeo-mozaic-mcp -g         # your user
+npx skills remove mozaic-icons                             # remove a skill
 ```
 
 ### Database

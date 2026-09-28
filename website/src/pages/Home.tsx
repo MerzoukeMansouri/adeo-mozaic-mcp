@@ -148,15 +148,16 @@ function Home() {
         <div className="bg-gradient-to-br from-primary-01-100 to-primary-01-50 dark:from-primary-01-900/30 dark:to-primary-02-800 rounded-xl p-6 border-2 border-primary-01-400 dark:border-primary-01-600 mb-6">
           <h3 className="text-lg font-semibold text-grey-900 dark:text-grey-000 mb-3 flex items-center gap-2">
             <span className="text-2xl">⚡</span>
-            One command, any agent
+            Two standard commands, any agent
           </h3>
           <div className="code-block-sm p-4 mb-3">
             <pre className="text-grey-100 text-sm font-mono">
-              <code>npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools</code>
+              <code>{`npx skills add MerzoukeMansouri/adeo-mozaic-mcp
+npx add-mcp mozaic-mcp-server@2 --name mozaic`}</code>
             </pre>
           </div>
           <p className="text-sm text-grey-600 dark:text-grey-400">
-            Detects your agents (Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, ...) and installs the skills, the MCP server and the database in the current project, ready to commit. Add <code>-g</code> to install for your user instead.
+            Both detect your agents (Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, ...) and write to the current project, ready to commit. Add <code>-g</code> to install for your user instead. The skills fetch their database on first use.
           </p>
         </div>
 
@@ -193,18 +194,18 @@ function Home() {
             </h3>
             <div className="code-block-sm p-3 mb-2">
               <pre className="text-grey-100 text-xs font-mono">
-                <code>npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools -g</code>
+                <code>npx skills add MerzoukeMansouri/adeo-mozaic-mcp -g</code>
               </pre>
             </div>
             <p className="text-xs text-grey-600 dark:text-grey-400">
-              For your user, across all projects
+              For your user, across all projects (same <code>-g</code> for add-mcp)
             </p>
           </div>
         </div>
 
         <div className="mt-4 p-4 bg-secondary-blue-100 dark:bg-secondary-blue-900/20 border border-secondary-blue-200 dark:border-secondary-blue-800 rounded-lg">
           <p className="text-sm text-secondary-blue-700 dark:text-secondary-blue-300">
-            <strong>💡 Tip:</strong> Use <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">list</code> to see what's installed, <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">remove</code> to uninstall, or <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">--help</code> for all commands.
+            <strong>💡 Tip:</strong> Remove with <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">npx skills remove</code> and <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">npx add-mcp remove mozaic</code>; refresh the skills database with <code className="px-1.5 py-0.5 bg-secondary-blue-200 dark:bg-secondary-blue-800 rounded text-xs">npx -y -p mozaic-mcp-server@2 mozaic-db</code>.
           </p>
         </div>
       </section>

@@ -66,25 +66,18 @@ curl -X POST https://mozaic-mcp.m14i.com/mcp/light/call-tool \
 
 Works with any coding agent that supports [Agent Skills](https://agentskills.io) and/or MCP: Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, OpenCode, Windsurf, VS Code, ...
 
-### One command
+### Install
+
+Two standard, agent-agnostic CLIs. Each detects your agents and writes to the **current project** by default:
 
 ```bash
-npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools
+npx skills add MerzoukeMansouri/adeo-mozaic-mcp        # 8 skills -> .agents/skills/, .claude/skills/, ...
+npx add-mcp mozaic-mcp-server@2 --name mozaic           # MCP server -> .mcp.json, .cursor/mcp.json, .vscode/mcp.json, .codex/config.toml, ...
 ```
 
-It detects your agents and installs, **in the current project** by default:
-- the 8 skills, through [`npx skills`](https://github.com/vercel-labs/skills) (`.agents/skills/`, `.claude/skills/`, ...)
-- the MCP server, through [`npx add-mcp`](https://github.com/neondatabase/add-mcp) (`.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json`, `.codex/config.toml`, ...)
-- the database used by the skills' scripts (`~/.mozaic/mozaic.db`)
-
-Add `-g` to install for your user instead, `-a <agent>` to target specific agents, `-y` to skip prompts.
-
-### Or use the standard CLIs directly
-
-```bash
-npx skills add MerzoukeMansouri/adeo-mozaic-mcp        # skills
-npx add-mcp mozaic-mcp-server@2 --name mozaic           # MCP server
-```
+- [`npx skills`](https://github.com/vercel-labs/skills) and [`npx add-mcp`](https://github.com/neondatabase/add-mcp) both accept `-g` (your user instead of the project), `-a <agent>` (target specific agents) and `-y` (no prompts).
+- The skills' scripts install their database (`~/.mozaic/mozaic.db`) on first use. Refresh it any time with `npx -y -p mozaic-mcp-server@2 mozaic-db`.
+- Remove: `npx skills remove <skill>` and `npx add-mcp remove mozaic`.
 
 ### Project or global?
 
@@ -212,19 +205,6 @@ Agent: [calls get_component_info, then generate_react_component]
         Here's your Button component with TypeScript...
 ```
 
-## CLI Commands
-
-```bash
-npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools [command] [-g] [-a <agent>] [-y]
-
-  all (default)        Skills + MCP server + database
-  skills               Skills (and the database their scripts use)
-  mcp                  MCP server config
-  db                   Install/refresh ~/.mozaic/mozaic.db
-  list                 Installed skills and MCP servers
-  remove [skills|mcp]  Remove skills, the MCP server, or both
-```
-
 ## Architecture
 
 ```
@@ -299,7 +279,7 @@ mozaic-mcp-server/
 │   └── mozaic.db
 ├── repos/                 # Source repos, cloned by `pnpm build` (gitignored)
 ├── style-guides/          # Hand-authored patterns (meta.json + screenshot.png)
-├── bin/                   # CLI entry points (install.js, mozaic-db.js, ...)
+├── bin/mozaic-db.js       # installs the skills database to ~/.mozaic/mozaic.db
 └── website/               # Documentation website
 ```
 

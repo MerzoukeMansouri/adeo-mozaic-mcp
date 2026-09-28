@@ -197,7 +197,7 @@ function Skills() {
               <span className="text-sm">Install Skills</span>
             </div>
             <code className="text-secondary-green-400 text-lg">
-              npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools
+              npx skills add MerzoukeMansouri/adeo-mozaic-mcp
             </code>
           </div>
         </div>
@@ -359,12 +359,12 @@ function Skills() {
             </div>
 
             <div className="bg-grey-900 dark:bg-grey-950 rounded-lg p-4 font-mono text-sm overflow-x-auto">
-              <div className="text-grey-400 mb-1"># Skills + MCP server + database, current project (-g for your user)</div>
-              <code className="text-secondary-green-400">npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools</code>
+              <div className="text-grey-400 mb-1"># Current project (add -g for your user)</div>
+              <code className="text-secondary-green-400">npx skills add MerzoukeMansouri/adeo-mozaic-mcp</code>
             </div>
 
             <p className="text-sm text-grey-600 dark:text-grey-300 mt-3">
-              Detects your agents (Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, ...) and installs the skills into each one's folder, e.g. <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.agents/skills/</code> or <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.claude/skills/</code>. Standard CLI alternative: <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">npx skills add MerzoukeMansouri/adeo-mozaic-mcp</code>
+              Detects your agents (Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, ...) and installs the skills into each one's folder, e.g. <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.agents/skills/</code> or <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.claude/skills/</code>.
             </p>
           </div>
 
@@ -379,7 +379,7 @@ function Skills() {
             </div>
 
             <p className="text-sm text-grey-600 dark:text-grey-300 mb-3">
-              Already done by the command above. To add it yourself, run <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">npx add-mcp mozaic-mcp-server@2 --name mozaic</code>, or add to <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.mcp.json</code> / <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.cursor/mcp.json</code>:
+              Only needed for mozaic-style-guide (and to use the 19 MCP tools directly). Run <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">npx add-mcp mozaic-mcp-server@2 --name mozaic</code>, or add to <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.mcp.json</code> / <code className="px-2 py-1 bg-grey-100 dark:bg-grey-700 rounded font-mono text-xs">.cursor/mcp.json</code>:
             </p>
 
             <div className="bg-grey-900 dark:bg-grey-950 rounded-lg p-4 font-mono text-sm overflow-x-auto">
@@ -461,7 +461,7 @@ function Skills() {
         <div className="flex flex-wrap justify-center gap-4">
           <div className="bg-grey-900 rounded-lg px-6 py-3 font-mono">
             <code className="text-secondary-green-400">
-              npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools
+              npx skills add MerzoukeMansouri/adeo-mozaic-mcp
             </code>
           </div>
         </div>

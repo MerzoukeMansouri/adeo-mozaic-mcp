@@ -480,8 +480,6 @@ flowchart TB
         direction TB
 
         subgraph Bin["bin/"]
-            B1[install.js<br/>adeo-mozaic-install-tools]
-            B2[install-skills.js<br/>mozaic-skills]
             B3[mozaic-db.js<br/>mozaic-db]
         end
 

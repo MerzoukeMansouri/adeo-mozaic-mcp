@@ -155,7 +155,7 @@ mozaic-mcp-server/
 │   └── generate-docs.ts      # Generate documentation & diagrams
 ├── skills/                   # 8 Agent Skills (SKILL.md + scripts/)
 ├── style-guides/             # Hand-authored patterns (meta.json + screenshot.png)
-├── bin/                      # CLIs: adeo-mozaic-install-tools, mozaic-skills, mozaic-db
+├── bin/mozaic-db.js          # installs the skills database to ~/.mozaic/mozaic.db
 ├── website/                  # Docs site + browser playground (GitHub Pages)
 ├── data/
 │   └── mozaic.db             # SQLite database (generated)
@@ -756,7 +756,7 @@ There is no fallback dataset: a missing repo or an empty parse result fails the 
 
 ## Running Locally
 
-Agents run the published server with `npx -y mozaic-mcp-server@2` (install: `npx -y -p mozaic-mcp-server@2 adeo-mozaic-install-tools`, see [README.md](../README.md)). To test a local build, point your agent's MCP config at it, keeping the name `mozaic`:
+Agents run the published server with `npx -y mozaic-mcp-server@2` (install: `npx add-mcp mozaic-mcp-server@2 --name mozaic`, see [README.md](../README.md)). To test a local build, point your agent's MCP config at it, keeping the name `mozaic`:
 
 ```json
 {
