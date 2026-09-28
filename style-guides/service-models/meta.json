@@ -4,10 +4,10 @@
   "site": "sop",
   "description": "Straightforward list with search, a prominent primary create button, sortable columns, colored status pills, and row kebab menus.",
   "components": [
-    "search-input",
+    "textinput",
     "button",
-    "data-table",
+    "datatable",
     "badge",
-    "kebab-menu"
+    "actionlist"
   ]
 }

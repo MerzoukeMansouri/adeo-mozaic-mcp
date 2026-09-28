@@ -5,8 +5,7 @@
   "description": "Same customer-lookup screen with the advanced tab active, expanding into a full multi-field structured form for precise lookup — demonstrates progressive disclosure from quick search to a detailed form via tabs.",
   "components": [
     "tabs",
-    "form",
-    "text-input",
+    "textinput",
     "button"
   ]
 }

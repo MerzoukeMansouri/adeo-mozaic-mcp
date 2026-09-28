@@ -4,8 +4,7 @@
   "site": "sop",
   "description": "Month-grid calendar with search, filter, and the same quick-filter pill row as the projects list. On load with no store selected, a centered modal blocks the grid telling the user to pick a store first, with a single CTA — a clean modal-gated empty-state pattern.",
   "components": [
-    "calendar",
-    "chip",
+    "tag",
     "modal",
     "button"
   ]

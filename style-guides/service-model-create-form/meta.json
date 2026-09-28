@@ -4,10 +4,9 @@
   "site": "sop",
   "description": "Multi-step form wizard launched from the models list — a two-step progress stepper above a card with a required text field and a cascading chain of dependent typeahead fields, each disabled until its parent is filled, plus a sticky footer with a disabled-until-valid continue button.",
   "components": [
-    "stepper",
-    "form",
-    "text-input",
-    "autocomplete",
+    "stepperinline",
+    "textinput",
+    "combobox",
     "button"
   ]
 }

@@ -279,7 +279,7 @@ Framework-agnostic compliance/reference layer: a catalog of real, composed Mozai
 - `get_style_guide(slug)` - Returns the pattern's screenshot as a base64 image content block, its relative path as text, its source site, and the linked component slugs
 
 ### Key Features
-- Browse patterns by category (modal-confirm, nav-header, search-filter, data-table, master-detail, calendar-view, onboarding-stepper, cascading-column-browser, detail-view, form) and/or by source site (elo, sop)
+- Browse patterns by category (modal-confirm, nav-header, search-filter, data-table, master-detail, calendar-view, onboarding-stepper, cascading-column-browser, form) and/or by source site (elo, sop)
 - Visual reference: the agent actually sees the composed screenshot, not just a text description
 - Lists the component slugs used in the pattern, to cross-reference component docs
 - Hands off code generation to `mozaic-react-builder` / `mozaic-vue-builder` / `mozaic-webcomponents-builder` / `mozaic-freemarker-builder` depending on the target stack
@@ -288,7 +288,7 @@ Framework-agnostic compliance/reference layer: a catalog of real, composed Mozai
 ```
 User: "I need a confirmation modal like the rest of the app"
 Skill: Calls list_style_guides(category: "modal-confirm") → get_style_guide("sales-mode-modal")
-       Shows the screenshot + linked components (modal, radio-group, button) → hands off to the
+       Shows the screenshot + linked components (modal, radiogroup, button) → hands off to the
        framework builder skill matching the project's stack to generate the actual code
 ```
 
@@ -305,7 +305,7 @@ style-guides/<slug>/
 ├── meta.json       # { name, category, site, description, components: string[] }
 └── screenshot.png  # Reference screenshot of the composed pattern
 ```
-`category` is the pattern shape (reusable across sites); `site` is which app it was captured from (e.g. `elo`, `sop`) — both open strings, both filterable. `components` lists component **slugs** (matching the `components` table), used to cross-link to builder skills. The build step fails fast on a missing/malformed folder.
+`category` is the pattern shape (reusable across sites); `site` is which app it was captured from (e.g. `elo`, `sop`) — both open strings, both filterable. `components` lists component **slugs** (matching the `components` table), used to cross-link to builder skills. The build step fails fast on a missing/malformed folder or an unknown component slug.
 
 ---
 

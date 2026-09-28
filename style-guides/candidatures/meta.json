@@ -4,8 +4,8 @@
   "site": "sop",
   "description": "Table with an inline primary action button appearing conditionally per row depending on status, plus the standard search/filter/pagination chrome — a data-table variant with per-row conditional actions.",
   "components": [
-    "search-input",
-    "data-table",
+    "textinput",
+    "datatable",
     "button",
     "badge",
     "pagination"

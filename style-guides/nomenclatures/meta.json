@@ -5,8 +5,7 @@
   "description": "Tabs above a horizontally-scrollable set of collapsible list columns (Finder-style hierarchy picker), each row showing a colored accent for active/inactive state, an item count, and a kebab menu; collapse arrows on both edges shrink each column.",
   "components": [
     "tabs",
-    "list-panel",
     "badge",
-    "kebab-menu"
+    "actionlist"
   ]
 }

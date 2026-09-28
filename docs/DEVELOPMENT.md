@@ -80,8 +80,8 @@ style-guides/<slug>/
 - `<slug>` is the `style_guides.slug` primary key (e.g. `modal-confirm`, `cascading-column-browser`).
 - `category` is the pattern shape (reusable across sites); `site` is the source app the screenshot was captured from (e.g. `elo`, `sop`) — two independent axes, both open strings, both filterable via `list_style_guides(category?, site?)`.
 - `components` is a list of component **slugs** (matching `components.slug`), not names — used to cross-link a pattern to the component docs/builder skills.
-- `build-index.ts` fails fast if a folder is missing `meta.json`, `screenshot.png`, or has malformed JSON — same convention as every other core table.
-- Known categories so far: `modal-confirm`, `nav-header`, `search-filter`, `data-table`, `master-detail`, `calendar-view`, `onboarding-stepper`, `cascading-column-browser`, `detail-view`, `form`.
+- `build-index.ts` fails fast if a folder is missing `meta.json`, `screenshot.png`, has malformed JSON, or references an unknown component slug — same convention as every other core table.
+- Known categories so far: `modal-confirm`, `nav-header`, `search-filter`, `data-table`, `master-detail`, `calendar-view`, `onboarding-stepper`, `cascading-column-browser`, `form`.
 - Known sites so far: `elo`, `sop`.
 
 ---
@@ -704,10 +704,10 @@ CREATE TABLE style_guides (
   name TEXT NOT NULL,
   category TEXT NOT NULL,         -- pattern shape: 'modal-confirm', 'nav-header', 'search-filter',
                                    -- 'data-table', 'master-detail', 'calendar-view',
-                                   -- 'onboarding-stepper', 'cascading-column-browser', 'detail-view', 'form'
+                                   -- 'onboarding-stepper', 'cascading-column-browser', 'form'
   site TEXT,                      -- source app the screenshot was captured from, e.g. 'elo', 'sop'
   description TEXT NOT NULL,
-  components TEXT,                -- JSON array of component slugs, e.g. '["button","modal","text-input"]'
+  components TEXT,                -- JSON array of component slugs, e.g. '["button","modal","textinput"]'
   image_path TEXT NOT NULL        -- Relative path to style-guides/<slug>/screenshot.png
 );
 

@@ -33,26 +33,26 @@ const DATA_DIR = join(PROJECT_ROOT, "data");
 const REPOS_DIR = join(PROJECT_ROOT, "repos");
 const DB_PATH = join(DATA_DIR, "mozaic.db");
 
-// Repository URLs (using SSH for private repos)
+// Repository URLs (public, HTTPS so CI can clone without credentials)
 const REPOS = {
   designSystem: {
-    url: "git@github.com:adeo/mozaic-design-system.git",
+    url: "https://github.com/adeo/mozaic-design-system.git",
     path: join(REPOS_DIR, "mozaic-design-system"),
   },
   vue: {
-    url: "git@github.com:adeo/mozaic-vue.git",
+    url: "https://github.com/adeo/mozaic-vue.git",
     path: join(REPOS_DIR, "mozaic-vue"),
   },
   react: {
-    url: "git@github.com:adeo/mozaic-react.git",
+    url: "https://github.com/adeo/mozaic-react.git",
     path: join(REPOS_DIR, "mozaic-react"),
   },
   webComponents: {
-    url: "git@github.com:adeo/mozaic-web-components.git",
+    url: "https://github.com/adeo/mozaic-web-components.git",
     path: join(REPOS_DIR, "mozaic-web-components"),
   },
   freemarker: {
-    url: "git@github.com:adeo/mozaic-freemarker.git",
+    url: "https://github.com/adeo/mozaic-freemarker.git",
     path: join(REPOS_DIR, "mozaic-freemarker"),
   },
 };
@@ -354,6 +354,12 @@ async function indexStyleGuides(db: ReturnType<typeof initDatabase>): Promise<nu
     throw new Error(`No style guide folders found under ${styleGuidesPath}.`);
   }
 
+  const knownComponents = new Set(
+    (db.prepare("SELECT DISTINCT slug FROM components").all() as { slug: string }[]).map(
+      (row) => row.slug
+    )
+  );
+
   const guides: StyleGuide[] = slugs.map((slug) => {
     const dir = join(styleGuidesPath, slug);
     const metaPath = join(dir, "meta.json");
@@ -382,6 +388,13 @@ async function indexStyleGuides(db: ReturnType<typeof initDatabase>): Promise<nu
     if (!meta.name || !meta.category || !meta.description) {
       throw new Error(
         `Style guide "${slug}" meta.json must include "name", "category", and "description".`
+      );
+    }
+
+    const unknown = (meta.components ?? []).filter((c) => !knownComponents.has(c));
+    if (unknown.length > 0) {
+      throw new Error(
+        `Style guide "${slug}" references unknown component slugs: ${unknown.join(", ")}.`
       );
     }
 

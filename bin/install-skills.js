@@ -21,7 +21,8 @@ const SKILLS = [
   'mozaic-freemarker-builder',
   'mozaic-design-tokens',
   'mozaic-css-utilities',
-  'mozaic-icons'
+  'mozaic-icons',
+  'mozaic-style-guide'
 ];
 
 const COLORS = {

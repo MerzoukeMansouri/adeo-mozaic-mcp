@@ -104,7 +104,7 @@ export const getStyleGuideTool = {
     properties: {
       slug: {
         type: "string",
-        description: 'The style guide slug (e.g. "master-detail", "sales-mode-modal")',
+        description: 'The style guide slug (e.g. "project-detail", "sales-mode-modal")',
       },
     },
     required: ["slug"],

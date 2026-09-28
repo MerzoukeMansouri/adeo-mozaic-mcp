@@ -5,9 +5,8 @@
   "description": "Right-side sliding drawer opened over a list, containing a stacked set of labeled filter fields (select and typeahead inputs) and a sticky footer with apply/cancel actions.",
   "components": [
     "drawer",
-    "form",
     "select",
-    "autocomplete",
+    "combobox",
     "button"
   ]
 }

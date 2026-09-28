@@ -4,11 +4,10 @@
   "site": "sop",
   "description": "List combining a search bar, a filter-count badge button, a row of toggleable quick-filter pills, a dense sortable table with colored status badges, and a color-coded legend strip explaining row states.",
   "components": [
-    "search-input",
+    "textinput",
     "badge",
-    "chip",
-    "data-table",
-    "legend",
+    "tag",
+    "datatable",
     "pagination"
   ]
 }

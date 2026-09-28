@@ -11,6 +11,8 @@ import { handleGetInstallInfo } from "../tools/get-install-info.js";
 import { handleGenerateWebComponent } from "../tools/generate-webcomponent.js";
 import { handleGetWebComponentInfo } from "../tools/get-webcomponent-info.js";
 import { handleListWebComponents } from "../tools/list-webcomponents.js";
+import { handleListStyleGuides } from "../tools/list-style-guides.js";
+import { handleGetStyleGuide } from "../tools/get-style-guide.js";
 
 describe("MCP Tools Integration Tests", () => {
   let db: Database.Database;
@@ -63,6 +65,38 @@ describe("MCP Tools Integration Tests", () => {
       const result = handleGetComponentInfo(db, { component: "nonexistent" });
 
       expect(result.content[0].text).toContain("Component not found");
+    });
+  });
+
+  describe("style guides", () => {
+    it("lists and filters style guides", () => {
+      const all = JSON.parse(handleListStyleGuides(db, {}).content[0].text);
+      const tables = JSON.parse(
+        handleListStyleGuides(db, { category: "data-table" }).content[0].text
+      );
+
+      expect(all.resultCount).toBeGreaterThan(0);
+      expect(tables.resultCount).toBeGreaterThan(0);
+      expect(
+        tables.styleGuides.every((g: { category: string }) => g.category === "data-table")
+      ).toBe(true);
+    });
+
+    it("returns metadata and a PNG image block", () => {
+      const result = handleGetStyleGuide(db, { slug: "sales-mode-modal" });
+      const image = result.content.find((c) => c.type === "image");
+
+      expect(JSON.parse((result.content[0] as { text: string }).text).components).toContain(
+        "modal"
+      );
+      expect(image).toMatchObject({ mimeType: "image/png" });
+    });
+
+    it("returns error for unknown slug", () => {
+      const result = handleGetStyleGuide(db, { slug: "nonexistent" });
+
+      expect(result.content).toHaveLength(1);
+      expect((result.content[0] as { text: string }).text).toContain("not found");
     });
   });
 

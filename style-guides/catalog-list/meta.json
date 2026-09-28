@@ -4,8 +4,7 @@
   "site": "elo",
   "description": "Catalog landing page with secondary text tab nav sitting under the main icon nav bar, above the same category card grid as home — a two-tier navigation pattern combining a primary icon nav with a secondary text tab nav.",
   "components": [
-    "nav-bar",
     "tabs",
-    "card-grid"
+    "tile"
   ]
 }

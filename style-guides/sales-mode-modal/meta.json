@@ -5,8 +5,8 @@
   "description": "Blocking modal shown right after login, forcing the associate to choose a sale context (remote vs in-store) via a radio group before the app is usable. Single primary CTA, helper text notes the choice is changeable later from the menu.",
   "components": [
     "modal",
-    "radio-group",
+    "radiogroup",
     "button",
-    "helper-text"
+    "field"
   ]
 }

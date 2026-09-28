@@ -545,7 +545,7 @@ server.registerTool(
     description:
       "Get a specific Mozaic style guide pattern by slug: its description, source site, composed component slugs, and the actual screenshot image. Use list_style_guides first to find slugs.",
     inputSchema: {
-      slug: z.string().describe('The style guide slug (e.g. "master-detail", "sales-mode-modal")'),
+      slug: z.string().describe('The style guide slug (e.g. "project-detail", "sales-mode-modal")'),
     },
   },
   async (args) => {
