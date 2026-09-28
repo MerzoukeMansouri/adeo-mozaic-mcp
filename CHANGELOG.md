@@ -1,3 +1,10 @@
+## [2.10.3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.10.2...v2.10.3) (2026-09-28)
+
+
+### Bug Fixes
+
+* **cli:** installer fails when launched through npx ([c72110f](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/c72110fc87c592d9386b2cbfbbba40de4d78fcde))
+
 ## [2.10.2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.10.1...v2.10.2) (2026-09-28)
 
 
