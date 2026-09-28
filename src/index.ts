@@ -1,173 +1,22 @@
 #!/usr/bin/env node
 
-// Handle CLI commands before importing MCP server
-const args = process.argv.slice(2);
-const command = args[0];
-
-if (command === "install" && args.length === 1) {
-  // Show help menu
-  showHelpMenu();
-  process.exit(0);
-}
-
-if (command === "install-skills" || command === "uninstall-skills") {
-  // Delegate to skills installer
-  const { execSync } = await import("child_process");
+// Legacy install subcommands: forward to the harness-agnostic installer (bin/install.js).
+const LEGACY_COMMANDS: Record<string, string[]> = {
+  install: ["help"],
+  "install-skills": ["skills"],
+  "uninstall-skills": ["remove", "skills"],
+  "install-mcp": ["mcp"],
+  "uninstall-mcp": ["remove", "mcp"],
+};
+const legacy = LEGACY_COMMANDS[process.argv[2]];
+if (legacy) {
+  const { spawnSync } = await import("child_process");
   const { fileURLToPath } = await import("url");
-  const { dirname, join } = await import("path");
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-  const installerPath = join(__dirname, "..", "bin", "install-skills.js");
-
-  try {
-    execSync(`node "${installerPath}" ${command}`, {
-      stdio: "inherit",
-      cwd: process.cwd(),
-    });
-    process.exit(0);
-  } catch {
-    process.exit(1);
-  }
-}
-
-if (command === "install-mcp") {
-  await installMcpConfig();
-  process.exit(0);
-}
-
-if (command === "uninstall-mcp") {
-  await uninstallMcpConfig();
-  process.exit(0);
-}
-
-function showHelpMenu() {
-  console.log(`
-╭─────────────────────────────────────────────────────────────────╮
-│                                                                 │
-│  Mozaic Design System MCP Server & Skills                      │
-│  Self-contained Claude Code skills for Mozaic Design System    │
-│                                                                 │
-╰─────────────────────────────────────────────────────────────────╯
-
-Usage:
-  npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools [command]
-
-Commands:
-  (no args)           Interactive mode - select components to install
-  all                 Install everything (skills + MCP server)
-  skills              Install Claude Code skills and database
-  mcp                 Install MCP server for Claude Desktop
-  list, status        Show installation status
-  remove <component>  Remove installed components (skills, mcp, or all)
-
-Examples:
-  # Interactive mode (recommended)
-  npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools
-
-  # Install all components
-  npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools all
-
-  # Install skills only
-  npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools skills
-
-  # Install MCP server only
-  npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools mcp
-
-  # Check status
-  npx -p mozaic-mcp-server@latest adeo-mozaic-install-tools list
-
-Documentation:
-  Skills Guide:   https://github.com/MerzoukeMansouri/adeo-mozaic-mcp#skills
-  MCP Guide:      https://github.com/MerzoukeMansouri/adeo-mozaic-mcp#mcp-server
-  `);
-}
-
-async function installMcpConfig() {
-  const { homedir } = await import("os");
-  const { readFileSync, writeFileSync, existsSync, mkdirSync } = await import("fs");
-  const { join } = await import("path");
-  const { fileURLToPath } = await import("url");
-  const { dirname } = await import("path");
-
-  const configPath = join(homedir(), ".claude", "config.json");
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-  const serverPath = join(__dirname, "index.js");
-
-  console.log("📦 Installing MCP server to Claude Desktop config...\n");
-
-  // Ensure .claude directory exists
-  const claudeDir = join(homedir(), ".claude");
-  if (!existsSync(claudeDir)) {
-    mkdirSync(claudeDir, { recursive: true });
-  }
-
-  // Read existing config or create new one
-  let config: { mcpServers: Record<string, unknown> } = { mcpServers: {} };
-  if (existsSync(configPath)) {
-    try {
-      const configContent = readFileSync(configPath, "utf-8");
-      config = JSON.parse(configContent);
-      if (!config.mcpServers) {
-        config.mcpServers = {};
-      }
-    } catch {
-      console.error("⚠️  Failed to parse existing config, creating new one");
-      config = { mcpServers: {} };
-    }
-  }
-
-  // Add Mozaic MCP server configuration
-  config.mcpServers.mozaic = {
-    command: "node",
-    args: [serverPath],
-  };
-
-  // Write updated config
-  try {
-    writeFileSync(configPath, JSON.stringify(config, null, 2) + "\n");
-    console.log("✅ MCP server installed successfully!\n");
-    console.log("Configuration added to:", configPath);
-    console.log("\n📝 Next steps:");
-    console.log("   1. Restart Claude Desktop");
-    console.log("   2. Look for the 🔌 icon to verify MCP server is connected");
-    console.log("   3. Use Mozaic tools in your conversations\n");
-  } catch (error) {
-    console.error("❌ Failed to write config:", error);
-    process.exit(1);
-  }
-}
-
-async function uninstallMcpConfig() {
-  const { homedir } = await import("os");
-  const { readFileSync, writeFileSync, existsSync } = await import("fs");
-  const { join } = await import("path");
-
-  const configPath = join(homedir(), ".claude", "config.json");
-
-  console.log("🗑️  Removing MCP server from Claude Desktop config...\n");
-
-  if (!existsSync(configPath)) {
-    console.log("⚠️  No Claude Desktop config found");
-    return;
-  }
-
-  try {
-    const configContent = readFileSync(configPath, "utf-8");
-    const config = JSON.parse(configContent);
-
-    if (config.mcpServers && config.mcpServers.mozaic) {
-      delete config.mcpServers.mozaic;
-      writeFileSync(configPath, JSON.stringify(config, null, 2) + "\n");
-      console.log("✅ MCP server removed successfully!\n");
-      console.log("   Restart Claude Desktop for changes to take effect\n");
-    } else {
-      console.log("ℹ️  Mozaic MCP server not found in config\n");
-    }
-  } catch (error) {
-    console.error("❌ Failed to update config:", error);
-    process.exit(1);
-  }
+  const installer = fileURLToPath(new URL("../bin/install.js", import.meta.url));
+  const { status } = spawnSync(process.execPath, [installer, ...legacy, ...process.argv.slice(3)], {
+    stdio: "inherit",
+  });
+  process.exit(status ?? 1);
 }
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";

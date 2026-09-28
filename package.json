@@ -1,13 +1,15 @@
 {
   "name": "mozaic-mcp-server",
   "version": "2.9.3",
-  "description": "Self-contained Claude Code skills for Mozaic Design System by ADEO",
+  "mcpName": "io.github.MerzoukeMansouri/mozaic",
+  "description": "Mozaic Design System (ADEO) MCP server and agent skills for any coding agent: Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, ...",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
     "adeo-mozaic-install-tools": "bin/install.js",
     "mozaic-mcp-server": "dist/index.js",
-    "mozaic-skills": "bin/install-skills.js"
+    "mozaic-skills": "bin/install-skills.js",
+    "mozaic-db": "bin/mozaic-db.js"
   },
   "files": [
     "dist",
@@ -43,8 +45,8 @@
     "rebuild": "pnpm rebuild better-sqlite3",
     "install-mcp": "./scripts/install.sh",
     "uninstall-mcp": "./scripts/uninstall.sh",
-    "install-skills": "./scripts/install-skills.sh",
-    "uninstall-skills": "./scripts/uninstall-skills.sh",
+    "install-skills": "node bin/install.js skills",
+    "uninstall-skills": "node bin/install.js remove skills",
     "prepare": "husky"
   },
   "keywords": [
@@ -52,7 +54,11 @@
     "mozaic",
     "design-system",
     "adeo",
-    "claude"
+    "claude",
+    "agent-skills",
+    "codex",
+    "cursor",
+    "copilot"
   ],
   "author": "",
   "license": "MIT",
@@ -75,9 +81,7 @@
     "better-sqlite3": "12.8.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
-    "commander": "^14.0.3",
     "glob": "^13.0.6",
-    "prompts": "^2.4.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "zod": "^3.23.0"
