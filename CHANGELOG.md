@@ -1,3 +1,16 @@
+## [2.10.4](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.10.3...v2.10.4) (2026-09-28)
+
+
+### Bug Fixes
+
+* **http:** honor CORS_ORIGINS, report real version, fix Docker build ([8fb09fe](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/8fb09fe58e2f3160c9b9bc47f2d03369b4293967))
+* **webcomponents:** generate imports for @mozaic-ds/web-components ([6deefff](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/6deefffc575565c02edd36beb01e1308899afe35))
+
+
+### Documentation
+
+* bring README, docs, diagrams and website up to date ([17b27db](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/17b27db13e2d8131cda5d7798b9607420af8b7e4))
+
 ## [2.10.3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.10.2...v2.10.3) (2026-09-28)
 
 
