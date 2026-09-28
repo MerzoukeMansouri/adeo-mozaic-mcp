@@ -7,6 +7,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Request } from "express";
+import { timingSafeEqual } from "crypto";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -33,15 +34,17 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException("Missing authorization header");
     }
 
-    // Check Bearer token format
-    const [type, token] = authHeader.split(" ");
-    if (type !== "Bearer" || !token) {
+    // "Bearer <token>": scheme is case-insensitive (RFC 7235), extra whitespace tolerated
+    const token = authHeader.match(/^\s*Bearer\s+(\S+)\s*$/i)?.[1];
+    if (!token) {
       this.logger.warn(`Invalid authorization format from ${request.ip}`);
       throw new UnauthorizedException("Invalid authorization format");
     }
 
     // Validate token
-    if (token !== this.authToken) {
+    const expected = Buffer.from(this.authToken);
+    const received = Buffer.from(token);
+    if (received.length !== expected.length || !timingSafeEqual(received, expected)) {
       this.logger.warn(`Invalid token from ${request.ip}`);
       throw new UnauthorizedException("Invalid token");
     }
