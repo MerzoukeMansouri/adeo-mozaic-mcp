@@ -1,3 +1,10 @@
+## [2.14.1](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.14.0...v2.14.1) (2026-09-28)
+
+
+### Bug Fixes
+
+* **skills:** refresh an outdated database in get-style-guide.sh ([79fb485](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/79fb48523c66c533b1eb7e96048f6e5abf4fa7c3))
+
 ## [2.14.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.13.0...v2.14.0) (2026-09-28)
 
 
