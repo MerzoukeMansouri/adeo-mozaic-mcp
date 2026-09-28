@@ -32,3 +32,6 @@ npm-debug.log*
 
 # Coverage
 coverage/
+
+.playwright-mcp/
+website/public/style-guides/
