@@ -1,3 +1,16 @@
+## [2.10.0](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.9.3...v2.10.0) (2026-09-28)
+
+
+### Features
+
+* **cli:** harness-agnostic installer and MCP Registry publishing ([e8bdf41](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/e8bdf41a92ec3090eeaba73ab3692c6452365ddb))
+* **skills:** follow the Agent Skills spec and use a neutral database path ([211c6f2](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/211c6f2f8235e981c9b9ea2a1ab7f248037c55f8))
+
+
+### Documentation
+
+* document agent-agnostic install on README and website ([ef48364](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/commit/ef48364d8d86d5a3846038977f56ba26e8a91deb))
+
 ## [2.9.3](https://github.com/MerzoukeMansouri/adeo-mozaic-mcp/compare/v2.9.2...v2.9.3) (2026-09-28)
 
 
